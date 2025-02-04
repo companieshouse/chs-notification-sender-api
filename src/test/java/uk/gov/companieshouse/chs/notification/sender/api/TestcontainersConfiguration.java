@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.chs_notification_sender_api;
+package uk.gov.companieshouse.chs.notification.sender.api;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
