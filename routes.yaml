@@ -1,0 +1,8 @@
+app_name: chs-notification-sender-api
+group: api
+
+weight: 100
+routes:
+  1: ^/letters
+  2: ^/emails
+  4: ^/chs-notification-sender-api/healthcheck
