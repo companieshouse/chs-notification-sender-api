@@ -1,0 +1,95 @@
+{
+	"info": {
+		"_postman_id": "477f00b2-f83f-4158-a53e-987f59e1a5e6",
+		"name": "CH-IDV-DEEP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12099667"
+	},
+	"item": [
+		{
+			"name": "Letter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"physical_address\": {\n            \"address_line_1\": \"\",\n            \"address_line_2\": \"\",\n            \"address_line_3\": \"\",\n            \"address_line_4\": \"\",\n            \"address_line_5\": \"\",\n            \"address_line_6\": \"\",\n            \"address_line_7\": \"\"\n        }\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": {\n            \"letter_reference\": \"0123456789\",\n            \"company_name\": \"BIG SHOP LTD\",\n            \"company_id\": \"9876543210\",\n            \"psc_type\": \"25%\"\n        }\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "/notification-sender/letter",
+					"path": [
+						"notification-sender",
+						"letter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": {\n            \"letter_reference\": \"0123456789\",\n            \"company_name\": \"BIG SHOP LTD\",\n            \"company_id\": \"9876543210\",\n            \"psc_type\": \"25%\"\n        }\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "/notification-sender/email",
+					"path": [
+						"notification-sender",
+						"email"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "8437547-H49867-987645",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "auth",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
