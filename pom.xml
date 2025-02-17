@@ -14,11 +14,11 @@
     <url/>
     <properties>
         <java.version>21</java.version>
-        <spring-boot.version>3.4.1</spring-boot.version>
+        <spring-boot.version>3.4.2</spring-boot.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
-        <structured-logging.version>3.0.20</structured-logging.version>
+        <structured-logging.version>3.0.26</structured-logging.version>
         <log4j-version>2.24.2</log4j-version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
         <private-api-sdk-java.version>4.0.258</private-api-sdk-java.version>
@@ -32,7 +32,7 @@
         <api-helper-java.version>3.0.1</api-helper-java.version>
         <flapdoodle.version>4.16.1</flapdoodle.version>
         <email-producer-java.version>3.0.3</email-producer-java.version>
-        <kafka-clients.version>3.7.1</kafka-clients.version>
+        <kafka-clients.version>3.9.0</kafka-clients.version>
         <logback-classic.version>1.5.16</logback-classic.version>
         <junit-jupiter-engine-version>5.11.4</junit-jupiter-engine-version>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
@@ -122,6 +122,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
+            <version>7.0.0-M2</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -159,11 +160,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter-engine-version}</version>
@@ -193,7 +189,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <version>6.4.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
