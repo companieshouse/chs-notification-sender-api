@@ -13,16 +13,16 @@ import uk.gov.companieshouse.logging.util.RequestLogger;
 @Component
 public class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(uk.gov.companieshouse.chs.notification.sender.api.restapi.StaticPropertyUtil.APPLICATION_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
 
     @Override
-    public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         logStartRequestProcessing(request, LOGGER);
         return true;
     }
 
     @Override
-    public void postHandle( final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView ) {
+    public void postHandle(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final Object handler, final ModelAndView modelAndView ) {
         logEndRequestProcessing(request, response, LOGGER);
     }
 
