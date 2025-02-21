@@ -21,11 +21,9 @@ public class EmailLetterController implements NotificationSenderInterface {
     @Override
     public ResponseEntity<Void> sendEmail(final GovUkEmailDetailsRequest request, final String xRequestId) {
 
-        if (request.getEmailDetails().isEmpty() || request.getSenderDetails().isEmpty() || request.getRecipientDetails().isEmpty())  {
-            LOG.errorContext(xRequestId, new Exception("Bad request"), null);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } if (request.getEmailDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null)) {
-            LOG.errorContext(xRequestId, new Exception("Bad request- null"), null);
+        if (request.getEmailDetails().isEmpty() || request.getSenderDetails().isEmpty() || request.getRecipientDetails().isEmpty()
+        || (request.getEmailDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null)))  {
+            LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else {
@@ -41,11 +39,9 @@ public class EmailLetterController implements NotificationSenderInterface {
      */
     @Override
     public ResponseEntity<Void> sendLetter(final GovUkLetterDetailsRequest request, final String xRequestId) {
-        if(request.getSenderDetails().isEmpty() || request.getLetterDetails().isEmpty() || request.getRecipientDetails().isEmpty()){
-            LOG.errorContext(xRequestId, new Exception("Bad request"), null);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }if (request.getLetterDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null)) {
-            LOG.errorContext(xRequestId, new Exception("Bad request- null"), null);
+        if(request.getSenderDetails().isEmpty() || request.getLetterDetails().isEmpty() || request.getRecipientDetails().isEmpty()
+        || (request.getLetterDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null))){
+            LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.infoContext(xRequestId, "Received request to send an letter", null);

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class StaticPropertyUtil {
+class StaticPropertyUtil {
 
     @Value( "${spring.application.name}" )
     private String applicationNameSpace;
