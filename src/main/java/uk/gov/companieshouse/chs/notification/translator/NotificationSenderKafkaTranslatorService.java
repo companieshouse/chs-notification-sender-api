@@ -10,19 +10,19 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Service
 public class NotificationSenderKafkaTranslatorService implements NotificationSenderKafkaTranslatorInterface{
 
-    @Value( "${kafka.topic.email}" )
-    private String emailKafkaTopic;
+    private final String emailKafkaTopic;
 
-    @Value( "${kafka.topic.letter}" )
-    private String letterKafkaTopic;
+    private final String letterKafkaTopic;
 
     private final AvroSerializer avroSerializer;
 
-    private static final Logger LOG = LoggerFactory.getLogger( StaticPropertyUtil.APPLICATION_NAMESPACE );
-
-    NotificationSenderKafkaTranslatorService() {
-        this.avroSerializer = new AvroSerializer();
+    public NotificationSenderKafkaTranslatorService(final @Value("${kafka.topic.email}") String emailTopic, final @Value("${kafka.topic.letter}") String letterTopic, final AvroSerializer avroSerializer) {
+        this.emailKafkaTopic = emailTopic;
+        this.letterKafkaTopic = letterTopic;
+        this.avroSerializer = avroSerializer;
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger( StaticPropertyUtil.APPLICATION_NAMESPACE );
 
     @Override
     public byte[] translateNotificationToEmailKafkaMessage(String emailNotificationMessage) {
