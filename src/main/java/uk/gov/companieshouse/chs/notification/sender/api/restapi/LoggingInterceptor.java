@@ -11,7 +11,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.logging.util.RequestLogger;
 
 @Component
-public class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
+class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
 
@@ -22,7 +22,7 @@ public class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
     }
 
     @Override
-    public void postHandle(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final Object handler, final ModelAndView modelAndView ) {
+    public void postHandle(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final Object handler, final ModelAndView modelAndView) {
         logEndRequestProcessing(request, response, LOGGER);
     }
 
