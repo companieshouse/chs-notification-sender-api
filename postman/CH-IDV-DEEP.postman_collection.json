@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "477f00b2-f83f-4158-a53e-987f59e1a5e6",
+		"_postman_id": "731885d7-baa6-4f4e-bcb4-65c5ef41d222",
 		"name": "CH-IDV-DEEP",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "12099667"
+		"_exporter_id": "41674408"
 	},
 	"item": [
 		{
@@ -21,7 +21,12 @@
 					}
 				},
 				"url": {
-					"raw": "/notification-sender/letter",
+					"raw": "https://{{API_HOST}}:{{API_PORT}}/notification-sender/letter",
+					"protocol": "https",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"port": "{{API_PORT}}",
 					"path": [
 						"notification-sender",
 						"letter"
@@ -45,7 +50,12 @@
 					}
 				},
 				"url": {
-					"raw": "/notification-sender/email",
+					"raw": "https://{{API_HOST}}:{{API_PORT}}/notification-sender/email",
+					"protocol": "https",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"port": "{{API_PORT}}",
 					"path": [
 						"notification-sender",
 						"email"
