@@ -195,7 +195,7 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>private-api-sdk-java</artifactId>
-            <version>4.0.266</version>
+            <version>${private-api-sdk-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
