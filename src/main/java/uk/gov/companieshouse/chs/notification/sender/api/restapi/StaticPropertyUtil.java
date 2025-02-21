@@ -4,9 +4,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class StaticPropertyUtil {
+class StaticPropertyUtil {
 
     @Value( "${spring.application.name}" )
     private String applicationNameSpace;
