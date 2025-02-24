@@ -8,7 +8,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
-public class NotificationSenderKafkaTranslatorService implements NotificationSenderKafkaTranslatorInterface{
+public class KafkaTranslatorService implements KafkaTranslatorInterface {
 
     private final String emailKafkaTopic;
 
@@ -16,7 +16,7 @@ public class NotificationSenderKafkaTranslatorService implements NotificationSen
 
     private final AvroSerializer avroSerializer;
 
-    public NotificationSenderKafkaTranslatorService(final @Value("${kafka.topic.email}") String emailTopic, final @Value("${kafka.topic.letter}") String letterTopic, final AvroSerializer avroSerializer) {
+    public KafkaTranslatorService(@Value("${kafka.topic.email}") String emailTopic, @Value("${kafka.topic.letter}") String letterTopic, AvroSerializer avroSerializer) {
         this.emailKafkaTopic = emailTopic;
         this.letterKafkaTopic = letterTopic;
         this.avroSerializer = avroSerializer;
