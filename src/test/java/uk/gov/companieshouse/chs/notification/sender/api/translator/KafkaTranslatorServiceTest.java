@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.translator;
+package uk.gov.companieshouse.chs.notification.sender.api.translator;
 
 import consumer.serialization.AvroSerializer;
 import org.apache.avro.AvroRuntimeException;
