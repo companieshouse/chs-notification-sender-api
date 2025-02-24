@@ -15,7 +15,7 @@ public class EmailLetterController implements NotificationSenderInterface {
 
     /**
      * @param request
-     * @param xRequestId Receive a request to send a email
+     * @param xRequestId Receive a request to send an email
      * @return senderDetails
      */
     @Override

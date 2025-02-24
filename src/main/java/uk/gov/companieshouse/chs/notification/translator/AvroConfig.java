@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.config;
+package uk.gov.companieshouse.chs.notification.translator;
 
 import consumer.serialization.AvroSerializer;
 import org.springframework.context.annotation.Bean;

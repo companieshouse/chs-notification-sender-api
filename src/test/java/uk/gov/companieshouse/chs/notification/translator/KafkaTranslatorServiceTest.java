@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.translator;
+package uk.gov.companieshouse.chs.notification.translator;
 
 import consumer.serialization.AvroSerializer;
 import org.apache.avro.AvroRuntimeException;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.chs.notification.translator.KafkaTranslatorService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

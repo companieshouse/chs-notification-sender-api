@@ -8,7 +8,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
-public class KafkaTranslatorService implements KafkaTranslatorInterface {
+class KafkaTranslatorService implements KafkaTranslatorInterface {
 
     private final String emailKafkaTopic;
 
