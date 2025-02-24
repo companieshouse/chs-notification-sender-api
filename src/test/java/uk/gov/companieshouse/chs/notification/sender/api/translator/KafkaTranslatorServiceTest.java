@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.translator;
+package uk.gov.companieshouse.chs.notification.sender.api.translator;
 
 import consumer.serialization.AvroSerializer;
 import org.apache.avro.AvroRuntimeException;
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.chs.notification.sender.api.translator.KafkaTranslatorService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,34 +31,34 @@ public class KafkaTranslatorServiceTest {
 
     @BeforeEach
     void setUp() {
-        kafkaTranslatorService = new KafkaTranslatorService(EMAIL_TOPIC,LETTER_TOPIC,avroSerializer);
+        kafkaTranslatorService = new KafkaTranslatorService(EMAIL_TOPIC, LETTER_TOPIC, avroSerializer);
     }
 
     @Test
     @DisplayName(" Serialize email notification message to avro ")
-    void testTranslateNotificationToEmailKafkaMessage(){
-        when(avroSerializer.serialize(EMAIL_TOPIC,EMAIL_MESSAGE)).thenReturn(SERIALIZED_EMAIL_MESSAGE);
+    void testTranslateNotificationToEmailKafkaMessage() {
+        when(avroSerializer.serialize(EMAIL_TOPIC, EMAIL_MESSAGE)).thenReturn(SERIALIZED_EMAIL_MESSAGE);
 
         byte[] result = kafkaTranslatorService.translateNotificationToEmailKafkaMessage(EMAIL_MESSAGE);
 
         assertArrayEquals(SERIALIZED_EMAIL_MESSAGE, result);
-        verify(avroSerializer, times(1)).serialize(EMAIL_TOPIC,EMAIL_MESSAGE);
+        verify(avroSerializer, times(1)).serialize(EMAIL_TOPIC, EMAIL_MESSAGE);
     }
 
     @Test
     @DisplayName(" Serialize letter notification message to avro ")
-    void testTranslateNotificationToLetterKafkaMessage(){
-        when(avroSerializer.serialize(LETTER_TOPIC,LETTER_MESSAGE)).thenReturn(SERIALIZED_LETTER_MESSAGE);
+    void testTranslateNotificationToLetterKafkaMessage() {
+        when(avroSerializer.serialize(LETTER_TOPIC, LETTER_MESSAGE)).thenReturn(SERIALIZED_LETTER_MESSAGE);
 
         byte[] result = kafkaTranslatorService.translateNotificationToLetterKafkaMessage(LETTER_MESSAGE);
 
         assertArrayEquals(SERIALIZED_LETTER_MESSAGE, result);
-        verify(avroSerializer, times(1)).serialize(LETTER_TOPIC,LETTER_MESSAGE);
+        verify(avroSerializer, times(1)).serialize(LETTER_TOPIC, LETTER_MESSAGE);
     }
 
     @Test
     @DisplayName(" Empty message should throw an exception ")
-    void testEmptyMessageReturnsEmptyArrayOrExceptionLetterKafkaMessage(){
+    void testEmptyMessageReturnsEmptyArrayOrExceptionLetterKafkaMessage() {
         when(avroSerializer.serialize(eq(EMAIL_TOPIC), anyString())).thenThrow(new RuntimeException("Serialization failed"));
         Exception exception = assertThrows(RuntimeException.class, () -> kafkaTranslatorService.translateNotificationToEmailKafkaMessage(EMAIL_MESSAGE));
         assertEquals("Serialization failed", exception.getMessage());
@@ -65,9 +66,9 @@ public class KafkaTranslatorServiceTest {
 
     @Test
     @DisplayName(" Invalid schema should throw AvroRuntimeException ")
-    void testSerializeInvalidSchemaThrowsAvroRuntimeException(){
+    void testSerializeInvalidSchemaThrowsAvroRuntimeException() {
         String invalidMessage = "{\"invalidField\":\"value\"}";
-        when(avroSerializer.serialize(eq(EMAIL_TOPIC),eq(invalidMessage))).thenThrow(new AvroRuntimeException("Serialization failed"));
+        when(avroSerializer.serialize(eq(EMAIL_TOPIC), eq(invalidMessage))).thenThrow(new AvroRuntimeException("Serialization failed"));
 
         Exception exception = assertThrows(AvroRuntimeException.class, () -> kafkaTranslatorService.translateNotificationToEmailKafkaMessage(invalidMessage));
         assertEquals("Serialization failed", exception.getMessage());
