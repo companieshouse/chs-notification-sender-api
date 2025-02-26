@@ -14,6 +14,12 @@ public class EmailLetterController implements NotificationSenderInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
 
+    private final EmailLetterService emailLetterService;
+
+    public EmailLetterController(final EmailLetterService emailLetterService) {
+        this.emailLetterService = emailLetterService;
+    }
+
     /**
      * @param request
      * @param xRequestId Receive a request to send an email
@@ -28,6 +34,10 @@ public class EmailLetterController implements NotificationSenderInterface {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             LOG.infoContext(xRequestId, "Received request to send an email", null);
+
+            byte[] serialisedMessage = emailLetterService.translateEmailNotification(request);
+            //pass this onto kafka producer
+
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
@@ -42,6 +52,10 @@ public class EmailLetterController implements NotificationSenderInterface {
         if (request.getSenderDetails().isEmpty() || request.getLetterDetails().isEmpty() || request.getRecipientDetails().isEmpty()
                 || (request.getLetterDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null))) {
             LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
+
+            byte[] serialisedMessage = emailLetterService.translateLetterNotification(request);
+            //pass this onto kafka producer
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.infoContext(xRequestId, "Received request to send an letter", null);
