@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.restapi;
+package uk.gov.companieshouse.chs.notification.sender.api.utils;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;

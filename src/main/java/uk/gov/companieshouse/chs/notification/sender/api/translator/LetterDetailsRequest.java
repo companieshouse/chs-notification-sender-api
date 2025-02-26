@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.restapi;
+package uk.gov.companieshouse.chs.notification.sender.api.translator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import uk.gov.companieshouse.api.chs_notification_sender.model.EmailDetails;
-import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsEmail;
+import uk.gov.companieshouse.api.chs_notification_sender.model.LetterDetails;
+import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs_notification_sender.model.SenderDetails;
 
 import java.util.ArrayList;
@@ -20,25 +20,24 @@ import java.util.ArrayList;
 @Validated
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-class EmailDetailsRequest {
+class LetterDetailsRequest {
+    @NotNull
+    @Size(min = 1, max = 1)
+    @Valid
+    private ArrayList<SenderDetails> senderDetails;
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    private final ArrayList<SenderDetails> senderDetails;
+    private ArrayList<RecipientDetailsLetter> recipientDetails;
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    private final ArrayList<RecipientDetailsEmail> recipientDetails;
-
-    @NotNull
-    @Size(min = 1, max = 1)
-    @Valid
-    private final ArrayList<EmailDetails> emailDetails;
+    private ArrayList<LetterDetails> letterDetails;
 
     @NotBlank()
-    private final String createdAt;
+    private String createdAt;
 
     public String convertToJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(this);

@@ -19,13 +19,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @ExtendWith(MockitoExtension.class)
-public class EmailLetterControllerTests {
+public class NotificationControllerTests {
 
     @Mock
-    private EmailLetterService emailLetterService;
+    private NotificationService notificationService;
 
     @InjectMocks
-    private EmailLetterController emailLetterController;
+    private NotificationController notificationController;
 
     @Test
     public void validEmailRequest() {
@@ -47,7 +47,7 @@ public class EmailLetterControllerTests {
                 .emailAddress("john.doe@email.address.net").name("john doe"));
 
 
-        ResponseEntity<Void> response = emailLetterController.sendEmail(govUkEmailDetailsRequest, xRequestId );
+        ResponseEntity<Void> response = notificationController.sendEmail(govUkEmailDetailsRequest, xRequestId );
 
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
         Assertions.assertNotNull(response);
@@ -66,7 +66,7 @@ public class EmailLetterControllerTests {
                 .userId("9876543").name("John Doe").reference("ref").appId("chips.send_email"));
 
 
-        ResponseEntity<Void> response = emailLetterController.sendEmail(govUkEmailDetailsRequest, xRequestId );
+        ResponseEntity<Void> response = notificationController.sendEmail(govUkEmailDetailsRequest, xRequestId );
 
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -86,7 +86,7 @@ public class EmailLetterControllerTests {
         govUkEmailDetailsRequest.addEmailDetailsItem(null);
         govUkEmailDetailsRequest.addRecipientDetailsItem(null);
 
-        ResponseEntity<Void> response = emailLetterController.sendEmail(govUkEmailDetailsRequest, xRequestId );
+        ResponseEntity<Void> response = notificationController.sendEmail(govUkEmailDetailsRequest, xRequestId );
 
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -118,7 +118,7 @@ public class EmailLetterControllerTests {
                 .userId("9876543")
                 .emailAddress("john.doe@email.address.net"));
 
-        ResponseEntity<Void> response = emailLetterController.sendLetter(govUkletterDetailsRequest, xRequestId);
+        ResponseEntity<Void> response = notificationController.sendLetter(govUkletterDetailsRequest, xRequestId);
 
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
         Assertions.assertNotNull(response);
@@ -135,7 +135,7 @@ public class EmailLetterControllerTests {
 
         govUkLetterDetailsRequest.addLetterDetailsItem(letterDetails.personalisationDetails(""));
 
-        ResponseEntity<Void> response = emailLetterController.sendLetter(govUkLetterDetailsRequest, xRequestId);
+        ResponseEntity<Void> response = notificationController.sendLetter(govUkLetterDetailsRequest, xRequestId);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -154,7 +154,7 @@ public class EmailLetterControllerTests {
         govUkLetterDetailsRequest.addLetterDetailsItem(null);
         govUkLetterDetailsRequest.addRecipientDetailsItem(null);
 
-        ResponseEntity<Void> response = emailLetterController.sendLetter(govUkLetterDetailsRequest, xRequestId );
+        ResponseEntity<Void> response = notificationController.sendLetter(govUkLetterDetailsRequest, xRequestId );
 
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
