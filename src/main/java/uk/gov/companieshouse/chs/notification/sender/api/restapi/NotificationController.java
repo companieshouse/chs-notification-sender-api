@@ -10,9 +10,15 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @RestController
-public class EmailLetterController implements NotificationSenderInterface {
+public class NotificationController implements NotificationSenderInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
+
+    private final NotificationService notificationService;
+
+    public NotificationController(final NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
     /**
      * @param request
@@ -28,6 +34,10 @@ public class EmailLetterController implements NotificationSenderInterface {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             LOG.infoContext(xRequestId, "Received request to send an email", null);
+
+            byte[] serialisedMessage = notificationService.translateEmailNotification(request);
+            //pass this onto kafka producer
+
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
@@ -42,6 +52,10 @@ public class EmailLetterController implements NotificationSenderInterface {
         if (request.getSenderDetails().isEmpty() || request.getLetterDetails().isEmpty() || request.getRecipientDetails().isEmpty()
                 || (request.getLetterDetails().contains(null) || request.getSenderDetails().contains(null) || request.getRecipientDetails().contains(null))) {
             LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
+
+            byte[] serialisedMessage = notificationService.translateLetterNotification(request);
+            //pass this onto kafka producer
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.infoContext(xRequestId, "Received request to send an letter", null);
