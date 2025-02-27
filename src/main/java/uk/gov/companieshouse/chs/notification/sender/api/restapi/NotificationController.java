@@ -53,8 +53,7 @@ public class NotificationController implements NotificationSenderInterface {
             LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
 
             byte[] serialisedMessage = notificationService.translateLetterNotification(request);
-            //pass this onto kafka producer
-
+            notificationService.sendLetter(serialisedMessage);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.infoContext(xRequestId, "Received request to send an letter", null);

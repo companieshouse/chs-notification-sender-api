@@ -14,7 +14,8 @@ public class NotificationProducer {
 
     @Value("${kafka.topic.email}")
     private String emailTopic;
-    // serialisedMessage
+    @Value("${kafka.topic.letter}")
+    private String letterTopic;
 
     public NotificationProducer(
         final CHKafkaProducer chKafkaProducer) {
@@ -24,9 +25,10 @@ public class NotificationProducer {
     /**
      * Sends an email-send message to the Kafka producer.
      *
-     * @throws  EmailSendingException should a failure to build the email occur
+     * @throws ExecutionException      should something unexpected happen
+     * @throws InterruptedException    should something unexpected happen
      */
-    public void sendEmail(byte[] emailData) throws EmailSendingException {
+    public void sendEmail(byte[] emailData) throws NotificationSendingException {
         try {
             final Message message = new Message();
             message.setValue(emailData);
@@ -37,17 +39,30 @@ public class NotificationProducer {
 
 
         } catch (ExecutionException e) {
-            throw new EmailSendingException("Error sending message to kafka", e);
+            throw new NotificationSendingException("Error sending message to kafka", e);
         } catch (InterruptedException e) {
-            throw new EmailSendingException("Error - thread interrupted", e);
+            throw new NotificationSendingException("Error - thread interrupted", e);
         }
     }
-//    public letterProducer(final EmailFactory emailFactory, final AvroSerializer<Email> serializer,
-//                         final CHKafkaProducer chKafkaProducer, @Value("${email.producer.appId}") final String appId) {
-//        this.emailFactory = emailFactory;
-//        this.serializer = serializer;
-//        this.chKafkaProducer = chKafkaProducer;
-//        this.appId = appId;
-//    }
+    /**
+     * Sends an email-send message to the Kafka producer.
+     *
+     * @throws ExecutionException      should something unexpected happen
+     * @throws InterruptedException    should something unexpected happen
+     */
+    public void sendLetter(byte[] letterData) throws NotificationSendingException {
+        try {
+            final Message message = new Message();
+            message.setValue(letterData);
+            message.setTopic(letterTopic);
+            message.setTimestamp(new Date().getTime());
 
+            chKafkaProducer.send(message);
+
+        } catch (ExecutionException e) {
+            throw new NotificationSendingException("Error sending message to kafka", e);
+        } catch (InterruptedException e) {
+            throw new NotificationSendingException("Error - thread interrupted", e);
+        }
+    }
 }

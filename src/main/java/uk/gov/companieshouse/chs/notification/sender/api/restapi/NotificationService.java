@@ -35,5 +35,8 @@ class NotificationService {
     public void sendEmail(byte[] email){
         notificationProducer.sendEmail(email);
     }
+    public void sendLetter(byte[] letter){
+        notificationProducer.sendLetter(letter);
+    }
 
 }
