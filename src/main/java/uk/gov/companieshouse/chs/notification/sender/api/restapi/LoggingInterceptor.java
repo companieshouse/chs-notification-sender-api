@@ -12,7 +12,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.logging.util.RequestLogger;
 
 @Component
-class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
+public class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
 

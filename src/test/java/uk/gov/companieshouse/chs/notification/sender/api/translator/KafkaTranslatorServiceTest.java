@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.model.EmailDetailsRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.service.KafkaTranslatorService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

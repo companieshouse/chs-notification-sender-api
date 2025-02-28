@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.translator;
+package uk.gov.companieshouse.chs.notification.sender.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import consumer.serialization.AvroSerializer;
@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaTranslatorInterface;
+import uk.gov.companieshouse.chs.notification.sender.api.translator.NotificationMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
-class KafkaTranslatorService implements KafkaTranslatorInterface {
+public class KafkaTranslatorService implements KafkaTranslatorInterface {
 
     private final String emailKafkaTopic;
 

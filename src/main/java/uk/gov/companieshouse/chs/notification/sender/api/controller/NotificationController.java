@@ -1,10 +1,12 @@
-package uk.gov.companieshouse.chs.notification.sender.api.restapi;
+package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.chs_notification_sender.api.NotificationSenderInterface;
 import uk.gov.companieshouse.api.chs_notification_sender.model.*;
+import uk.gov.companieshouse.chs.notification.sender.api.service.NotificationService;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -16,6 +18,7 @@ public class NotificationController implements NotificationSenderInterface {
 
     private final NotificationService notificationService;
 
+    @Autowired
     public NotificationController(final NotificationService notificationService) {
         this.notificationService = notificationService;
     }

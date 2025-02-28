@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @Validated
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-class LetterDetailsRequest {
+public class LetterDetailsRequest {
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
