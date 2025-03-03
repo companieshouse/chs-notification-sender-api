@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start script for accounts-association-service
+# Start script for chs-notification-sender-api
 
 PORT=8080
 
