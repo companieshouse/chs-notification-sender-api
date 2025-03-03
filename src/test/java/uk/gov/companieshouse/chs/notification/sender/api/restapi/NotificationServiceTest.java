@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.restapi;
 
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,6 @@ public class NotificationServiceTest {
         verify(kafkaMessageTranslator, times(1)).translateNotificationToEmailKafkaMessage(emailRequest);
     }
 
-    @SneakyThrows
     @Test
     @DisplayName(" Translate Letter Notification")
     void shouldTranslateLetterNotificationSuccessfully() {
