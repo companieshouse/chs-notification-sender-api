@@ -120,7 +120,7 @@ variable "log_level" {
   description = "The log level for services to use: trace, debug, info or error"
 }
 
-variable "chs-notification-sender-api_version" {
+variable "chs_notification_sender_api_version" {
   type        = string
   description = "The version of the chs-notification-sender-api container to run."
 }
