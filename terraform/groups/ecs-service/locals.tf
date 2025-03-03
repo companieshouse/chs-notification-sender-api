@@ -20,6 +20,7 @@ locals {
   app_environment_filename   = "chs-notification-sender-api.env"
   vpc_name                   = data.aws_ssm_parameter.secret[format("/%s/%s", local.name_prefix, "vpc-name")].value
 
+
   # Enable Eric
   use_eric_reverse_proxy    = true
   eric_port                 = "3001" # container port plus 1
