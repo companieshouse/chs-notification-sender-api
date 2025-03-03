@@ -11,43 +11,28 @@ import uk.gov.companieshouse.api.chs_notification_sender.model.LetterDetails;
 import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs_notification_sender.model.SenderDetails;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Validated
-class LetterDetailsRequest {
-    public LetterDetailsRequest() {
-        this.createdAt = createdAt;
-        this.letterDetails = new ArrayList<>();
-        this.recipientDetails = new ArrayList<>();
-        this.senderDetails = new ArrayList<>();
-    }
-
-    public LetterDetailsRequest(String createdAt, List<LetterDetails> letterDetails, List<RecipientDetailsLetter> recipientDetails, List<SenderDetails> senderDetails) {
-        this.createdAt = createdAt;
-        this.letterDetails = letterDetails;
-        this.recipientDetails = recipientDetails;
-        this.senderDetails = senderDetails;
-    }
+record LetterDetailsRequest(
+    @NotNull
+    @Size(min = 1, max = 1)
+    @Valid
+    List<SenderDetails> senderDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    private final List<SenderDetails> senderDetails;
+    List<RecipientDetailsLetter> recipientDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    private final List<RecipientDetailsLetter> recipientDetails;
-
-    @NotNull
-    @Size(min = 1, max = 1)
-    @Valid
-    private final List<LetterDetails> letterDetails;
+    List<LetterDetails> letterDetails,
 
     @NotBlank()
-    private String createdAt;
-
+    String createdAt
+) {
     public String convertToJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(this);
     }
