@@ -25,8 +25,6 @@ public class NotificationProducer {
     /**
      * Sends an email-send message to the Kafka producer.
      *
-     * @throws ExecutionException      should something unexpected happen
-     * @throws InterruptedException    should something unexpected happen
      */
     public void sendEmail(byte[] emailData) throws NotificationSendingException {
         try {
@@ -47,8 +45,6 @@ public class NotificationProducer {
     /**
      * Sends an email-send message to the Kafka producer.
      *
-     * @throws ExecutionException      should something unexpected happen
-     * @throws InterruptedException    should something unexpected happen
      */
     public void sendLetter(byte[] letterData) throws NotificationSendingException {
         try {
