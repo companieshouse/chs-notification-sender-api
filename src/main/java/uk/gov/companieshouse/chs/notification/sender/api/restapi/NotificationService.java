@@ -32,11 +32,11 @@ class NotificationService {
         return kafkaMessageTranslator.translateNotificationToLetterKafkaMessage(request);
     }
 
-    public void sendEmail(byte[] email){
-        notificationProducer.sendEmail(email);
-    }
-    public void sendLetter(byte[] letter){
-        notificationProducer.sendLetter(letter);
+    public void sendEmail(String emailTopic, byte[] email){
+        notificationProducer.sendEmail(email, emailTopic);
     }
 
+    public void sendLetter(String letterTopic, byte[] letter){
+        notificationProducer.sendLetter(letter, letterTopic);
+    }
 }

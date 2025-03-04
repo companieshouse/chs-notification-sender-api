@@ -1,64 +1,64 @@
 package uk.gov.companieshouse.chs.notification.sender.api.producer;
 
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.kafka.message.Message;
-import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
+import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
 public class NotificationProducer {
 
-    private final CHKafkaProducer chKafkaProducer;
+    private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
 
     @Value("${kafka.topic.email}")
     private String emailTopic;
     @Value("${kafka.topic.letter}")
     private String letterTopic;
 
-    public NotificationProducer(
-        final CHKafkaProducer chKafkaProducer) {
-        this.chKafkaProducer = chKafkaProducer;
+
+    private final Producer<String, byte[]> producer;
+
+    public NotificationProducer(Producer<String, byte[]> producer) {
+        this.producer = producer;
     }
 
-    /**
+     /**
      * Sends an email-send message to the Kafka producer.
-     *
      */
-    public void sendEmail(byte[] emailData) throws NotificationSendingException {
-        try {
-            final Message message = new Message();
-            message.setValue(emailData);
-            message.setTopic(emailTopic);
-            message.setTimestamp(new Date().getTime());
+    public void sendEmail(byte[] emailData, String emailTopic) throws NotificationSendingException {
 
-            chKafkaProducer.send(message);
+        ProducerRecord<String, byte[]> emailRecord = new ProducerRecord<>(emailTopic, emailData);
+        LOG.info("Sending to message to " + emailTopic);
 
+        // send data
+        producer.send(emailRecord);
 
-        } catch (ExecutionException e) {
-            throw new NotificationSendingException("Error sending message to kafka", e);
-        } catch (InterruptedException e) {
-            throw new NotificationSendingException("Error - thread interrupted", e);
-        }
+        // tell producer to send all data and block until complete
+        producer.flush();
+
+        // close the producer
+        producer.close();
+
     }
-    /**
-     * Sends an email-send message to the Kafka producer.
-     *
+
+     /**
+     * Sends a letter-send message to the Kafka producer.
      */
-    public void sendLetter(byte[] letterData) throws NotificationSendingException {
-        try {
-            final Message message = new Message();
-            message.setValue(letterData);
-            message.setTopic(letterTopic);
-            message.setTimestamp(new Date().getTime());
+    public void sendLetter(byte[] letterData, String letterTopic) throws NotificationSendingException {
 
-            chKafkaProducer.send(message);
+        ProducerRecord<String, byte[]> letterRecord = new ProducerRecord<>(letterTopic, letterData);
+        LOG.info("Sending to message to " + letterTopic);
 
-        } catch (ExecutionException e) {
-            throw new NotificationSendingException("Error sending message to kafka", e);
-        } catch (InterruptedException e) {
-            throw new NotificationSendingException("Error - thread interrupted", e);
-        }
+        // send data
+        producer.send(letterRecord);
+
+        // tell producer to send all data and block until complete
+        producer.flush();
+
+        // close the producer
+        producer.close();
     }
 }
