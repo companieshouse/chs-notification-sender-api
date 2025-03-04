@@ -21,7 +21,7 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request
+     * @param request The request itself
      * @param xRequestId Receive a request to send an email
      * @return senderDetails
      */
@@ -36,8 +36,7 @@ public class NotificationController implements NotificationSenderInterface {
             LOG.infoContext(xRequestId, "Received request to send an email", null);
 
             byte[] serialisedMessage = notificationService.translateEmailNotification(request);
-            //pass this onto kafka producer
-
+            notificationService.sendEmail(serialisedMessage);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
@@ -54,8 +53,7 @@ public class NotificationController implements NotificationSenderInterface {
             LOG.errorContext(xRequestId, new Exception("Bad request - Missing details"), null);
 
             byte[] serialisedMessage = notificationService.translateLetterNotification(request);
-            //pass this onto kafka producer
-
+            notificationService.sendLetter(serialisedMessage);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.infoContext(xRequestId, "Received request to send an letter", null);
