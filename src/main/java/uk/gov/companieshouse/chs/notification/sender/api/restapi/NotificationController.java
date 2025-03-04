@@ -21,9 +21,9 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request The request itself
-     * @param xRequestId Receive a request to send an email
-     * @return senderDetails
+     * @param request - The request itself.
+     * @param xRequestId - Receive a request to send an email.
+     * @return ResponseEntity - Reports  success of failure.
      */
     @Override
     public ResponseEntity<Void> sendEmail(final GovUkEmailDetailsRequest request, final String xRequestId) {
