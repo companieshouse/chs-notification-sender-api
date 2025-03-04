@@ -15,6 +15,17 @@ This Microservice has the following dependencies:
 - [Java 21](https://www.oracle.com/java/technologies/downloads/#java21)
 - [Maven](https://maven.apache.org/download.cgi)
 
+# Kafka docker container
+
+to run locally you need to start a kafka broker to allow messages to be sent out from this module
+
+```shell
+docker compose up KafkaBroker
+```
+
+once the container is up and running, you will be able to connect to it with a consumer to see messages sent into the
+queues.
+
 # OWASP Dependency check
 
 to run a check for dependency security vulnerabilities run the following command:
@@ -23,17 +34,20 @@ to run a check for dependency security vulnerabilities run the following command
 mvn dependency-check:check
 ```
 
+# List Dependencies
+
+```shell
+mvn dependency:tree
+```
+
 # Endpoints
 
 The remainder of this section lists the endpoints that are available in this microservice, and provides links to
 detailed documentation about these endpoints e.g. required headers, path variables, query params, request bodies, and
 their behaviour.
 
-| Method | Path                                  | Description                                                | Documentation                                                                                                                                                                |
-|--------|---------------------------------------|------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| POST   | /letter                               | This endpoint can be used to send a letter.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
-| POST   | /email                                | This endpoint can be used to send an email.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
-| GET    | http://127.0.0.1:9000/actuator/health | this endpoint is used to check that the service is running |                                                                                                                                                                              |
-
-
-
+| Method | Path                                                          | Description                                                | Documentation                                                                                                                                              |
+|--------|---------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| POST   | /letter                                                       | This endpoint can be used to send a letter.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
+| POST   | /email                                                        | This endpoint can be used to send an email.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
+| GET    | http://127.0.0.1:8081/chs-notification-sender-api/healthcheck | this endpoint is used to check that the service is running |                                                                                                                                                            |

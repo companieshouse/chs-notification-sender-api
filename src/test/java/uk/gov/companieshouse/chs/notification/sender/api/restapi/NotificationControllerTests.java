@@ -13,7 +13,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.companieshouse.api.chs_notification_sender.model.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -125,11 +124,11 @@ public class NotificationControllerTests {
                                                        .personalisationDetails("letter_reference: 0123456789,company_name: BIG SHOP LTD,company_id: 9876543210,psc_type: 25% "));
         govUkletterDetailsRequest.setRecipientDetails(recipientDetailsLetter
                                                           .name("john doe")
-                                                          .physicalAddress(Collections.singletonList(
+                                                          .physicalAddress(
                                                               address
                                                                   .addressLine1("address_line_1")
                                                                   .addressLine2("address_line_2")
-                                                                  .addressLine3("address_line_3"))));
+                                                                  .addressLine3("address_line_3")));
         govUkletterDetailsRequest.setSenderDetails(senderDetails
                                                        .appId("chips.send_letter")
                                                        .reference("ref")
