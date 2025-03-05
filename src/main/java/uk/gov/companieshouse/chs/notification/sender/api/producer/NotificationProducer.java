@@ -5,13 +5,13 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 //import uk.gov.companieshouse.kafka.message.Message;
 //import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import java.util.Date;
+import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
 //import java.util.concurrent.ExecutionException;
 
 @Service
@@ -68,7 +68,8 @@ public class NotificationProducer {
         message.setTimestamp(new Date().getTime());
         ProducerRecord<String, byte[]> record = getProducerRecordFromMessage(message);
 
-        kafkaTemplate.send(emailTopic, record.value());
+        sendMessage(emailTopic, emailData);
+        //kafkaTemplate.send(emailTopic, record.value());
 
     }
     /**
@@ -84,8 +85,8 @@ public class NotificationProducer {
 
         ProducerRecord<String, byte[]> record = getProducerRecordFromMessage(message);
 
-        kafkaTemplate.send(emailTopic, record.value());
-
+        // kafkaTemplate.send(letterTopic, record.value());
+        sendMessage(letterTopic, letterData);
     }
 
     private ProducerRecord<String, byte[]> getProducerRecordFromMessage(Message msg) {

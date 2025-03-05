@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.producer;
+package uk.gov.companieshouse.chs.notification.sender.api.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +13,17 @@ import org.springframework.kafka.core.ProducerFactory;
 
 @Configuration
 public class KafkaProducerConfig {
-    @Value("${kafka.broker.addr}")
-    private String brokerAddr;
+    // @Value("${kafka.broker.addr}")
+    private String brokerAddr = "localhost:9092";
 
-    @Value("${kafka.config.acks}")
-    private String acks;
+    // @Value("${kafka.config.acks}")
+    private String acks = "ack";
 
-    @Value("${kafka.config.retries}")
-    private int retries;
+    //@Value("${kafka.config.retries}")
+    private int retries = 5;
 
-    @Value("${kafka.config.is.round.robin}")
-    private boolean isRoundRobin;
+    //@Value("${kafka.config.is.round.robin}")
+    private boolean isRoundRobin = true;
 
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
