@@ -7,8 +7,8 @@ locals {
   container_port             = "8080" # default Java port to match start script
   docker_repo                = "chs-notification-sender-api"
   lb_listener_rule_priority  = 20
-  lb_listener_paths          = ["/acsps/*/memberships*", "/acsps/memberships/*", "/user/acsps/memberships*", "/chs-notification-sender-api/healthcheck"]
-  healthcheck_path           = "/chs-notification-sender-api/healthcheck" #healthcheck path for chs-notification-sender-api service
+  lb_listener_paths          = ["/chs-notification-sender-api/letter", "/chs-notification-sender-api/email", "/chs-notification-sender-api/actuator/health"]
+  healthcheck_path           = "/chs-notification-sender-api/actuator/health" #healthcheck path for chs-notification-sender-api service
   healthcheck_matcher        = "200"
   application_subnet_ids     = data.aws_subnets.application.ids
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
