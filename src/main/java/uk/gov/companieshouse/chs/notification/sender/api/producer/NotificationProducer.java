@@ -2,6 +2,7 @@ package uk.gov.companieshouse.chs.notification.sender.api.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
@@ -10,6 +11,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class NotificationProducer {
@@ -20,6 +22,7 @@ public class NotificationProducer {
     private String emailTopic;
     @Value("${kafka.topic.letter}")
     private String letterTopic;
+    private byte[] emailData;
 
 
     private KafkaProducer<String, byte[]> producer;
@@ -83,6 +86,16 @@ public class NotificationProducer {
         producer.flush();
 
         // close the producer
+        producer.close();
+    }
+
+    public Future<RecordMetadata> sendAndReturnFuture(String emailTopic, byte[] emailData) {
+
+        ProducerRecord<String, byte[]> record =new ProducerRecord<>(emailTopic, emailData);
+
+        return producer.send(record);
+    }
+    public void close() {
         producer.close();
     }
 }
