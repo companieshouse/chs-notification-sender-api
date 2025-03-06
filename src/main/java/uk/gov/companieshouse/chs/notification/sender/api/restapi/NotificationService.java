@@ -9,6 +9,8 @@ import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUti
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
+import java.util.concurrent.ExecutionException;
+
 @Service
 class NotificationService {
 
@@ -32,11 +34,11 @@ class NotificationService {
         return kafkaMessageTranslator.translateNotificationToLetterKafkaMessage(request);
     }
 
-    public void sendEmail(String emailTopic, byte[] email){
+    public void sendEmail(String emailTopic, byte[] email) throws ExecutionException, InterruptedException {
         notificationProducer.sendEmail(email, emailTopic);
     }
 
-    public void sendLetter(String letterTopic, byte[] letter){
+    public void sendLetter(String letterTopic, byte[] letter) throws ExecutionException, InterruptedException {
         notificationProducer.sendLetter(letter, letterTopic);
     }
 }

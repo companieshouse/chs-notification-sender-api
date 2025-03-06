@@ -9,6 +9,8 @@ import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUti
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
+import java.util.concurrent.ExecutionException;
+
 @RestController
 public class NotificationController implements NotificationSenderInterface {
 
@@ -36,7 +38,11 @@ public class NotificationController implements NotificationSenderInterface {
             LOG.infoContext(xRequestId, "Received request to send an email", null);
             String emailTopic = "";
             byte[] serialisedMessage = notificationService.translateEmailNotification(request);
-            notificationService.sendEmail(emailTopic,serialisedMessage);
+            try {
+                notificationService.sendEmail(emailTopic,serialisedMessage);
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
@@ -56,7 +62,11 @@ public class NotificationController implements NotificationSenderInterface {
             LOG.infoContext(xRequestId, "Received request to send a letter", null);
             byte[] serialisedMessage = notificationService.translateLetterNotification(request);
             String letterTopic = "";
-            notificationService.sendLetter(letterTopic, serialisedMessage);
+            try {
+                notificationService.sendLetter(letterTopic, serialisedMessage);
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }

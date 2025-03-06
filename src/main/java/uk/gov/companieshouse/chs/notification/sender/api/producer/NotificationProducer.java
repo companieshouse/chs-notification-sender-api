@@ -1,12 +1,15 @@
 package uk.gov.companieshouse.chs.notification.sender.api.producer;
 
-import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class NotificationProducer {
@@ -19,22 +22,44 @@ public class NotificationProducer {
     private String letterTopic;
 
 
-    private final Producer<String, byte[]> producer;
+    private KafkaProducer<String, byte[]> producer;
 
-    public NotificationProducer(Producer<String, byte[]> producer) {
-        this.producer = producer;
+    NotificationProducer() {
     }
 
+    public NotificationProducer(ProducerConfig config) {
+        this(config, new KafkaProducerFactory());
+    }
+
+    public NotificationProducer(ProducerConfig config, KafkaProducerFactory producerFactory) {
+        Properties props = new Properties();
+
+        props.put("bootstrap.servers", String.join(",", config.getBrokerAddresses()));
+        props.put("acks", config.getAcks().getCode());
+        props.put("key.serializer", config.getKeySerializer());
+        props.put("value.serializer", config.getValueSerializer());
+        props.put("retries", config.getRetries());
+        props.put("max.block.ms", config.getMaxBlockMilliseconds());
+        props.put("request.timeout.ms", config.getRequestTimeoutMilliseconds());
+        props.put("enable.idempotence", config.isEnableIdempotence());
+
+        if (config.isRoundRobinPartitioner()) {
+            props.put("partition.assignment.strategy", "roundrobin");
+        }
+
+        producer = producerFactory.getProducer(props);
+    }
      /**
      * Sends an email-send message to the Kafka producer.
      */
-    public void sendEmail(byte[] emailData, String emailTopic) throws NotificationSendingException {
+    public void sendEmail(byte[] emailData, String emailTopic) throws NotificationSendingException, ExecutionException, InterruptedException {
 
         ProducerRecord<String, byte[]> emailRecord = new ProducerRecord<>(emailTopic, emailData);
+
         LOG.info("Sending to message to " + emailTopic);
 
         // send data
-        producer.send(emailRecord);
+        producer.send(emailRecord).get();
 
         // tell producer to send all data and block until complete
         producer.flush();
@@ -43,11 +68,10 @@ public class NotificationProducer {
         producer.close();
 
     }
-
      /**
      * Sends a letter-send message to the Kafka producer.
      */
-    public void sendLetter(byte[] letterData, String letterTopic) throws NotificationSendingException {
+    public void sendLetter(byte[] letterData, String letterTopic) throws NotificationSendingException, ExecutionException, InterruptedException  {
 
         ProducerRecord<String, byte[]> letterRecord = new ProducerRecord<>(letterTopic, letterData);
         LOG.info("Sending to message to " + letterTopic);
