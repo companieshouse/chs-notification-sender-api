@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.chs_notification_sender.api.NotificationSenderInterface;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -20,8 +21,11 @@ public class NotificationController implements NotificationSenderInterface {
 
     private final NotificationService notificationService;
 
-    public NotificationController(final NotificationService notificationService) {
+    private final KafkaProducerInterface kafkaProducer;
+
+    public NotificationController(final NotificationService notificationService, KafkaProducerInterface kafkaProducer) {
         this.notificationService = notificationService;
+        this.kafkaProducer = kafkaProducer;
     }
 
     /**
@@ -43,6 +47,7 @@ public class NotificationController implements NotificationSenderInterface {
 
         byte[] serialisedMessage = notificationService.translateEmailNotification(request);
         //pass this onto kafka producer
+        kafkaProducer.sendToEmailTopic(serialisedMessage);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -64,6 +69,7 @@ public class NotificationController implements NotificationSenderInterface {
 
         byte[] serialisedMessage = notificationService.translateLetterNotification(request);
         //pass this onto kafka producer
+        kafkaProducer.sendToLetterTopic(serialisedMessage);
 
         LOG.infoContext(xRequestId, "Received request to send an letter", null);
         return new ResponseEntity<>(HttpStatus.CREATED);
