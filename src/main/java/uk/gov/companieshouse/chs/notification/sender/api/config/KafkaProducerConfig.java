@@ -22,8 +22,6 @@ public class KafkaProducerConfig {
     @Value("${kafka.max-attempts}")
     private Integer retries;
 
-    //@Value("${kafka.config.is.round.robin}")
-    //private boolean isRoundRobin = true;
 
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
@@ -38,7 +36,7 @@ public class KafkaProducerConfig {
         /*
         configProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-            StringSerializer.class);
+            AvroSerializer.class);
         configProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class);

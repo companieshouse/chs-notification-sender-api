@@ -31,16 +31,6 @@ public class NotificationProducer {
     @Value("${kafka.topic.letter}")
     private String letterTopic;
 
-   /* public NotificationProducer(
-        final CHKafkaProducer chKafkaProducer) {
-        this.chKafkaProducer = chKafkaProducer;
-    }
-
-    */
-
-
-
-
 
    public void sendMessage(String topicName, byte[] message) {
        CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(topicName, message);
