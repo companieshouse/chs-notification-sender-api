@@ -21,12 +21,12 @@ class NotificationProducerTests {
 
     private static final int TEST_RETRIES = 5;
     private static final String TEST_BROKER = "test-broker";
-    private static final String KEY = "test-key";
     private static final int MAX_BLOCK_MILLISECONDS = 1000;
     private static final int REQUEST_TIMEOUT_MILLISECONDS = 1000;
 
-        private static final String EMAIL_TOPIC = "${kafka.topic.email}";
-        private final byte[] myByte = new byte[]{0x1};
+    private static final String EMAIL_TOPIC = "${kafka.topic.email}";
+    private static final String LETTER_TOPIC = "${kafka.topic.letter}";
+    private final byte[] myByte = new byte[]{0x1};
 
     private NotificationProducer producer;
 
@@ -47,20 +47,35 @@ class NotificationProducerTests {
     }
 
     @Test
-    public void testSendAndReturnFuture() throws Exception {
+    public void testSendAndReturnFutureEmail() throws Exception {
         createTestProducer(true, Acks.NO_RESPONSE, true);
         producer.sendEmail(myByte, EMAIL_TOPIC);
 
         verify(mockKafkaProducer).send(ArgumentMatchers.<ProducerRecord<String,byte[]>>any());
     }
+    @Test
+    public void testSendAndReturnFutureLetter() throws Exception {
+        createTestProducer(true, Acks.NO_RESPONSE, true);
+        producer.sendEmail(myByte, LETTER_TOPIC);
+
+        verify(mockKafkaProducer).send(ArgumentMatchers.any());
+    }
 
     @Test
-    public void testSendAndReturnFutureWithoutIdempotence() throws Exception {
+    public void testSendAndReturnFutureEmailWithoutIdempotence() throws Exception {
         createTestProducer(true, Acks.NO_RESPONSE, false);
         producer.sendAndReturnFuture(EMAIL_TOPIC, myByte);
 
         verify(mockKafkaProducer).send(ArgumentMatchers.<ProducerRecord<String,byte[]>>any());
     }
+    @Test
+    public void testSendAndReturnFutureLetterWithoutIdempotence() throws Exception {
+        createTestProducer(true, Acks.NO_RESPONSE, false);
+        producer.sendAndReturnFutureLetter(EMAIL_TOPIC, myByte);
+
+        verify(mockKafkaProducer).send(ArgumentMatchers.<ProducerRecord<String,byte[]>>any());
+    }
+
 
     @Test
     @SuppressWarnings("unchecked")
@@ -69,6 +84,13 @@ class NotificationProducerTests {
         producer.sendEmail(myByte, EMAIL_TOPIC);
         verify(mockKafkaProducer).send(any(ProducerRecord.class));
         verify(recordMetadataFuture, times(1)).get();
+    }
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSendRoundRobinAcksNoResponseForLetter() throws Exception {
+        createTestProducer(true, Acks.NO_RESPONSE, true);
+        producer.sendLetter(myByte, LETTER_TOPIC);
+        verify(mockKafkaProducer).send(any(ProducerRecord.class));
     }
 
     @Test
@@ -109,9 +131,6 @@ class NotificationProducerTests {
     /**
      * Create the test configuration and a producer to test
      *
-     * @param roundRobinPartitioner
-     * @param acks
-     * @throws Exception
      */
     private void createTestProducer(boolean roundRobinPartitioner, Acks acks, boolean idempotence) throws Exception {
         ProducerConfig config = new ProducerConfig();
@@ -130,9 +149,6 @@ class NotificationProducerTests {
      * Create expected properties so we can confirm the actual properties used to create
      * the producer match the ProducerConfig we supply
      *
-     * @param roundRobinPartitioner
-     * @param acksCode
-     * @throws Exception
      */
     private Properties expectedKafkaProducerConfigProperties(boolean roundRobinPartitioner, String acksCode, boolean idempotence) throws Exception {
         Properties props = new Properties();

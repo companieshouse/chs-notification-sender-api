@@ -6,9 +6,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 
 public class KafkaProducerFactory {
 
-    /**
-     * {@inheritDoc}
-     */
     public KafkaProducer<String, byte[]> getProducer(Properties properties) {
         return new KafkaProducer<>(properties);
     }

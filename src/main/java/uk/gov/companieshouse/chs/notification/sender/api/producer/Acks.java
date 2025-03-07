@@ -12,10 +12,6 @@ public enum Acks {
     }
 
     /**
-     * Get ack codae to match Apache Kafka's ack conventions See
-     * https://kafka.apache.org/documentation Producer Configs
-     * for official documentation.
-     *
      * @return code
      */
     public String getCode() {

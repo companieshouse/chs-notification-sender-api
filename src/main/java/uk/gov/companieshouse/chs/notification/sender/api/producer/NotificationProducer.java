@@ -95,6 +95,12 @@ public class NotificationProducer {
 
         return producer.send(record);
     }
+    public Future<RecordMetadata> sendAndReturnFutureLetter(String letterTopic, byte[] emailData) {
+
+        ProducerRecord<String, byte[]> record =new ProducerRecord<>(letterTopic, emailData);
+
+        return producer.send(record);
+    }
     public void close() {
         producer.close();
     }

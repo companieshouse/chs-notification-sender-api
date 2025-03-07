@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.producer;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
