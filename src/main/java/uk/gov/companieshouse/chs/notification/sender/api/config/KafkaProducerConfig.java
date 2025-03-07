@@ -13,24 +13,24 @@ import org.springframework.kafka.core.ProducerFactory;
 
 @Configuration
 public class KafkaProducerConfig {
-    // @Value("${kafka.broker.addr}")
-    private String brokerAddr = "localhost:9092";
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String brokerAddress;
 
-    // @Value("${kafka.config.acks}")
+    @Value("${kafka.config.acks}")
     private String acks = "ack";
 
-    //@Value("${kafka.config.retries}")
-    private int retries = 5;
+    @Value("${kafka.max-attempts}")
+    private Integer retries;
 
     //@Value("${kafka.config.is.round.robin}")
-    private boolean isRoundRobin = true;
+    //private boolean isRoundRobin = true;
 
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            brokerAddr.split(","));
+            brokerAddress.split(","));
         configProps.put(
             ProducerConfig.ACKS_CONFIG, acks);
         configProps.put(
