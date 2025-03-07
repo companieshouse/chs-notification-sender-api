@@ -11,28 +11,26 @@ import uk.gov.companieshouse.api.chs_notification_sender.model.EmailDetails;
 import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.api.chs_notification_sender.model.SenderDetails;
 
-import java.util.List;
-
 @Validated
 record EmailDetailsRequest(
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<SenderDetails> senderDetails,
+    SenderDetails senderDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<RecipientDetailsEmail> recipientDetails,
+    RecipientDetailsEmail recipientDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<EmailDetails> emailDetails,
+    EmailDetails emailDetails,
 
     @NotBlank()
     String createdAt) {
-    
+
     public String convertToJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(this);
     }
