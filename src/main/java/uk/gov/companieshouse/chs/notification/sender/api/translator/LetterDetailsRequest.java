@@ -11,24 +11,22 @@ import uk.gov.companieshouse.api.chs_notification_sender.model.LetterDetails;
 import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs_notification_sender.model.SenderDetails;
 
-import java.util.List;
-
 @Validated
 record LetterDetailsRequest(
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<SenderDetails> senderDetails,
+    SenderDetails senderDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<RecipientDetailsLetter> recipientDetails,
+    RecipientDetailsLetter recipientDetails,
 
     @NotNull
     @Size(min = 1, max = 1)
     @Valid
-    List<LetterDetails> letterDetails,
+    LetterDetails letterDetails,
 
     @NotBlank()
     String createdAt
