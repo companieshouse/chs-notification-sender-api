@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/actuator/**")
                 .permitAll()
                 .anyRequest()
-                .denyAll())
+                .permitAll())
         ;
         return http.build();
     }

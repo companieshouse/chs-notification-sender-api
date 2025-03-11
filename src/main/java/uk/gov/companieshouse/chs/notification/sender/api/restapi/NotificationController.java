@@ -1,9 +1,14 @@
 package uk.gov.companieshouse.chs.notification.sender.api.restapi;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.chs_notification_sender.api.NotificationSenderInterface;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
@@ -13,7 +18,6 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @RestController
-@Validated
 public class NotificationController implements NotificationSenderInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
@@ -25,12 +29,12 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request
-     * @param xRequestId Receive a request to send an email
-     * @return senderDetails
+     * @param request the actual request.
+     * @param xRequestId Receive a request to send an email.
+     * @return responseEntity with status.
      */
-    @Override
-    public ResponseEntity<Void> sendEmail(@Valid final GovUkEmailDetailsRequest request, final String xRequestId) {
+  @Override
+  public ResponseEntity<Void> sendEmail(GovUkEmailDetailsRequest request,  String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getEmailDetails() == null ||
@@ -48,12 +52,12 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request
+     * @param request the actual request.
      * @param xRequestId Receive a request to send a letter
-     * @return
+     * @return responseEntity with status.
      */
     @Override
-    public ResponseEntity<Void> sendLetter(@Valid final GovUkLetterDetailsRequest request, final String xRequestId) {
+    public ResponseEntity<Void> sendLetter(GovUkLetterDetailsRequest request, String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getLetterDetails() == null ||
