@@ -15,11 +15,8 @@ import uk.gov.companieshouse.notification.ChsLetterNotification;
 class KafkaTranslatorService implements KafkaTranslatorInterface {
 
     private final String emailKafkaTopic;
-
     private final String letterKafkaTopic;
-
     private final AvroSerializer avroSerializer;
-
     private final NotificationMapper notificationMapper;
 
     public KafkaTranslatorService(@Value("${kafka.topic.email}") String emailTopic, @Value("${kafka.topic.letter}") String letterTopic, AvroSerializer avroSerializer, NotificationMapper notificationMapper) {
@@ -49,5 +46,5 @@ class KafkaTranslatorService implements KafkaTranslatorInterface {
     private ChsLetterNotification convertLetterRequestToAvroModel(final GovUkLetterDetailsRequest request) {
         return notificationMapper.mapToLetterDetailsRequest(request);
     }
-
+    
 }

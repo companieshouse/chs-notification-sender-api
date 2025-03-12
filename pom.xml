@@ -22,7 +22,7 @@
         <structured-logging.version>3.0.26</structured-logging.version>
         <log4j-version>2.24.2</log4j-version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
-        <private-api-sdk-java.version>4.0.278</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
         <api-security-java-version>2.0.8</api-security-java-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
@@ -38,7 +38,7 @@
         <junit-jupiter-engine-version>5.11.4</junit-jupiter-engine-version>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <hamcrest-all-version>1.3</hamcrest-all-version>
-        <kafka-models.version>3.0.11</kafka-models.version>
+        <kafka-models.version>3.0.12</kafka-models.version>
     </properties>
 
     <profiles>
@@ -53,6 +53,10 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -118,7 +122,6 @@
             <artifactId>avro</artifactId>
             <version>1.12.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
