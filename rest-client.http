@@ -13,7 +13,7 @@ Content-Type: application/json
 %}
 
 ### POST a letter request request to example server
-POST http://127.0.0.1:8081/letter
+POST http://127.0.0.1:8081/notification-sender/letter
 X-Request-Id: theId12345
 ERIC-Identity: 67ZeMsvAEgkBWs7tNKacdrPvOmQ
 ERIC-Identity-Type: key
@@ -21,36 +21,67 @@ ERIC-Authorised-Key-Roles: *
 Content-Type: application/json
 
 {
-    "sender_details": {
-        "app_id": "",
-        "reference": "",
-        "name": "",
-        "user_id": "",
-        "email_address": "john.doe@company3.domaind.extra.com"
-    },
-    "recipient_details": {
-        "name": "",
-        "physical_address": {
-            "address_line_1": "",
-            "address_line_2": "",
-            "address_line_3": "",
-            "address_line_4": "",
-            "address_line_5": "",
-            "address_line_6": "",
-            "address_line_7": ""
-        }
-    },
-    "letter_details": {
-        "template_id": "",
-        "template_version": 1,
-        "personalisation_details": {
-            "letter_reference": "0123456789",
-            "company_name": "BIG SHOP LTD",
-            "company_id": "9876543210",
-            "psc_type": "25%"
-        }
-    },
-    "created_at": "2025-01-01T00:00:00.000Z"
+  "sender_details": {
+    "app_id": "chips.send_letter",
+    "reference": "",
+    "name": "John Doe",
+    "user_id": "9876543",
+    "email_address": "john.doe@email.address.net"
+  },
+  "recipient_details": {
+    "name": "john doe",
+    "physical_address": {
+      "address_line_1": "Address line 1",
+      "address_line_2": "Address line 2",
+      "address_line_3": "Address line 3",
+      "address_line_4": "Address line 1",
+      "address_line_5": "Address line 5",
+      "address_line_6": "Address line 6",
+      "address_line_7": "Address line 7"
+    }
+  },
+  "letter_details": {
+    "template_id": "psc_verification|letter235",
+    "template_version": 1,
+    "personalisation_details": "{\"letter_reference\": \"0123456789\",\"company_name\": \"BIG SHOP LTD\",\"company_id\": \"9876543210\",\"psc_type\": \"25%\"}"
+  },
+  "created_at": "2017-07-21T17:32:28Z"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+### POST an email request request to example server
+POST http://127.0.0.1:8081/notification-sender/email
+X-Request-Id: theId12345
+ERIC-Identity: 67ZeMsvAEgkBWs7tNKacdrPvOmQ
+ERIC-Identity-Type: key
+ERIC-Authorised-Key-Roles: *
+Content-Type: application/json
+
+{
+  "sender_details": {
+    "app_id": "chips.send_letter",
+    "reference": "",
+    "name": "John Doe",
+    "user_id": "9876543",
+    "email_address": "john.doe@email.address.net"
+  },
+  "recipient_details": {
+    "name": "john doe",
+    "email_address": "john.doe@email.address.net"
+  },
+  "email_details": {
+    "template_id": "psc_verification|email35",
+    "template_version": 1,
+    "personalisation_details": "{\"letter_reference\": \"0123456789\",\"company_name\": \"BIG SHOP LTD\",\"company_id\": \"9876543210\",\"psc_type\": \"25%\"}"
+  },
+  "created_at": "2017-07-21T17:32:28Z"
 }
 
 > {%

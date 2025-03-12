@@ -1,9 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.restapi;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +14,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @RestController
+@Validated
 public class NotificationController implements NotificationSenderInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
@@ -33,8 +30,10 @@ public class NotificationController implements NotificationSenderInterface {
      * @param xRequestId Receive a request to send an email.
      * @return responseEntity with status.
      */
-  @Override
-  public ResponseEntity<Void> sendEmail(GovUkEmailDetailsRequest request,  String xRequestId) {
+    @Override
+    public ResponseEntity<Void> sendEmail(
+        @RequestBody GovUkEmailDetailsRequest request,
+        @RequestHeader(value = "X-Request-Id", required = false) String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getEmailDetails() == null ||
@@ -57,7 +56,9 @@ public class NotificationController implements NotificationSenderInterface {
      * @return responseEntity with status.
      */
     @Override
-    public ResponseEntity<Void> sendLetter(GovUkLetterDetailsRequest request, String xRequestId) {
+    public ResponseEntity<Void> sendLetter(
+        @RequestBody GovUkLetterDetailsRequest request,
+        @RequestHeader(value = "X-Request-Id", required = false) String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getLetterDetails() == null ||
