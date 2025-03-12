@@ -12,35 +12,35 @@ import org.springframework.stereotype.Service;
 //import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import java.util.Date;
 import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
+import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 //import java.util.concurrent.ExecutionException;
 
 @Service
 public class NotificationProducer {
 
+    private static final Logger LOG = LoggerFactory
+        .getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
     @Autowired
     private KafkaProducerConfig kafkaProducerConfig;
     @Autowired
     private KafkaTemplate<String, byte[]> kafkaTemplate;
-
-
-
-
-
     @Value("${kafka.topic.email}")
     private String emailTopic;
     @Value("${kafka.topic.letter}")
     private String letterTopic;
 
-
-   public void sendMessage(String topicName, byte[] message) {
-       CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(topicName, message);
+   private void sendMessage(String topicName, byte[] message) {
+       CompletableFuture<SendResult<String, byte[]>> future =
+           kafkaTemplate.send(topicName, message);
        future.whenComplete((result, ex) -> {
            if (ex == null) {
-               System.out.println("Sent message=[" + Arrays.toString(message) +
-                   "] with offset=[" + result.getRecordMetadata().offset() + "]");
+               LOG.infoContext(topicName,"Sent message=[" + Arrays.toString(message)
+                   + "] with offset=[" + result.getRecordMetadata().offset() + "]" , null);
            } else {
-               System.out.println("Unable to send message=[" +
-                   Arrays.toString(message) + "] due to : " + ex.getMessage());
+               LOG.errorContext(topicName, new Exception("Unable to send ["
+                   + Arrays.toString(message) + "] due to " + ex.getMessage()), null);
            }
        });
    }
@@ -59,9 +59,8 @@ public class NotificationProducer {
         ProducerRecord<String, byte[]> record = getProducerRecordFromMessage(message);
 
         sendMessage(emailTopic, emailData);
-        //kafkaTemplate.send(emailTopic, record.value());
-
     }
+
     /**
      * Sends an email-send message to the Kafka producer.
      *
