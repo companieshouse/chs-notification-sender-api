@@ -31,7 +31,7 @@ public class NotificationProducer {
     @Value("${kafka.topic.letter}")
     private String letterTopic;
 
-   private void sendMessage(String topicName, byte[] message) {
+   private void sendMessage(String topicName, byte[] message) throws NotificationSendingException {
        CompletableFuture<SendResult<String, byte[]>> future =
            kafkaTemplate.send(topicName, message);
        future.whenComplete((result, ex) -> {
@@ -41,6 +41,7 @@ public class NotificationProducer {
            } else {
                LOG.errorContext(topicName, new Exception("Unable to send ["
                    + Arrays.toString(message) + "] due to " + ex.getMessage()), null);
+               throw new NotificationSendingException("Unable to send " + topicName + " " + ex.getMessage(),ex);
            }
        });
    }
