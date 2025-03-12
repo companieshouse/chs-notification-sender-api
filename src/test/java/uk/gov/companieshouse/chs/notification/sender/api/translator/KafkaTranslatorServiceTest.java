@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.notification.ChsEmailNotification;
+import uk.gov.companieshouse.notification.ChsLetterNotification;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -19,7 +21,7 @@ public class KafkaTranslatorServiceTest {
     private static final String EMAIL_TOPIC = "chs-notification-email";
     private static final String LETTER_TOPIC = "chs-notification-letter";
 
-    @Mock
+   @Mock
     private AvroSerializer avroSerializer;
 
     @Mock
@@ -34,39 +36,38 @@ public class KafkaTranslatorServiceTest {
     }
 
     @Test
-    void testTranslateNotificationToEmailKafkaMessage() throws Exception {
+    void testTranslateNotificationToEmailKafkaMessage() {
         GovUkEmailDetailsRequest emailRequest = new GovUkEmailDetailsRequest();
-        EmailDetailsRequest mappedRequest = mock(EmailDetailsRequest.class);
-        String jsonMessage = "{\"message\":\"email\"}";
+        ChsEmailNotification mappedRequest = mock(ChsEmailNotification.class);
+
         byte[] expectedBytes = new byte[]{1, 2, 3};
 
         when(notificationMapper.mapToEmailDetailsRequest(emailRequest)).thenReturn(mappedRequest);
-        when(mappedRequest.convertToJson()).thenReturn(jsonMessage);
-        when(avroSerializer.serialize(EMAIL_TOPIC, jsonMessage)).thenReturn(expectedBytes);
+        when(avroSerializer.serialize(EMAIL_TOPIC, mappedRequest)).thenReturn(expectedBytes);
 
         byte[] result = kafkaTranslatorService.translateNotificationToEmailKafkaMessage(emailRequest);
 
         assertArrayEquals(expectedBytes, result);
         verify(notificationMapper, times(1)).mapToEmailDetailsRequest(emailRequest);
-        verify(avroSerializer, times(1)).serialize(EMAIL_TOPIC, jsonMessage);
+        verify(avroSerializer, times(1)).serialize(EMAIL_TOPIC, mappedRequest);
     }
 
     @Test
-    void testTranslateNotificationToLetterKafkaMessage() throws Exception {
+    void testTranslateNotificationToLetterKafkaMessage() {
         GovUkLetterDetailsRequest letterRequest = new GovUkLetterDetailsRequest();
-        LetterDetailsRequest mappedRequest = mock(LetterDetailsRequest.class);
-        String jsonMessage = "{\"message\":\"letter\"}";
+        ChsLetterNotification mappedRequest = mock(ChsLetterNotification.class);
+
         byte[] expectedBytes = new byte[]{4, 5, 6};
 
         when(notificationMapper.mapToLetterDetailsRequest(letterRequest)).thenReturn(mappedRequest);
-        when(mappedRequest.convertToJson()).thenReturn(jsonMessage);
-        when(avroSerializer.serialize(LETTER_TOPIC, jsonMessage)).thenReturn(expectedBytes);
+
+        when(avroSerializer.serialize(LETTER_TOPIC, mappedRequest)).thenReturn(expectedBytes);
 
         byte[] result = kafkaTranslatorService.translateNotificationToLetterKafkaMessage(letterRequest);
 
         assertArrayEquals(expectedBytes, result);
         verify(notificationMapper, times(1)).mapToLetterDetailsRequest(letterRequest);
-        verify(avroSerializer, times(1)).serialize(LETTER_TOPIC, jsonMessage);
+        verify(avroSerializer, times(1)).serialize(LETTER_TOPIC, mappedRequest);
     }
 
     @Test
