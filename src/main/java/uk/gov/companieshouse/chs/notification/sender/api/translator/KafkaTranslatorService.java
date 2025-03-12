@@ -39,24 +39,12 @@ class KafkaTranslatorService implements KafkaTranslatorInterface {
         return avroSerializer.serialize(letterKafkaTopic, convertLetterRequestToAvroModel(govUkLetterDetailsRequest));
     }
 
-    private String convertEmailRequestToJson(final GovUkEmailDetailsRequest request) {
-        try {
-            final var emailDetailsRequest = notificationMapper.mapToEmailDetailsRequest(request);
-            return emailDetailsRequest.convertToJson();
-        } catch (JsonProcessingException e) {
-            LOG.error("Error while mapping GovUkEmailDetailsRequest", e);
-            throw new IllegalArgumentException("Invalid message format");
-        }
+    private ChsEmailNotification convertEmailRequestToAvroModel(final GovUkEmailDetailsRequest request) {
+        return notificationMapper.mapToEmailDetailsRequest(request);
     }
 
-    private String convertLetterRequestToJson(final GovUkLetterDetailsRequest request) {
-        try {
-            final var letterDetailsRequest = notificationMapper.mapToLetterDetailsRequest(request);
-            return letterDetailsRequest.convertToJson();
-        } catch (JsonProcessingException e) {
-            LOG.error("Error while mapping GovUkLetterDetailsRequest", e);
-            throw new IllegalArgumentException("Invalid message format");
-        }
+    private ChsLetterNotification convertLetterRequestToAvroModel(final GovUkLetterDetailsRequest request) {
+        return notificationMapper.mapToLetterDetailsRequest(request);
     }
-
+    
 }
