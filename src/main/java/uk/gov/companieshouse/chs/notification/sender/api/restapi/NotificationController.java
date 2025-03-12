@@ -1,9 +1,10 @@
 package uk.gov.companieshouse.chs.notification.sender.api.restapi;
 
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.chs_notification_sender.api.NotificationSenderInterface;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
@@ -30,7 +31,9 @@ public class NotificationController implements NotificationSenderInterface {
      * @return senderDetails
      */
     @Override
-    public ResponseEntity<Void> sendEmail(@Valid final GovUkEmailDetailsRequest request, final String xRequestId) {
+    public ResponseEntity<Void> sendEmail(
+        @RequestBody GovUkEmailDetailsRequest request,
+        @RequestHeader(value = "X-Request-Id", required = false) String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getEmailDetails() == null ||
@@ -53,7 +56,9 @@ public class NotificationController implements NotificationSenderInterface {
      * @return
      */
     @Override
-    public ResponseEntity<Void> sendLetter(@Valid final GovUkLetterDetailsRequest request, final String xRequestId) {
+    public ResponseEntity<Void> sendLetter(
+        @RequestBody GovUkLetterDetailsRequest request,
+        @RequestHeader(value = "X-Request-Id", required = false) String xRequestId) {
 
         if (request.getSenderDetails() == null ||
             request.getLetterDetails() == null ||
