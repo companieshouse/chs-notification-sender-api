@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 //import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import java.util.Date;
 import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
+import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 //import java.util.concurrent.ExecutionException;
 
 @Service
-public class NotificationProducer {
+public class NotificationProducer implements KafkaProducerInterface{
 
     private static final Logger LOG = LoggerFactory
         .getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
@@ -31,7 +32,7 @@ public class NotificationProducer {
     @Value("${kafka.topic.letter}")
     private String letterTopic;
 
-   private void sendMessage(String topicName, byte[] message) throws NotificationSendingException {
+   private void sendMessage(String topicName, byte[] message)   throws NotificationSendingException {
        CompletableFuture<SendResult<String, byte[]>> future =
            kafkaTemplate.send(topicName, message);
        future.whenComplete((result, ex) -> {

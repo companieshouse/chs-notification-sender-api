@@ -12,10 +12,10 @@ public interface KafkaProducerInterface {
     /**
      * @param emailRequest - serialised email avro message
      */
-    void sendToEmailTopic(byte[] emailRequest);
+    void sendEmail(byte[] emailRequest);
 
     /**
      * @param letterRequest - serialised letter avro message
      */
-    void sendToLetterTopic(byte[] letterRequest);
+    void sendLetter(byte[] letterRequest);
 }
