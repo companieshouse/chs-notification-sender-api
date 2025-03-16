@@ -33,8 +33,9 @@ public class NotificationProducer implements KafkaProducerInterface{
     private String letterTopic;
 
    private void sendMessage(String topicName, byte[] message)   throws NotificationSendingException {
+       ProducerRecord<String, byte[]> producerRecord= new ProducerRecord<>(topicName, message);
        CompletableFuture<SendResult<String, byte[]>> future =
-           kafkaTemplate.send(topicName, message);
+           kafkaTemplate.send(producerRecord);
        future.whenComplete((result, ex) -> {
            if (ex == null) {
                LOG.infoContext(topicName,"Sent message=[" + Arrays.toString(message)
@@ -47,7 +48,13 @@ public class NotificationProducer implements KafkaProducerInterface{
        });
    }
 
-
+    public NotificationProducer(@Value("${kafka.topic.email}") String emailTopic, @Value("${kafka.topic.letter}") String letterTopic,
+    KafkaProducerConfig config, KafkaTemplate<String, byte[]> template ){
+       this.emailTopic = emailTopic;
+       this.letterTopic = letterTopic;
+       this.kafkaProducerConfig = config;
+       this.kafkaTemplate = template;
+    }
     /**
      * Sends an email-send message to the Kafka producer.
      *
