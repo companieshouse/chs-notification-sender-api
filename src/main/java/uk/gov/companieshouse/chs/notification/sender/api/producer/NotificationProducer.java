@@ -8,15 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-//import uk.gov.companieshouse.kafka.message.Message;
-//import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import java.util.Date;
 import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-//import java.util.concurrent.ExecutionException;
 
 @Service
 public class NotificationProducer implements KafkaProducerInterface{
