@@ -23,13 +23,6 @@ public class KafkaProducerConfig {
     @Value("${kafka.max-attempts:5}")
     private Integer retries;
 
-    /*
-    public KafkaProducerConfig(String brokerAddress, String acks, Integer retries){
-        this.brokerAddress = brokerAddress;
-        this.acks = acks;
-        this.retries = retries;
-    }
-    */
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
