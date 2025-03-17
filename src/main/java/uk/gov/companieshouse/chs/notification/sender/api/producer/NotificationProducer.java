@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
@@ -57,13 +56,6 @@ public class NotificationProducer implements KafkaProducerInterface{
      *
      */
     public void sendEmail(byte[] emailData) throws NotificationSendingException {
-
-        final Message message = new Message();
-        message.setValue(emailData);
-        message.setTopic(emailTopic);
-        message.setTimestamp(new Date().getTime());
-        ProducerRecord<String, byte[]> record = getProducerRecordFromMessage(message);
-
         sendMessage(emailTopic, emailData);
     }
 
@@ -72,26 +64,7 @@ public class NotificationProducer implements KafkaProducerInterface{
      *
      */
     public void sendLetter(byte[] letterData) throws NotificationSendingException {
-
-        final Message message = new Message();
-        message.setValue(letterData);
-        message.setTopic(letterTopic);
-        message.setTimestamp(new Date().getTime());
-
-        ProducerRecord<String, byte[]> record = getProducerRecordFromMessage(message);
-
-        // kafkaTemplate.send(letterTopic, record.value());
         sendMessage(letterTopic, letterData);
     }
 
-    private ProducerRecord<String, byte[]> getProducerRecordFromMessage(Message msg) {
-
-        return new ProducerRecord<>(
-            msg.getTopic(),
-            msg.getPartition(),
-            msg.getTimestamp(),
-            msg.getKey(),
-            msg.getValue()
-        );
-    }
 }
