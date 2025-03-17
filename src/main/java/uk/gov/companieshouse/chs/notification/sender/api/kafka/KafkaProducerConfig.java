@@ -18,7 +18,7 @@ public class KafkaProducerConfig {
     private String brokerAddress;
 
     @Value("${kafka.config.acks}")
-    private String acks = "ack";
+    private String acks;
 
     @Value("${kafka.max-attempts}")
     private Integer retries;
