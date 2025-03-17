@@ -3,7 +3,7 @@ package uk.gov.companieshouse.chs.notification.sender.api.restapi;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.producer.NotificationProducer;
+import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.translator.KafkaTranslatorInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
@@ -14,12 +14,12 @@ public class NotificationService {
 
     private final KafkaTranslatorInterface kafkaMessageTranslator;
 
-    private final NotificationProducer notificationProducer;
+    private final KafkaProducerInterface notificationProducer;
 
     private static final Logger LOG = LoggerFactory.getLogger( StaticPropertyUtil.APPLICATION_NAMESPACE );
 
     NotificationService(KafkaTranslatorInterface kafkaMessageTranslator,
-        NotificationProducer notificationProducer ) {
+        KafkaProducerInterface notificationProducer ) {
         this.kafkaMessageTranslator = kafkaMessageTranslator;
         this.notificationProducer = notificationProducer;
     }

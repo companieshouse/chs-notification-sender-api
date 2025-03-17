@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.producer;
+package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
-import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
-public class NotificationProducer implements KafkaProducerInterface{
+class NotificationProducer implements KafkaProducerInterface{
 
     private static final Logger LOG = LoggerFactory
         .getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);

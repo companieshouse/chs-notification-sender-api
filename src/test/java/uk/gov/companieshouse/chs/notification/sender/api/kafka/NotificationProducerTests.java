@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.producer;
+package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
 import static org.mockito.BDDMockito.given;
 
@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.support.SendResult;
-import uk.gov.companieshouse.chs.notification.sender.api.config.KafkaProducerConfig;
 
 @ExtendWith(MockitoExtension.class)
 @Tag("unit-test")
