@@ -10,7 +10,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Service
-public class NotificationService {
+class NotificationService {
 
     private final KafkaTranslatorInterface kafkaMessageTranslator;
 
