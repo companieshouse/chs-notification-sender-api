@@ -14,16 +14,22 @@ import org.springframework.kafka.core.ProducerFactory;
 
 @Configuration
 public class KafkaProducerConfig {
-    @Value("${spring.kafka.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String brokerAddress;
 
-    @Value("${kafka.config.acks}")
+    @Value("${kafka.config.acks:all}")
     private String acks;
 
-    @Value("${kafka.max-attempts}")
+    @Value("${kafka.max-attempts:5}")
     private Integer retries;
 
-
+    /*
+    public KafkaProducerConfig(String brokerAddress, String acks, Integer retries){
+        this.brokerAddress = brokerAddress;
+        this.acks = acks;
+        this.retries = retries;
+    }
+    */
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
