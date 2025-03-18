@@ -14,13 +14,13 @@ import org.springframework.kafka.core.ProducerFactory;
 
 @Configuration
 class KafkaProducerConfig {
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String brokerAddress;
 
-    @Value("${kafka.config.acks:all}")
+    @Value("${kafka.config.acks}")
     private String acks;
 
-    @Value("${kafka.max-attempts:5}")
+    @Value("${kafka.max-attempts}")
     private Integer retries;
 
     @Bean
