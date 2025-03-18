@@ -56,15 +56,27 @@ public class NotificationProducerTests {
     }
 
     @Test
-    public void sendEmailFailedToSend()
+    public void sendEmailFailedToSendTimeOut()
         throws NotificationSendingException, ExecutionException, InterruptedException {
         given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
-            new NotificationSendingException("Unable to send chs-notification-email Failed to Send",
+            new NotificationSendingException("Unable to send chs-notification-email Expiring 1 "
+                + "record(s) for chs-notification-email-0:120001 ms has passed since batch "
+                + "creation",
                 new Throwable("Failed to Send")));
         Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendEmail(myByte));
     }
 
+    @Test
+    public void sendEmailFailedToSendTooLarge()
+        throws NotificationSendingException, ExecutionException, InterruptedException {
+        given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
+            new NotificationSendingException("Unable to send chs-notification-email The request"
+                + "included a message larger than the max message size the server will accept",
+                new Throwable("Failed to Send")));
+        Assertions.assertThrows(NotificationSendingException.class,
+            () -> producer.sendEmail(myByte));
+    }
 
     @Test
     public void sendLetterSucceeded()
@@ -76,11 +88,23 @@ public class NotificationProducerTests {
     }
 
     @Test
-    public void sendLetterFailedToSend()
+    public void sendLetterFailedToSendTimeOut()
         throws NotificationSendingException, ExecutionException, InterruptedException {
         given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
             new NotificationSendingException(
-                "Unable to send chs-notification-letter Failed to Send",
+                "Unable to send chs-notification-email Expiring 1 record(s) for "
+                    + "chs-notification-email-0:120001 ms has passed since batch creation",
+                new Throwable("Failed to Send")));
+        Assertions.assertThrows(NotificationSendingException.class,
+            () -> producer.sendLetter(myByte));
+    }
+
+    @Test
+    public void sendLetterFailedToSendTooLarge()
+        throws NotificationSendingException, ExecutionException, InterruptedException {
+        given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
+            new NotificationSendingException("Unable to send chs-notification-letter The request"
+                + "included a message larger than the max message size the server will accept",
                 new Throwable("Failed to Send")));
         Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendLetter(myByte));

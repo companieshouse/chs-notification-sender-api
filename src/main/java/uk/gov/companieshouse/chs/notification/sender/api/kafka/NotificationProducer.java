@@ -45,9 +45,11 @@ class NotificationProducer implements KafkaProducerInterface {
                     + "] with offset=[" + result.getRecordMetadata().offset() + "]", null);
             } else {
                 LOG.errorContext(topicName, new Exception("Unable to send ["
-                    + Arrays.toString(message) + "] due to " + ex.getMessage()), null);
+                    + Arrays.toString(message) + "] due to " + ex.getMessage() + " "
+                    + ex.getCause().getMessage()), null);
                 throw new NotificationSendingException(
-                    "Unable to send " + topicName + " " + ex.getMessage(), ex);
+                    "Unable to send " + topicName + " " + ex.getCause()
+                        .getMessage(), ex.getCause());
             }
         });
     }
@@ -60,7 +62,7 @@ class NotificationProducer implements KafkaProducerInterface {
     }
 
     /**
-     * Sends an email-send message to the Kafka producer.
+     * Sends a letter-send message to the Kafka producer.
      */
     public void sendLetter(byte[] letterData) throws NotificationSendingException {
         sendMessage(letterTopic, letterData);
