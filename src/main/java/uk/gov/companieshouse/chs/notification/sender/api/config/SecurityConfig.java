@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+/* PLEASE NOTE that this might not be correct and should be seriously checked before going live */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

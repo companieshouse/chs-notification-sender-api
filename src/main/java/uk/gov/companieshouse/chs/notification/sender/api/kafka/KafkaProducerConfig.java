@@ -33,11 +33,9 @@ class KafkaProducerConfig {
             ProducerConfig.ACKS_CONFIG, acks);
         configProps.put(
             ProducerConfig.RETRIES_CONFIG, retries);
-
         configProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             AvroSerializer.class);
-
         configProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             AvroSerializer.class);

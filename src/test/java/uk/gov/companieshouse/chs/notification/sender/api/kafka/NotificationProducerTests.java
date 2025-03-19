@@ -52,6 +52,7 @@ public class NotificationProducerTests {
         given(
             kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willReturn(
             CompletableFuture.completedFuture(result));
+
         Assertions.assertDoesNotThrow(() -> producer.sendEmail(myByte));
     }
 
@@ -63,19 +64,25 @@ public class NotificationProducerTests {
                 + "record(s) for chs-notification-email-0:120001 ms has passed since batch "
                 + "creation",
                 new Throwable("Failed to Send")));
-        Assertions.assertThrows(NotificationSendingException.class,
+
+        Exception exception = Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendEmail(myByte));
+        Assertions.assertTrue(
+            exception.getMessage().contains("Expiring 1 record(s) for chs-notification-email-0"));
     }
 
     @Test
     public void sendEmailFailedToSendTooLarge()
         throws NotificationSendingException, ExecutionException, InterruptedException {
         given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
-            new NotificationSendingException("Unable to send chs-notification-email The request"
+            new NotificationSendingException("Unable to send chs-notification-email The request "
                 + "included a message larger than the max message size the server will accept",
                 new Throwable("Failed to Send")));
-        Assertions.assertThrows(NotificationSendingException.class,
+
+        Exception exception = Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendEmail(myByte));
+        Assertions.assertTrue(exception.getMessage().contains("The request "
+            + "included a message larger than the max message "));
     }
 
     @Test
@@ -84,6 +91,7 @@ public class NotificationProducerTests {
         given(
             kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willReturn(
             CompletableFuture.completedFuture(result));
+
         Assertions.assertDoesNotThrow(() -> producer.sendLetter(myByte));
     }
 
@@ -93,20 +101,29 @@ public class NotificationProducerTests {
         given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
             new NotificationSendingException(
                 "Unable to send chs-notification-email Expiring 1 record(s) for "
-                    + "chs-notification-email-0:120001 ms has passed since batch creation",
+                    + "chs-notification-letter-0:120001 ms has passed since batch creation",
                 new Throwable("Failed to Send")));
-        Assertions.assertThrows(NotificationSendingException.class,
+
+        Exception exception = Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendLetter(myByte));
+        Assertions.assertTrue(
+            exception.getMessage().contains("Expiring 1 record(s) for chs-notification-letter-0"));
     }
 
     @Test
     public void sendLetterFailedToSendTooLarge()
         throws NotificationSendingException, ExecutionException, InterruptedException {
         given(kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willThrow(
-            new NotificationSendingException("Unable to send chs-notification-letter The request"
+            new NotificationSendingException("Unable to send chs-notification-letter The request "
                 + "included a message larger than the max message size the server will accept",
                 new Throwable("Failed to Send")));
-        Assertions.assertThrows(NotificationSendingException.class,
+
+        Exception exception = Assertions.assertThrows(NotificationSendingException.class,
             () -> producer.sendLetter(myByte));
+        Assertions.assertTrue(
+            exception.getMessage().contains("The request "
+                + "included a message larger than the max message "));
+
+
     }
 }
