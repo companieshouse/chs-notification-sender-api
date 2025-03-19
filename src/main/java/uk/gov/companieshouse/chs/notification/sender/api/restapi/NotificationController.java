@@ -17,7 +17,8 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Validated
 public class NotificationController implements NotificationSenderInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
+    private static final Logger LOG = LoggerFactory.getLogger(
+        StaticPropertyUtil.APPLICATION_NAMESPACE);
 
     private final NotificationService notificationService;
 
@@ -26,7 +27,7 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request the actual request.
+     * @param request    the actual request.
      * @param xRequestId Receive a request to send an email.
      * @return responseEntity with status.
      */
@@ -51,7 +52,7 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request the actual request.
+     * @param request    the actual request.
      * @param xRequestId Receive a request to send a letter
      * @return responseEntity with status.
      */
