@@ -19,10 +19,7 @@ locals {
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename   = "chs-notification-sender-api.env"
   vpc_name                   = local.stack_secrets["vpc_name"]
-
-  # Enable Eric (IS THIS NEEDED)
-  use_eric_reverse_proxy    = true
-  eric_port                 = "3001" # container port plus 1
+  eric_port                 = "10000"
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
