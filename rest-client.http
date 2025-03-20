@@ -1,5 +1,5 @@
 ### GET health endpoint
-GET http://127.0.0.1:9000/actuator/health
+GET http://127.0.0.1:9000/chs-notification-sender-api/healthcheck
 X-Request-Id: theId12345
 ERIC-Identity: 67ZeMsvAEgkBWs7tNKacdrPvOmQ
 ERIC-Identity-Type: key

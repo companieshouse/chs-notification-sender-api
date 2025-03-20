@@ -253,9 +253,22 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>execution1</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>execution2</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                        <configuration>
+                            <additionalProperties>
+                                <java.version>${java.version}</java.version>
+                                <project.version>${project.version}</project.version>
+                            </additionalProperties>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
