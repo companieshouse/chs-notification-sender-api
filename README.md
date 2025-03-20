@@ -15,6 +15,17 @@ This Microservice has the following dependencies:
 - [Java 21](https://www.oracle.com/java/technologies/downloads/#java21)
 - [Maven](https://maven.apache.org/download.cgi)
 
+# Kafka docker container
+
+to run locally you need to start a kafka broker to allow messages to be sent out from this module
+
+```shell
+docker compose up KafkaBroker
+```
+
+once the container is up and running, you will be able to connect to it with a consumer to see messages sent into the
+queues.
+
 # OWASP Dependency check
 
 to run a check for dependency security vulnerabilities run the following command:

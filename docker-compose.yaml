@@ -1,8 +1,8 @@
 services:
-  broker:
+  KafkaBroker:
     image: bitnami/kafka:latest
     hostname: broker
-    container_name: broker
+    container_name: kafka
     ports:
       - 9092:9092
     environment:
