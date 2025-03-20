@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -10,7 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -38,6 +41,9 @@ public class NotificationProducerTests {
 
     @InjectMocks
     private NotificationProducer producer;
+    
+    @Captor
+    private ArgumentCaptor<ProducerRecord<String, byte[]>> captor;
 
     @BeforeEach
     public void test() {
@@ -54,6 +60,7 @@ public class NotificationProducerTests {
             CompletableFuture.completedFuture(result));
 
         Assertions.assertDoesNotThrow(() -> producer.sendEmail(myByte));
+        verify(kafkaTemplate).send(captor.capture());
     }
 
     @Test
@@ -93,6 +100,7 @@ public class NotificationProducerTests {
             CompletableFuture.completedFuture(result));
 
         Assertions.assertDoesNotThrow(() -> producer.sendLetter(myByte));
+        verify(kafkaTemplate).send(captor.capture());
     }
 
     @Test
