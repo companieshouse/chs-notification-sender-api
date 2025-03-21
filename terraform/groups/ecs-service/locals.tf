@@ -6,9 +6,9 @@ locals {
   service_name               = "chs-notification-sender-api"
   container_port             = "8080" # default Java port to match start script
   docker_repo                = "chs-notification-sender-api"
-  lb_listener_rule_priority  = 20
+  lb_listener_rule_priority  = 11
   lb_listener_paths          = ["/chs-notification-sender-api/letter", "/chs-notification-sender-api/email", "/chs-notification-sender-api/actuator/health"]
-  healthcheck_path           = "/chs-notification-sender-api/actuator/health" #healthcheck path for chs-notification-sender-api service
+  healthcheck_path           = "/chs-notification-sender-api/healthcheck" #healthcheck path for chs-notification-sender-api service
   healthcheck_matcher        = "200"
   application_subnet_ids     = data.aws_subnets.application.ids
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
@@ -18,11 +18,8 @@ locals {
   use_set_environment_files  = var.use_set_environment_files
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename   = "chs-notification-sender-api.env"
-  vpc_name                   = data.aws_ssm_parameter.secret[format("/%s/%s", local.name_prefix, "vpc-name")].value
-
-  # Enable Eric
-  use_eric_reverse_proxy    = true
-  eric_port                 = "3001" # container port plus 1
+  vpc_name                   = local.stack_secrets["vpc_name"]
+  eric_port                 = "10000"
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
@@ -66,7 +63,9 @@ locals {
   # TODO: task_secrets don't seem to correspond with 'parameter_store_secrets'. What is the difference?
   task_secrets = concat(local.global_secret_list, local.service_secret_list)
 
-  task_environment = concat(local.ssm_global_version_map,local.ssm_service_version_map)
+  task_environment = concat(local.ssm_global_version_map,local.ssm_service_version_map,[
+    { name : "PORT", value : local.container_port }
+  ])
 
   # get eric secrets from global secrets map
   eric_secrets = [
