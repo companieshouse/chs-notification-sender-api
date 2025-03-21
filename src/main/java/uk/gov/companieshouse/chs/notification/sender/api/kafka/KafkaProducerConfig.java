@@ -19,20 +19,47 @@ class KafkaProducerConfig {
     private String brokerAddress;
 
     @Value("${kafka.config.acks}")
-    private String acks;
+    private String acksString;
 
     @Value("${kafka.max-attempts}")
     private Integer retries;
 
+    @Value("${kafka.max-block-milliseconds}")
+    private Integer maxBlockMilliseconds;
+
+    public void setBrokerAddress(String brokerAddress) {
+        this.brokerAddress = brokerAddress;
+    }
+
+    public void setAcks(Acks acks) {
+        this.acksString = acks.toString();
+    }
+
+    public void setRetries(Integer retries) {
+        this.retries = retries;
+    }
+
+    public void setMaxBlockMilliseconds(Integer milliseconds) {
+        this.maxBlockMilliseconds = milliseconds;
+    }
+
+    /*
+        public KafkaProducerConfig() {
+        }
+    */
     @Bean
     public ProducerFactory<String, byte[]> producerFactory() {
+        Acks acks = Acks.valueOf(acksString);
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerAddress);
         configProps.put(
-            ProducerConfig.ACKS_CONFIG, acks);
+            ProducerConfig.ACKS_CONFIG, acks.getCode());
         configProps.put(
             ProducerConfig.RETRIES_CONFIG, retries);
+        configProps.put(
+            ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlockMilliseconds);
+        ;
         configProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             AvroSerializer.class);

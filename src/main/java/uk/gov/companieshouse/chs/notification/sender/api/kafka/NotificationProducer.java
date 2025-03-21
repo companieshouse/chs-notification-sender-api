@@ -3,15 +3,17 @@ package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.errors.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.chs.notification.sender.api.utils.StaticPropertyUtil;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+
 
 @Service
 class NotificationProducer implements KafkaProducerInterface {
@@ -43,14 +45,15 @@ class NotificationProducer implements KafkaProducerInterface {
                 .get(10, TimeUnit.SECONDS);
             LOG.infoContext(topicName, "Sent message=[" + Arrays.toString(message)
                 + "]", null);
-        } catch (ExecutionException ex) {
+        } catch (ExecutionException | KafkaException ex) {
             LOG.errorContext(topicName, new Exception("Unable to send ["
                 + Arrays.toString(message) + "] due to " + ex.getMessage() + " "
                 + ex.getCause().getMessage()), null);
             throw new NotificationSendingException(
                 "Unable to send " + topicName + " " + ex.getCause()
                     .getMessage(), ex.getCause());
-        } catch (TimeoutException | InterruptedException ex) {
+        } catch (TimeoutException | InterruptedException |
+                 java.util.concurrent.TimeoutException ex) {
             LOG.errorContext(topicName, new Exception("Unable to send ["
                 + Arrays.toString(message) + "] due to " + ex.getMessage()), null);
             throw new NotificationSendingException(
