@@ -41,7 +41,7 @@ public class NotificationProducerTests {
 
     @InjectMocks
     private NotificationProducer producer;
-    
+
     @Captor
     private ArgumentCaptor<ProducerRecord<String, byte[]>> captor;
 
@@ -93,7 +93,7 @@ public class NotificationProducerTests {
     }
 
     @Test
-    public void sendLetterSucceeded()
+    public void sendLetterSucceeds()
         throws NotificationSendingException, ExecutionException, InterruptedException {
         given(
             kafkaTemplate.send(ArgumentMatchers.<ProducerRecord<String, byte[]>>any())).willReturn(
