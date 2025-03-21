@@ -59,7 +59,6 @@ class KafkaProducerConfig {
             ProducerConfig.RETRIES_CONFIG, retries);
         configProps.put(
             ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlockMilliseconds);
-        ;
         configProps.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             AvroSerializer.class);
