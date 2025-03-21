@@ -131,7 +131,5 @@ public class NotificationProducerTests {
         Assertions.assertTrue(
             exception.getMessage().contains("The request "
                 + "included a message larger than the max message "));
-
-
     }
 }
