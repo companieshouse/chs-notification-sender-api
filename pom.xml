@@ -92,15 +92,16 @@
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>logback-classic</artifactId>
-          <groupId>ch.qos.logback</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>log4j-slf4j-impl</artifactId>
-          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>spring-webmvc</artifactId>
+          <groupId>org.springframework</groupId>
         </exclusion>
       </exclusions>
       <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-webmvc</artifactId>
+      <groupId>org.springframework</groupId>
+      <version>${spring-webmvc.version}</version>
     </dependency>
     <dependency>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -229,11 +230,6 @@
       <version>${private-api-sdk-java.version}</version>
     </dependency>
     <dependency>
-      <artifactId>web-security-java</artifactId>
-      <groupId>uk.gov.companieshouse</groupId>
-      <version>${web-security-java.version}</version>
-    </dependency>
-    <dependency>
       <artifactId>spring-security-test</artifactId>
       <groupId>org.springframework.security</groupId>
       <scope>test</scope>
@@ -252,6 +248,16 @@
       <artifactId>mapstruct</artifactId>
       <groupId>org.mapstruct</groupId>
       <version>${org.mapstruct.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-config</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <scope>test</scope>
+      <version>6.4.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>spring-security-config</artifactId>
+      <groupId>org.springframework.security</groupId>
     </dependency>
   </dependencies>
   <dependencyManagement>
@@ -313,8 +319,8 @@
     <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
     <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
     <spring-boot.version>3.4.1</spring-boot.version>
+    <spring-webmvc.version>6.1.14</spring-webmvc.version>
     <structured-logging.version>3.0.26</structured-logging.version>
-    <web-security-java.version>3.1.4</web-security-java.version>
   </properties>
   <url/>
 

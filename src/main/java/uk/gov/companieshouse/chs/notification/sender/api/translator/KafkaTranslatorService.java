@@ -46,5 +46,5 @@ class KafkaTranslatorService implements KafkaTranslatorInterface {
     private ChsLetterNotification convertLetterRequestToAvroModel(final GovUkLetterDetailsRequest request) {
         return notificationMapper.mapToLetterDetailsRequest(request);
     }
-
+    
 }
