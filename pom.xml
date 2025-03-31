@@ -53,8 +53,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <artifactId>jackson-datatype-jsr310</artifactId>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
             </dependency>
             <dependency>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -71,8 +71,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-webmvc</artifactId>
                     <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -102,8 +102,8 @@
             <artifactId>structured-logging</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>slf4j-simple</artifactId>
                     <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
                 </exclusion>
             </exclusions>
             <version>${structured-logging.version}</version>
@@ -156,8 +156,8 @@
             <artifactId>jetty-reactive-httpclient</artifactId>
         </dependency>
         <dependency>
-            <artifactId>spring-kafka</artifactId>
             <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
         <dependency>
@@ -198,8 +198,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>kafka-clients</artifactId>
             <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
             <version>${kafka-clients.version}</version>
         </dependency>
         <dependency>
@@ -244,10 +244,10 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>execution1</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
-                        <id>execution1</id>
                     </execution>
                     <execution>
                         <configuration>
@@ -256,10 +256,10 @@
                                 <project.version>${project.version}</project.version>
                             </additionalProperties>
                         </configuration>
+                        <id>execution2</id>
                         <goals>
                             <goal>build-info</goal>
                         </goals>
-                        <id>execution2</id>
                     </execution>
                 </executions>
                 <groupId>org.springframework.boot</groupId>
@@ -284,25 +284,27 @@
                 <version>3.4.0</version>
             </plugin>
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
             <plugin>
-                <artifactId>jacoco-maven-plugin</artifactId>
                 <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>dependency-check-maven</artifactId>
                 <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
                 <version>${dependency-check-maven-plugin.version}</version>
             </plugin>
             <plugin>
-                <artifactId>sonar-maven-plugin</artifactId>
                 <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -314,8 +316,6 @@
                     <source>21</source>
                     <target>21</target>
                 </configuration>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>${maven-compiler-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
