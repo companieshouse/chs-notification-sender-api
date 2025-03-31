@@ -228,9 +228,8 @@
             <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>
-            <artifactId>spring-security-config</artifactId>
             <groupId>org.springframework.security</groupId>
-            <scope>test</scope>
+            <artifactId>spring-security-config</artifactId>
             <version>6.4.2</version>
         </dependency>
     </dependencies>
