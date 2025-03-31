@@ -4,7 +4,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import java.util.List;
-import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +20,6 @@ import uk.gov.companieshouse.api.filter.CustomCorsFilter;
 
 public class SecurityConfig {
 
-    private static final Supplier<List<String>> EXTERNAL_METHODS = () -> List.of(GET.name());
-
     private final String apiSecurityPath;
 
     public SecurityConfig(
@@ -36,7 +33,7 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(AbstractHttpConfigurer::disable)
-            .addFilterBefore(new CustomCorsFilter(EXTERNAL_METHODS.get()), CsrfFilter.class)
+            .addFilterBefore(new CustomCorsFilter(List.of(GET.name())), CsrfFilter.class)
             .authorizeHttpRequests(request -> request
                 .requestMatchers(GET, "/chs-notification-sender-api/**")
                 .permitAll()
