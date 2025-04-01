@@ -107,7 +107,6 @@
                     <artifactId>slf4j-simple</artifactId>
                 </exclusion>
             </exclusions>
-
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
