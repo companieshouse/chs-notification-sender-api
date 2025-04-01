@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -134,4 +135,24 @@ class NotificationProducerTests {
             exception.getMessage().contains(
                 "included a message larger than the max message size"));
     }
+
+    @Test
+    void testInterruptedExceptionWhenSendingEmail() {
+
+        Thread taskThread = new Thread(() -> {
+            producer.sendEmail(myByte);
+        });
+
+        taskThread.start();
+        taskThread.interrupt();
+        try {
+            taskThread.join();
+        } catch (InterruptedException e) {
+            fail("TestThread Was interrupted");
+        }
+        Assertions.assertTrue(taskThread.isInterrupted());
+    }
+
+
 }
+
