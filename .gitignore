@@ -25,3 +25,9 @@ replay_pid*
 /suppress.xml
 target
 .idea
+
+# Ignore .DS_Store files
+.DS_Store
+
+# These are Intellij and we are using Maven
+*.iml

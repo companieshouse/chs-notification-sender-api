@@ -17,7 +17,8 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Validated
 public class NotificationController implements NotificationSenderInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StaticPropertyUtil.APPLICATION_NAMESPACE);
+    private static final Logger LOG = LoggerFactory.getLogger(
+        StaticPropertyUtil.APPLICATION_NAMESPACE);
 
     private final NotificationService notificationService;
 
@@ -26,9 +27,9 @@ public class NotificationController implements NotificationSenderInterface {
     }
 
     /**
-     * @param request
-     * @param xRequestId Receive a request to send an email
-     * @return senderDetails
+     * @param request    the actual request.
+     * @param xRequestId Receive a request to send an email.
+     * @return responseEntity with status.
      */
     @Override
     public ResponseEntity<Void> sendEmail(
@@ -45,15 +46,15 @@ public class NotificationController implements NotificationSenderInterface {
         LOG.infoContext(xRequestId, "Received request to send an email", null);
 
         byte[] serialisedMessage = notificationService.translateEmailNotification(request);
-        //pass this onto kafka producer
+        notificationService.sendEmail(serialisedMessage);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
-     * @param request
+     * @param request    the actual request.
      * @param xRequestId Receive a request to send a letter
-     * @return
+     * @return responseEntity with status.
      */
     @Override
     public ResponseEntity<Void> sendLetter(
@@ -69,7 +70,7 @@ public class NotificationController implements NotificationSenderInterface {
 
         byte[] serialisedMessage = notificationService.translateLetterNotification(request);
         //pass this onto kafka producer
-
+        notificationService.sendLetter(serialisedMessage);
         LOG.infoContext(xRequestId, "Received request to send an letter", null);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.chs.notification.sender.api.config;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,12 +12,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.http.HttpMethod.GET;
+import org.springframework.security.web.csrf.CsrfFilter;
+import uk.gov.companieshouse.api.filter.CustomCorsFilter;
 
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig {
+
+    private final String apiSecurityPath;
+
+    public SecurityConfig(
+        @Value("${management.endpoints.security.path-mapping.api}") String apiSecurityPath) {
+        this.apiSecurityPath = apiSecurityPath;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -20,8 +33,11 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(AbstractHttpConfigurer::disable)
+            .addFilterBefore(new CustomCorsFilter(List.of(GET.name())), CsrfFilter.class)
             .authorizeHttpRequests(request -> request
                 .requestMatchers(GET, "/chs-notification-sender-api/**")
+                .permitAll()
+                .requestMatchers(POST, apiSecurityPath)
                 .permitAll()
                 .anyRequest()
                 .denyAll())

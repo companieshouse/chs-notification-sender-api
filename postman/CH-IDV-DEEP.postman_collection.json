@@ -1,19 +1,45 @@
 {
 	"info": {
-		"_postman_id": "731885d7-baa6-4f4e-bcb4-65c5ef41d222",
+		"_postman_id": "c497753a-b23c-49b2-9096-4b36464669dd",
 		"name": "CH-IDV-DEEP",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "41674408"
+		"_exporter_id": "42892857"
 	},
 	"item": [
 		{
 			"name": "Letter",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Request-Id",
+						"value": "theId12345",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Identity",
+						"value": "67ZeMsvAEgkBWs7tNKacdrPvOmQ",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Identity-Type",
+						"value": "key",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Authorised-Key-Roles",
+						"value": "*",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"physical_address\": {\n            \"address_line_1\": \"\",\n            \"address_line_2\": \"\",\n            \"address_line_3\": \"\",\n            \"address_line_4\": \"\",\n            \"address_line_5\": \"\",\n            \"address_line_6\": \"\",\n            \"address_line_7\": \"\"\n        }\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": {\n            \"letter_reference\": \"0123456789\",\n            \"company_name\": \"BIG SHOP LTD\",\n            \"company_id\": \"9876543210\",\n            \"psc_type\": \"25%\"\n        }\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
+					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"physical_address\": {\n            \"address_line_1\": \"\",\n            \"address_line_2\": \"\",\n            \"address_line_3\": \"\",\n            \"address_line_4\": \"\",\n            \"address_line_5\": \"\",\n            \"address_line_6\": \"\",\n            \"address_line_7\": \"\"\n        }\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": \"{\\\"letter_reference\\\": \\\"0123456789\\\",\\\"company_name\\\": \\\"BIG SHOP LTD\\\",\\\"company_id\\\": \\\"9876543210\\\",\\\"psc_type\\\": \\\"25%\\\"}\"\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,8 +47,8 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{API_HOST}}:{{API_PORT}}/notification-sender/letter",
-					"protocol": "https",
+					"raw": "http://{{API_HOST}}:{{API_PORT}}/notification-sender/letter",
+					"protocol": "http",
 					"host": [
 						"{{API_HOST}}"
 					],
@@ -39,10 +65,36 @@
 			"name": "Email",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Request-Id",
+						"value": "theId12345",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Identity",
+						"value": "67ZeMsvAEgkBWs7tNKacdrPvOmQ",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Identity-Type",
+						"value": "key",
+						"type": "text"
+					},
+					{
+						"key": "ERIC-Authorised-Key-Roles",
+						"value": "*",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": {\n            \"letter_reference\": \"0123456789\",\n            \"company_name\": \"BIG SHOP LTD\",\n            \"company_id\": \"9876543210\",\n            \"psc_type\": \"25%\"\n        }\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
+					"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"f804ad0e-bc58-4132-afae-68d09a4d3812\",\n        \"reference\": \"03363dfd-82da-4f7f-9f6f-e44ebe703c35\",\n        \"name\": \"749c135f-65b8-4b7c-888b-ffd63388c84e\",\n        \"user_id\": \"e55fc4ab-8573-421b-9b20-d25e2c1a4582\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"email_details\": {\n        \"template_id\": \"3588066c-2c32-4520-936a-d2b7e736c943\",\n        \"template_version\": 1,\n        \"personalisation_details\": \"{\\\"email_reference\\\": \\\"0123456789\\\",\\\"company_name\\\": \\\"BIG SHOP LTD\\\",\\\"company_id\\\": \\\"9876543210\\\",\\\"psc_type\\\": \\\"25%\\\" }\"\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -50,8 +102,8 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{API_HOST}}:{{API_PORT}}/notification-sender/email",
-					"protocol": "https",
+					"raw": "http://{{API_HOST}}:{{API_PORT}}/notification-sender/email",
+					"protocol": "http",
 					"host": [
 						"{{API_HOST}}"
 					],
@@ -62,7 +114,83 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Email",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sender_details\": {\n        \"app_id\": \"\",\n        \"reference\": \"\",\n        \"name\": \"\",\n        \"user_id\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"recipient_details\": {\n        \"name\": \"\",\n        \"email_address\": \"john.doe@company3.domaind.extra.com\"\n    },\n    \"letter_details\": {\n        \"template_id\": \"\",\n        \"template_version\": 1,\n        \"personalisation_details\": {\n            \"letter_reference\": \"0123456789\",\n            \"company_name\": \"BIG SHOP LTD\",\n            \"company_id\": \"9876543210\",\n            \"psc_type\": \"25%\"\n        }\n    },\n    \"created_at\": \"2025-01-01T00:00:00.000Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{API_HOST}}:{{API_PORT}}/notification-sender/email",
+							"protocol": "http",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"port": "{{API_PORT}}",
+							"path": [
+								"notification-sender",
+								"email"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 06 Mar 2025 17:11:23 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
 		}
 	],
 	"auth": {
