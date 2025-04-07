@@ -1,0 +1,50 @@
+meta {
+  name: Send Letter
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/notification-sender/letter
+  body: json
+}
+
+headers {
+  X-Request-Id: letter-req-12345678
+  Content-Type: application/json
+  Authorization: {{authorization}}
+  ERIC-Identity: {{ericIdentity}}
+  ERIC-Identity-Type: {{ericIdentityType}}
+  ERIC-Authorised-Key-Privileges: {{ericAuthorisedKeyPrivileges}}
+  ERIC-Authorised-Key-Roles: {{ericAuthorisedKeyRoles}}
+}
+
+body:json {
+  {
+    "sender_details": {
+      "app_id": "chips.send_letter",
+      "reference": "PSC-LTR-2023-04102",
+      "name": "Companies House Admin",
+      "user_id": "ch-admin-1234",
+      "email_address": "admin@example.com"
+    },
+    "recipient_details": {
+      "name": "John Smith",
+      "physical_address": {
+        "address_line_1": "123 Business Street",
+        "address_line_2": "Office Park",
+        "address_line_3": "Central District",
+        "address_line_4": "London",
+        "address_line_5": "",
+        "address_line_6": "",
+        "address_line_7": "EC1A 1BB"
+      }
+    },
+    "letter_details": {
+      "template_id": "psc_verification|letter235",
+      "template_version": 1,
+      "personalisation_details": "{\"letter_reference\":\"PSC-LTR-2023-04102\",\"company_name\":\"ACME CORPORATION LTD\",\"company_id\":\"12345678\",\"psc_type\":\"25%\"}"
+    },
+    "created_at": "2023-04-15T14:32:28Z"
+  }
+}
