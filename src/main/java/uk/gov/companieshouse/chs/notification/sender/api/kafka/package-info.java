@@ -1,1 +1,0 @@
-package uk.gov.companieshouse.chs.notification.sender.api.kafka;
