@@ -7,24 +7,20 @@ meta {
 post {
   url: {{baseUrl}}/notification-sender/letter
   body: json
-  auth: none
 }
 
 headers {
   X-Request-Id: letter-req-12345678
+  Content-Type: application/json
+  Authorization: {{authorization}}
   ERIC-Identity: {{ericIdentity}}
   ERIC-Identity-Type: {{ericIdentityType}}
   ERIC-Authorised-Key-Privileges: {{ericAuthorisedKeyPrivileges}}
   ERIC-Authorised-Key-Roles: {{ericAuthorisedKeyRoles}}
-  Content-Type: application/json
 }
 
 body:json {
-  {{body}}
-}
-
-script:pre-request {
-  const letterTemplate = {
+  {
     "sender_details": {
       "app_id": "chips.send_letter",
       "reference": "PSC-LTR-2023-04102",
@@ -47,15 +43,8 @@ script:pre-request {
     "letter_details": {
       "template_id": "psc_verification|letter235",
       "template_version": 1,
-      "personalisation_details": JSON.stringify({
-        "letter_reference": "PSC-LTR-2023-04102",
-        "company_name": "ACME CORPORATION LTD",
-        "company_id": "12345678",
-        "psc_type": "25%"
-      })
+      "personalisation_details": "{\"letter_reference\":\"PSC-LTR-2023-04102\",\"company_name\":\"ACME CORPORATION LTD\",\"company_id\":\"12345678\",\"psc_type\":\"25%\"}"
     },
     "created_at": "2023-04-15T14:32:28Z"
-  };
-  
-  bru.setVar("body", JSON.stringify(letterTemplate));
+  }
 }

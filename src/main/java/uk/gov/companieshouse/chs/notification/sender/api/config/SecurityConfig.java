@@ -21,10 +21,13 @@ import uk.gov.companieshouse.api.filter.CustomCorsFilter;
 public class SecurityConfig {
 
     private final String apiSecurityPath;
+    private final String healthcheckPath;
 
     public SecurityConfig(
-        @Value("${management.endpoints.security.path-mapping.api}") String apiSecurityPath) {
+        @Value("${management.endpoints.security.path-mapping.api}") String apiSecurityPath,
+        @Value("${management.endpoints.web.path-mapping.health}") String healthcheckPath) {
         this.apiSecurityPath = apiSecurityPath;
+        this.healthcheckPath = healthcheckPath;
     }
 
     @Bean
@@ -36,7 +39,7 @@ public class SecurityConfig {
             .addFilterBefore(new CustomCorsFilter(List.of(GET.name())), CsrfFilter.class)
             .authorizeHttpRequests(request -> request
                 .requestMatchers(POST, apiSecurityPath).permitAll()
-                .requestMatchers(GET, "/health").permitAll()
+                .requestMatchers(GET, healthcheckPath).permitAll()
                 .anyRequest().denyAll()
             );
         return http.build();
