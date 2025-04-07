@@ -4,7 +4,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,12 +19,6 @@ import uk.gov.companieshouse.api.filter.CustomCorsFilter;
 
 public class SecurityConfig {
 
-    private final String apiSecurityPath;
-
-    public SecurityConfig(
-        @Value("${management.endpoints.security.path-mapping.api}") String apiSecurityPath) {
-        this.apiSecurityPath = apiSecurityPath;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -37,7 +30,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(request -> request
                 .requestMatchers(GET, "/chs-notification-sender-api/**")
                 .permitAll()
-                .requestMatchers(POST, apiSecurityPath)
+                .requestMatchers(POST, "/notification-sender/**")
                 .permitAll()
                 .anyRequest()
                 .denyAll())
