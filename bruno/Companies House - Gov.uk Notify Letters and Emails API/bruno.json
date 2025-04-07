@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Companies House - Gov.uk Notify Letters and Emails API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
