@@ -1,9 +1,8 @@
-package uk.gov.companieshouse.chs.notification.sender.api.translator;
+package uk.gov.companieshouse.chs.notification.sender.api.mapper;
 
-import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
@@ -15,9 +14,7 @@ import java.time.OffsetDateTime;
 
 @Component
 @Mapper(componentModel = "spring")
-interface NotificationMapper {
-
-    NotificationMapper INSTANCE = Mappers.getMapper(NotificationMapper.class);
+public interface NotificationMapper {
 
     @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToInstant")
     ChsEmailNotification mapToEmailDetailsRequest(GovUkEmailDetailsRequest govUkEmailDetailsRequest);
@@ -29,4 +26,5 @@ interface NotificationMapper {
     static Instant offsetDateTimeToInstant(OffsetDateTime dateTime) {
         return dateTime != null ? dateTime.toInstant() : null;
     }
+
 }
