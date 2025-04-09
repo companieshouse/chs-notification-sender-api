@@ -1,53 +1,94 @@
 # chs-notification-sender-api
 
-## 1.0) Introduction
+```mermaid
+flowchart LR
+    ExternalApp["External CHS App"] -->|REST| Module1
+    Module1["📌 sender-api"] -->|Kafka| Module2
+    Module2["kafka-consumer"] -->|REST| Module3
+    Module3["govuk-notify-api"] -->|REST| GovUKNotify
+    GovUKNotify["GovUK Notify"]
+    
+    subgraph PoseidonSystem["🔱 chs-notification"]
+        Module1
+        Module2
+        Module3
+    end
+    
+    %% Styling for all elements - light/dark mode compatible
+    classDef normal fill:#f8f8f8,stroke:#666666,stroke-width:1px,color:#333333,rx:4,ry:4
+    classDef current fill:#0099cc,stroke:#007799,stroke-width:2px,color:white,rx:4,ry:4
+    classDef external fill:#e6e6e6,stroke:#999999,stroke-width:1px,color:#333333,rx:4,ry:4
+    classDef system fill:transparent,stroke:#0077b6,stroke-width:1.5px,stroke-dasharray:3 3,color:#00a8e8,rx:10,ry:10
+    
+    class Module1 current;
+    class Module2 normal;
+    class Module3 normal;
+    class ExternalApp external;
+    class GovUKNotify external;
+    class PoseidonSystem system;
+    %% Adding clickable links to GitHub repos
+    click Module2 "https://github.com/companieshouse/chs-notification-kafka-consumer" _blank
+    click Module3 "https://github.com/companieshouse/chs-gov-uk-notify-integration-api" _blank
+```
 
-This module receives a request to send a letter or an email via a REST interface and passes that request on to a Kafka 3
-queue.
+## Overview
 
-The design for this module and the service it is a part of is
-here : https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5146247171/EMail+Service
+This service:
+- Receives requests to send emails or letters via a REST interface
+- Publishes to the relevant Kafka topic
+- Is Module 1 of 3 in the [chs-notification system](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5146247171/EMail+Service)
 
-## 2.0) Prerequisites
+## Related Services
 
-This Microservice has the following dependencies:
+- [chs-notification-kafka-consumer](https://github.com/companieshouse/chs-notification-kafka-consumer) (Module 2, consumes from Kafka topics published by Module 1 and sends requests to Module 3 via REST)
+- [chs-gov-uk-notify-integration-api](https://github.com/companieshouse/chs-gov-uk-notify-integration-api) (Module 3, receives requests from Module 2 via REST and sends to GovUK Notify via REST)
 
-- [Java 21](https://www.oracle.com/java/technologies/downloads/#java21)
-- [Maven](https://maven.apache.org/download.cgi)
+## Endpoints
 
-# Kafka docker container
+The service exposes the following endpoints:
 
-to run locally you need to start a kafka broker to allow messages to be sent out from this module
+- **Main API endpoints**: See [API Documentation](https://github.com/companieshouse/private.api.ch.gov.uk-specifications/blob/master/generated_sources/docs/chs-notification-sender-api/README.md)
+- **Service health**: `GET /notification-sender/healthcheck`
 
-```shell
+## Prerequisites
+
+- Java 21
+- Maven
+
+## Running Locally
+
+### Prerequisites
+Start a Kafka broker to allow messages to be sent:
+```bash
 docker compose up KafkaBroker
 ```
 
-once the container is up and running, you will be able to connect to it with a consumer to see messages sent into the
-queues.
+### Running the Application
 
-# OWASP Dependency check
+#### Option 1: Using IntelliJ IDEA
+1. Open the project in IntelliJ
+2. Set Project SDK to Java 21
+3. Locate the main application class: [ChsNotificationSenderApiApplication.java](src/main/java/uk/gov/companieshouse/chs/notification/sender/api/ChsNotificationSenderApiApplication.java)
+4. Right-click and select "Run" or "Debug"
 
-to run a check for dependency security vulnerabilities run the following command:
-
-```shell
-mvn dependency-check:check
+#### Option 2: Using Maven CLI
+```bash
+mvn spring-boot:run
 ```
 
-# List Dependencies
+## Repository Structure
 
-```shell
-mvn dependency:tree
 ```
-
-# Endpoints
-
-The remainder of this section lists the endpoints that are available in this microservice, and provides links to
-detailed documentation about these endpoints e.g. required headers, path variables, query params, request bodies, and
-their behaviour.
-
-| Method | Path                                                          | Description                                                | Documentation                                                                                                                                              |
-|--------|---------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| POST   | /letter                                                       | This endpoint can be used to send a letter.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
-| POST   | /email                                                        | This endpoint can be used to send an email.                | [LLD - Kafka3 Notification API](https://companieshouse.atlassian.net/wiki/spaces/IDV/pages/5162008722/Kafka3+Notification+API+chs-notification-sender-api) |
-| GET    | http://127.0.0.1:8081/chs-notification-sender-api/healthcheck | this endpoint is used to check that the service is running |                                                                                                                                                            |
+chs-notification-sender-api/
+│── src/                    
+│   ├── main/               # Main application code
+│   └── test/               # Test code
+│── pom.xml                 # Dependencies
+│── api-collections/
+│   ├── bruno/              # Bruno API collection
+│   └── postman/            # Postman API collections
+│── ecs-image-build/        # ECS Dockerfile
+│── terraform/              # Infrastructure code
+│── ...                     # Other files/folders
+└── README.md               # This file
+```
