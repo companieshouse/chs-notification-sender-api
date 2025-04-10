@@ -6,7 +6,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import consumer.serialization.AvroSerializer;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetails
 import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.mapper.NotificationMapper;
+import uk.gov.companieshouse.kafka.exceptions.SerializationException;
+import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.notification.ChsEmailNotification;
@@ -27,7 +30,6 @@ import static uk.gov.companieshouse.chs.notification.sender.api.config.Applicati
 public class KafkaProducerService {
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
 
-    private final AvroSerializer avroSerializer = new AvroSerializer();
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final NotificationMapper notificationMapper;
 
@@ -41,14 +43,24 @@ public class KafkaProducerService {
 
     public void sendEmail(final GovUkEmailDetailsRequest govUkEmailDetailsRequest) throws NotificationException {
         LOG.debug("Mapping email request to Avro format");
-        ChsEmailNotification chsEmailNotification = notificationMapper.mapToEmailDetailsRequest(govUkEmailDetailsRequest);
-        sendMessage(EMAIL_TOPIC, avroSerializer.serialize(EMAIL_TOPIC, chsEmailNotification));
+        var chsEmailNotification = notificationMapper.mapToEmailDetailsRequest(govUkEmailDetailsRequest);
+        AvroSerializer<ChsEmailNotification> avroSerializer = new AvroSerializer<>(new SpecificDatumWriter<>(), EncoderFactory.get());
+        try {
+            sendMessage(EMAIL_TOPIC, avroSerializer.toBinary(chsEmailNotification));
+        } catch (SerializationException e) {
+            throw new NotificationException(e.getMessage(), e);
+        }
     }
 
     public void sendLetter(final GovUkLetterDetailsRequest govUkLetterDetailsRequest) throws NotificationException {
         LOG.debug("Mapping letter request to Avro format");
-        ChsLetterNotification chsLetterNotification = notificationMapper.mapToLetterDetailsRequest(govUkLetterDetailsRequest);
-        sendMessage(LETTER_TOPIC, avroSerializer.serialize(LETTER_TOPIC, chsLetterNotification));
+        var chsLetterNotification = notificationMapper.mapToLetterDetailsRequest(govUkLetterDetailsRequest);
+        AvroSerializer<ChsLetterNotification> avroSerializer = new AvroSerializer<>(new SpecificDatumWriter<>(), EncoderFactory.get());
+        try {
+            sendMessage(LETTER_TOPIC, avroSerializer.toBinary(chsLetterNotification));
+        } catch (SerializationException e) {
+            throw new NotificationException(e.getMessage(), e);
+        }
     }
 
     private void sendMessage(final String topic, final byte[] message) throws NotificationException {

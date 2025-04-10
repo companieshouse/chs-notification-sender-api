@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +7,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,7 +86,6 @@ public class NotificationSenderController implements NotificationSenderInterface
             final NotificationException ex,
             final HttpServletRequest request
     ) {
-
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("request_id", request.getHeader("X-Request-Id"));
         logMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
