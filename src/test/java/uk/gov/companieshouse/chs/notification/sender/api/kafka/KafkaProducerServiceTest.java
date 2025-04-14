@@ -15,8 +15,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
-import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
