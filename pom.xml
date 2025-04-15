@@ -35,7 +35,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>todo-update</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.290</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <spring-boot.version>3.4.1</spring-boot.version>
@@ -205,10 +205,7 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>private-api-sdk-java</artifactId>
-            <version>unversioned</version>
-            <scope>system</scope>
-            <systemPath>/Users/thomasferns/dev/private-api-sdk-java/target/private-api-sdk-java-unversioned.jar
-            </systemPath>
+            <version>${private-api-sdk-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
