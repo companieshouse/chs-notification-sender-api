@@ -1,18 +1,15 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
+
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,10 +23,10 @@ import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerServ
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
-import static uk.gov.companieshouse.chs.notification.sender.api.config.ApplicationConfig.APPLICATION_NAMESPACE;
 
 @RestController
 public class NotificationSenderController implements NotificationSenderInterface {
+
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
 
     private final KafkaProducerService kafkaProducerService;
@@ -40,8 +37,8 @@ public class NotificationSenderController implements NotificationSenderInterface
 
     @Override
     public ResponseEntity<Void> sendEmail(
-            @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
-            @RequestHeader(value = "X-Request-Id", required = false) final String requestId
+        @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
+        @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("request_id", Objects.toString(requestId, ""));
@@ -55,8 +52,8 @@ public class NotificationSenderController implements NotificationSenderInterface
 
     @Override
     public ResponseEntity<Void> sendLetter(
-            @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
-            @RequestHeader(value = "X-Request-Id", required = false) final String requestId
+        @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
+        @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("request_id", Objects.toString(requestId, ""));
@@ -70,13 +67,13 @@ public class NotificationSenderController implements NotificationSenderInterface
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            final MethodArgumentNotValidException ex
+        final MethodArgumentNotValidException ex
     ) {
         List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+            .getFieldErrors()
+            .stream()
+            .map(error -> error.getField() + ": " + error.getDefaultMessage())
+            .collect(Collectors.toList());
 
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("status", HttpStatus.BAD_REQUEST.value());
@@ -87,8 +84,8 @@ public class NotificationSenderController implements NotificationSenderInterface
 
     @ExceptionHandler(NotificationException.class)
     public ResponseEntity<Map<String, Object>> handleNotificationException(
-            final NotificationException ex,
-            final HttpServletRequest request
+        final NotificationException ex,
+        final HttpServletRequest request
     ) {
 
         Map<String, Object> logMap = new HashMap<>();

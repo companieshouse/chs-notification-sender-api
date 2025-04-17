@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ChsNotificationSenderApiApplication {
 
+    public static final String APPLICATION_NAMESPACE = "chs-notification-sender-api";
+
     public static void main(String[] args) {
         SpringApplication.run(ChsNotificationSenderApiApplication.class, args);
     }
