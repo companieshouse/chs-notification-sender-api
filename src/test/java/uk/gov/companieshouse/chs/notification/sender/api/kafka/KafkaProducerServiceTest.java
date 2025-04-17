@@ -22,6 +22,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.config.ApplicationConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 
@@ -76,9 +78,9 @@ public class KafkaProducerServiceTest {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
-
+        GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+            () -> kafkaProducerService.sendEmail(emailRequest));
     }
 
     @Test
@@ -88,8 +90,9 @@ public class KafkaProducerServiceTest {
             new ExecutionException(new RuntimeException("Test execution error")));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
+        GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+            () -> kafkaProducerService.sendEmail(emailRequest));
     }
 
     @Test
@@ -97,9 +100,9 @@ public class KafkaProducerServiceTest {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
-
+        GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+            () -> kafkaProducerService.sendEmail(emailRequest));
     }
 
     @Test
@@ -107,9 +110,9 @@ public class KafkaProducerServiceTest {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
-
+        GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
     }
 
     @Test
@@ -119,8 +122,9 @@ public class KafkaProducerServiceTest {
             new ExecutionException(new RuntimeException("Test execution error")));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
+        GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
     }
 
     @Test
@@ -129,8 +133,9 @@ public class KafkaProducerServiceTest {
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
+        GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
         assertTrue(Thread.currentThread().isInterrupted(), "Thread should be interrupted");
     }
 
