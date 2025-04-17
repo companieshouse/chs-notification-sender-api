@@ -34,17 +34,14 @@ public class ApplicationConfig implements WebMvcConfigurer {
     private final KafkaProperties kafkaProperties;
     private final SecurityProperties securityProperties;
     private final LoggingInterceptor loggingInterceptor;
-    //public static String APPLICATION_NAMESPACE;
-    private String emailTopic;
-    private String letterTopic;
+    private final String emailTopic;
+    private final String letterTopic;
 
     public ApplicationConfig(
-        //@Value("${spring.application.name}") final String applicationNamespace,
         final KafkaProperties kafkaProperties,
         final SecurityProperties securityProperties,
         final LoggingInterceptor loggingInterceptor
     ) {
-        // ApplicationConfig.APPLICATION_NAMESPACE = applicationNamespace;
         emailTopic = kafkaProperties.getEmailTopic();
         letterTopic = kafkaProperties.getLetterTopic();
         this.kafkaProperties = kafkaProperties;
