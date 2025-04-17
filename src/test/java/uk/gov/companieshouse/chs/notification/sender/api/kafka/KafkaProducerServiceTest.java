@@ -1,16 +1,9 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidEmailRequest;
-import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidLetterRequest;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +15,22 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.config.ApplicationConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidEmailRequest;
+import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidLetterRequest;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class KafkaProducerServiceTest {
-
 
     @Mock
     private KafkaTemplate<String, byte[]> kafkaTemplate;
@@ -77,19 +79,16 @@ public class KafkaProducerServiceTest {
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
     }
 
     @Test
     public void When_KafkaSendThrowsExecutionException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
-        future.completeExceptionally(
-            new ExecutionException(new RuntimeException("Test execution error")));
+        future.completeExceptionally(new ExecutionException(new RuntimeException("Test execution error")));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
     }
 
     @Test
@@ -98,8 +97,7 @@ public class KafkaProducerServiceTest {
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendEmail(createValidEmailRequest()));
     }
 
     @Test
@@ -108,19 +106,16 @@ public class KafkaProducerServiceTest {
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
     }
 
     @Test
     public void When_SendLetterWithExecutionException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
-        future.completeExceptionally(
-            new ExecutionException(new RuntimeException("Test execution error")));
+        future.completeExceptionally(new ExecutionException(new RuntimeException("Test execution error")));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
     }
 
     @Test
@@ -129,8 +124,7 @@ public class KafkaProducerServiceTest {
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
+        assertThrows(NotificationException.class, () -> kafkaProducerService.sendLetter(createValidLetterRequest()));
         assertTrue(Thread.currentThread().isInterrupted(), "Thread should be interrupted");
     }
 

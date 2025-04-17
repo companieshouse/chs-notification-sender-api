@@ -4,14 +4,14 @@ package uk.gov.companieshouse.chs.notification.sender.api;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-import uk.gov.companieshouse.api.chs_notification_sender.model.Address;
-import uk.gov.companieshouse.api.chs_notification_sender.model.EmailDetails;
-import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkEmailDetailsRequest;
-import uk.gov.companieshouse.api.chs_notification_sender.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.api.chs_notification_sender.model.LetterDetails;
-import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsEmail;
-import uk.gov.companieshouse.api.chs_notification_sender.model.RecipientDetailsLetter;
-import uk.gov.companieshouse.api.chs_notification_sender.model.SenderDetails;
+import uk.gov.companieshouse.api.chs.notification.model.Address;
+import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
+import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
+import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
+import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
+import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
 
 public class TestUtil {
     public static final String DEFAULT_APP_ID = "test-app-id";

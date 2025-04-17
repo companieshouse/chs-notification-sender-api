@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
@@ -35,12 +35,21 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.290</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
-        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <spring-boot.version>3.4.1</spring-boot.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.26</structured-logging.version>
+
+        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
+        <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
+        <sonar.login></sonar.login>
+        <sonar.password></sonar.password>
+        <sonar.projectName>chs-notification-sender-api</sonar.projectName>
+        <sonar.projectKey>uk.gov.companieshouse:chs-notification-sender-api</sonar.projectKey>
+        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
+
+
     </properties>
     <profiles>
         <profile>
