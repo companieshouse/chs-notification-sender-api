@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import consumer.serialization.AvroSerializer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ import uk.gov.companieshouse.notification.ChsLetterNotification;
 
 @Service
 public class KafkaProducerService {
+
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
 
     private final AvroSerializer avroSerializer = new AvroSerializer();
@@ -44,19 +43,24 @@ public class KafkaProducerService {
         this.letterTopic = applicationConfig.getLetterTopic();
     }
 
-    public void sendEmail(final GovUkEmailDetailsRequest govUkEmailDetailsRequest) throws NotificationException {
+    public void sendEmail(final GovUkEmailDetailsRequest govUkEmailDetailsRequest)
+        throws NotificationException {
         LOG.debug("Mapping email request to Avro format");
-        ChsEmailNotification chsEmailNotification = notificationMapper.mapToEmailDetailsRequest(govUkEmailDetailsRequest);
+        ChsEmailNotification chsEmailNotification = notificationMapper.mapToEmailDetailsRequest(
+            govUkEmailDetailsRequest);
         sendMessage(emailTopic, avroSerializer.serialize(emailTopic, chsEmailNotification));
     }
 
-    public void sendLetter(final GovUkLetterDetailsRequest govUkLetterDetailsRequest) throws NotificationException {
+    public void sendLetter(final GovUkLetterDetailsRequest govUkLetterDetailsRequest)
+        throws NotificationException {
         LOG.debug("Mapping letter request to Avro format");
-        ChsLetterNotification chsLetterNotification = notificationMapper.mapToLetterDetailsRequest(govUkLetterDetailsRequest);
+        ChsLetterNotification chsLetterNotification = notificationMapper.mapToLetterDetailsRequest(
+            govUkLetterDetailsRequest);
         sendMessage(letterTopic, avroSerializer.serialize(letterTopic, chsLetterNotification));
     }
 
-    private void sendMessage(final String topic, final byte[] message) throws NotificationException {
+    private void sendMessage(final String topic, final byte[] message)
+        throws NotificationException {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("topic", topic);
 
@@ -70,9 +74,10 @@ public class KafkaProducerService {
             if (ex.getCause() instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            
+
             LOG.error(String.format("Failed to send message to topic: %s", topic), ex, logMap);
-            throw new NotificationException(String.format("Failed to send notification message to topic: %s", topic), ex);
+            throw new NotificationException(
+                String.format("Failed to send notification message to topic: %s", topic), ex);
         }
     }
 }
