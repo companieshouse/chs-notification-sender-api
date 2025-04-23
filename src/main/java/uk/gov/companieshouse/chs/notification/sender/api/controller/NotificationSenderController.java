@@ -27,6 +27,8 @@ public class NotificationSenderController implements NotificationSenderControlle
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
     private static final String REQUEST_ID = "request_id";
+    private static final String STATUS = "status";
+    
     private final KafkaProducerService kafkaProducerService;
 
     public NotificationSenderController(KafkaProducerService kafkaService) {
@@ -74,7 +76,7 @@ public class NotificationSenderController implements NotificationSenderControlle
             .toList();
 
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("status", HttpStatus.BAD_REQUEST.value());
+        logMap.put(STATUS, HttpStatus.BAD_REQUEST.value());
         logMap.put("errors", errors);
         LOG.error("Validation error", ex, logMap);
         return new ResponseEntity<>(logMap, HttpStatus.BAD_REQUEST);
@@ -88,7 +90,7 @@ public class NotificationSenderController implements NotificationSenderControlle
 
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(REQUEST_ID, request.getHeader("X-Request-Id"));
-        logMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        logMap.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
         logMap.put("error", "Failed to process notification");
         logMap.put("message", ex.getMessage());
         LOG.error("Failed to send notification", ex, logMap);
