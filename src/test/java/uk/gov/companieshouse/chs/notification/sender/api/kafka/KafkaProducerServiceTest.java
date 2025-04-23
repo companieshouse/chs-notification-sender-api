@@ -30,7 +30,7 @@ import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationE
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class KafkaProducerServiceTest {
+class KafkaProducerServiceTest {
 
     @Mock
     private KafkaTemplate<String, byte[]> kafkaTemplate;
@@ -43,12 +43,12 @@ public class KafkaProducerServiceTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         ReflectionTestUtils.setField(kafkaProducerService, "kafkaTemplate", kafkaTemplate);
     }
 
     @Test
-    public void When_SendEmailWithValidRequest_Expect_SuccessfulDelivery() {
+    void When_SendEmailWithValidRequest_Expect_SuccessfulDelivery() {
         CompletableFuture<SendResult<String, byte[]>> future = CompletableFuture.completedFuture(
             new SendResult<>(new ProducerRecord<>(applicationConfig.getEmailTopic(), new byte[0]),
                 null)
@@ -61,7 +61,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_SendLetterWithValidRequest_Expect_SuccessfulDelivery() {
+    void When_SendLetterWithValidRequest_Expect_SuccessfulDelivery() {
         CompletableFuture<SendResult<String, byte[]>> future = CompletableFuture.completedFuture(
             new SendResult<>(new ProducerRecord<>(applicationConfig.getLetterTopic(), new byte[0]),
                 null)
@@ -74,7 +74,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_KafkaSendThrowsInterruptedException_Expect_NotificationException() {
+    void When_KafkaSendThrowsInterruptedException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
@@ -84,7 +84,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_KafkaSendThrowsExecutionException_Expect_NotificationException() {
+    void When_KafkaSendThrowsExecutionException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(
             new ExecutionException(new RuntimeException("Test execution error")));
@@ -96,7 +96,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_KafkaSendThrowsTimeoutException_Expect_NotificationException() {
+    void When_KafkaSendThrowsTimeoutException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
@@ -106,7 +106,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_SendLetterWithTimeoutException_Expect_NotificationException() {
+    void When_SendLetterWithTimeoutException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new TimeoutException("Test timeout"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
@@ -116,7 +116,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_SendLetterWithExecutionException_Expect_NotificationException() {
+    void When_SendLetterWithExecutionException_Expect_NotificationException() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(
             new ExecutionException(new RuntimeException("Test execution error")));
@@ -128,7 +128,7 @@ public class KafkaProducerServiceTest {
     }
 
     @Test
-    public void When_SendLetterWithInterruptedException_Expect_ThreadInterrupted() {
+    void When_SendLetterWithInterruptedException_Expect_ThreadInterrupted() {
         CompletableFuture<SendResult<String, byte[]>> future = new CompletableFuture<>();
         future.completeExceptionally(new InterruptedException("Test interruption"));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
