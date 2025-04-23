@@ -6,7 +6,7 @@ locals {
   service_name               = "chs-notification-sender-api"
   container_port             = "8080" # default Java port to match start script
   docker_repo                = "chs-notification-sender-api"
-  lb_listener_rule_priority  = 11
+  lb_listener_rule_priority  = 19
   lb_listener_paths          = ["/notification-sender/letter", "/notification-sender/email", "/notification-sender/healthcheck"]
   healthcheck_path           = "/notification-sender/healthcheck" # healthcheck path for chs-notification-sender-api service
   healthcheck_matcher        = "200"
