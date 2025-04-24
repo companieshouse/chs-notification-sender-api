@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,7 +26,9 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 public class NotificationSenderController implements NotificationSenderControllerInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
-
+    private static final String REQUEST_ID = "request_id";
+    private static final String STATUS = "status";
+    
     private final KafkaProducerService kafkaProducerService;
 
     public NotificationSenderController(KafkaProducerService kafkaService) {
@@ -40,7 +41,7 @@ public class NotificationSenderController implements NotificationSenderControlle
         @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("request_id", Objects.toString(requestId, ""));
+        logMap.put(REQUEST_ID, Objects.toString(requestId, ""));
         LOG.info("Processing email notification request", logMap);
 
         kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
@@ -55,7 +56,7 @@ public class NotificationSenderController implements NotificationSenderControlle
         @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("request_id", Objects.toString(requestId, ""));
+        logMap.put(REQUEST_ID, Objects.toString(requestId, ""));
         LOG.info("Processing letter notification request", logMap);
 
         kafkaProducerService.sendLetter(govUkLetterDetailsRequest);
@@ -72,10 +73,10 @@ public class NotificationSenderController implements NotificationSenderControlle
             .getFieldErrors()
             .stream()
             .map(error -> error.getField() + ": " + error.getDefaultMessage())
-            .collect(Collectors.toList());
+            .toList();
 
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("status", HttpStatus.BAD_REQUEST.value());
+        logMap.put(STATUS, HttpStatus.BAD_REQUEST.value());
         logMap.put("errors", errors);
         LOG.error("Validation error", ex, logMap);
         return new ResponseEntity<>(logMap, HttpStatus.BAD_REQUEST);
@@ -88,8 +89,8 @@ public class NotificationSenderController implements NotificationSenderControlle
     ) {
 
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("request_id", request.getHeader("X-Request-Id"));
-        logMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        logMap.put(REQUEST_ID, request.getHeader("X-Request-Id"));
+        logMap.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
         logMap.put("error", "Failed to process notification");
         logMap.put("message", ex.getMessage());
         LOG.error("Failed to send notification", ex, logMap);
