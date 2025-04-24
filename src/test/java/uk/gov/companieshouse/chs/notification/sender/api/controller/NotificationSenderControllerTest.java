@@ -1,11 +1,20 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.util.stream.Stream;
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,18 +36,8 @@ import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(MockitoExtension.class)
-public class NotificationSenderControllerTest {
+class NotificationSenderControllerTest {
 
     private MockMvc mockMvc;
 
@@ -50,11 +49,119 @@ public class NotificationSenderControllerTest {
 
     private ObjectMapper objectMapper;
 
+    private static Stream<Arguments> invalidEmailRequestProvider() {
+        return Stream.of(
+            Arguments.of(
+                "Missing sender details",
+                new GovUkEmailDetailsRequest()
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
+                    .emailDetails(TestUtil.createDefaultEmailDetails())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing recipient details",
+                new GovUkEmailDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .emailDetails(TestUtil.createDefaultEmailDetails())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing email details",
+                new GovUkEmailDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing created at",
+                new GovUkEmailDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
+                    .emailDetails(TestUtil.createDefaultEmailDetails())
+            ),
+            Arguments.of(
+                "Invalid email format",
+                TestUtil.createEmailRequestWithCustomEmail("invalid-email-format")
+            ),
+            Arguments.of(
+                "Empty email",
+                TestUtil.createEmailRequestWithCustomEmail("")
+            ),
+            Arguments.of(
+                "Null email",
+                TestUtil.createEmailRequestWithCustomEmail(null)
+            ),
+            Arguments.of(
+                "Missing app ID in sender details",
+                TestUtil.createValidEmailRequest()
+                    .senderDetails(new SenderDetails(null, "test-reference"))
+            ),
+            Arguments.of(
+                "Missing reference in sender details",
+                TestUtil.createValidEmailRequest()
+                    .senderDetails(new SenderDetails("test-app-id", null))
+            )
+        );
+    }
+
+    private static Stream<Arguments> invalidLetterRequestProvider() {
+        return Stream.of(
+            Arguments.of(
+                "Missing sender details",
+                new GovUkLetterDetailsRequest()
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
+                    .letterDetails(TestUtil.createDefaultLetterDetails())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing recipient details",
+                new GovUkLetterDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .letterDetails(TestUtil.createDefaultLetterDetails())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing letter details",
+                new GovUkLetterDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
+                    .createdAt(OffsetDateTime.now())
+            ),
+            Arguments.of(
+                "Missing created at",
+                new GovUkLetterDetailsRequest()
+                    .senderDetails(TestUtil.createDefaultSenderDetails())
+                    .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
+                    .letterDetails(TestUtil.createDefaultLetterDetails())
+            ),
+            Arguments.of(
+                "Missing recipient name",
+                TestUtil.createValidLetterRequest().recipientDetails(new RecipientDetailsLetter()
+                    .physicalAddress(TestUtil.createDefaultAddress()))
+            ),
+            Arguments.of(
+                "Missing template ID in letter details",
+                TestUtil.createValidLetterRequest().letterDetails(
+                    new LetterDetails(null, new BigDecimal("1.0"), TestUtil.DEFAULT_LETTER_CONTENT))
+            ),
+            Arguments.of(
+                "Missing template version in letter details",
+                TestUtil.createValidLetterRequest().letterDetails(
+                    new LetterDetails("template-456", null, TestUtil.DEFAULT_LETTER_CONTENT))
+            ),
+            Arguments.of(
+                "Missing personalisation details in letter details",
+                TestUtil.createValidLetterRequest()
+                    .letterDetails(new LetterDetails("template-456", new BigDecimal("1.0"), null))
+            )
+        );
+    }
+
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(controller)
-                .build();
+            .setControllerAdvice(controller)
+            .build();
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -62,210 +169,111 @@ public class NotificationSenderControllerTest {
     }
 
     @Test
-    public void When_ValidEmailRequest_Expect_CreatedStatus() throws Exception {
+    void When_ValidEmailRequest_Expect_CreatedStatus() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/email")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Request-Id", "test-request-id")
-                        .content(requestJson))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
+                .content(requestJson))
+            .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
     }
 
     @Test
-    public void When_ValidLetterRequest_Expect_CreatedStatus() throws Exception {
+    void When_ValidLetterRequest_Expect_CreatedStatus() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/letter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Request-Id", "test-request-id")
-                        .content(requestJson))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
+                .content(requestJson))
+            .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
     }
 
     @Test
-    public void When_LetterRequestCausesException_Expect_InternalServerError() throws Exception {
+    void When_LetterRequestCausesException_Expect_InternalServerError() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
-        NotificationException exception = new NotificationException("Failed to send letter", new Throwable());
-        doThrow(exception).when(kafkaProducerService).sendLetter(any(GovUkLetterDetailsRequest.class));
+        NotificationException exception = new NotificationException("Failed to send letter",
+            new Throwable());
+        doThrow(exception).when(kafkaProducerService)
+            .sendLetter(any(GovUkLetterDetailsRequest.class));
 
         mockMvc.perform(post("/notification-sender/letter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Request-Id", "test-request-id")
-                        .content(requestJson))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value(500))
-                .andExpect(jsonPath("$.error").value("Failed to process notification"))
-                .andExpect(jsonPath("$.message").value("Failed to send letter"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
+                .content(requestJson))
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.status").value(500))
+            .andExpect(jsonPath("$.error").value("Failed to process notification"))
+            .andExpect(jsonPath("$.message").value("Failed to send letter"));
     }
 
     @ParameterizedTest
     @MethodSource("invalidEmailRequestProvider")
-    public void When_InvalidEmailRequest_Expect_BadRequest(String testName, GovUkEmailDetailsRequest request) throws Exception {
+    void When_InvalidEmailRequest_Expect_BadRequest(String testName,
+        GovUkEmailDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/email")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Request-Id", "test-request-id")
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.errors").isArray());
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
+                .content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendEmail(any());
     }
 
     @ParameterizedTest
     @MethodSource("invalidLetterRequestProvider")
-    public void When_InvalidLetterRequest_Expect_BadRequest(String testName, GovUkLetterDetailsRequest request) throws Exception {
+    void When_InvalidLetterRequest_Expect_BadRequest(String testName,
+        GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/letter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Request-Id", "test-request-id")
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.errors").isArray());
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
+                .content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendLetter(any());
     }
 
     @Test
-    public void When_LetterRequestWithoutRequestId_Expect_CreatedStatus() throws Exception {
+    void When_LetterRequestWithoutRequestId_Expect_CreatedStatus() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/letter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
     }
 
     @Test
-    public void When_EmailRequestWithoutRequestId_Expect_CreatedStatus() throws Exception {
+    void When_EmailRequestWithoutRequestId_Expect_CreatedStatus() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/email")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
-    }
-
-    private static Stream<Arguments> invalidEmailRequestProvider() {
-        return Stream.of(
-                Arguments.of(
-                        "Missing sender details",
-                        new GovUkEmailDetailsRequest()
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
-                                .emailDetails(TestUtil.createDefaultEmailDetails())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing recipient details",
-                        new GovUkEmailDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .emailDetails(TestUtil.createDefaultEmailDetails())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing email details",
-                        new GovUkEmailDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing created at",
-                        new GovUkEmailDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
-                                .emailDetails(TestUtil.createDefaultEmailDetails())
-                ),
-                Arguments.of(
-                        "Invalid email format",
-                        TestUtil.createEmailRequestWithCustomEmail("invalid-email-format")
-                ),
-                Arguments.of(
-                        "Empty email",
-                        TestUtil.createEmailRequestWithCustomEmail("")
-                ),
-                Arguments.of(
-                        "Null email",
-                        TestUtil.createEmailRequestWithCustomEmail(null)
-                ),
-                Arguments.of(
-                        "Missing app ID in sender details",
-                        TestUtil.createValidEmailRequest().senderDetails(new SenderDetails(null, "test-reference"))
-                ),
-                Arguments.of(
-                        "Missing reference in sender details",
-                        TestUtil.createValidEmailRequest().senderDetails(new SenderDetails("test-app-id", null))
-                )
-        );
-    }
-
-    private static Stream<Arguments> invalidLetterRequestProvider() {
-        return Stream.of(
-                Arguments.of(
-                        "Missing sender details",
-                        new GovUkLetterDetailsRequest()
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
-                                .letterDetails(TestUtil.createDefaultLetterDetails())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing recipient details",
-                        new GovUkLetterDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .letterDetails(TestUtil.createDefaultLetterDetails())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing letter details",
-                        new GovUkLetterDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
-                                .createdAt(OffsetDateTime.now())
-                ),
-                Arguments.of(
-                        "Missing created at",
-                        new GovUkLetterDetailsRequest()
-                                .senderDetails(TestUtil.createDefaultSenderDetails())
-                                .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
-                                .letterDetails(TestUtil.createDefaultLetterDetails())
-                ),
-                Arguments.of(
-                        "Missing recipient name",
-                        TestUtil.createValidLetterRequest().recipientDetails(new RecipientDetailsLetter()
-                                .physicalAddress(TestUtil.createDefaultAddress()))
-                ),
-                Arguments.of(
-                        "Missing template ID in letter details",
-                        TestUtil.createValidLetterRequest().letterDetails(new LetterDetails(null, new BigDecimal("1.0"), TestUtil.DEFAULT_LETTER_CONTENT))
-                ),
-                Arguments.of(
-                        "Missing template version in letter details",
-                        TestUtil.createValidLetterRequest().letterDetails(new LetterDetails("template-456", null, TestUtil.DEFAULT_LETTER_CONTENT))
-                ),
-                Arguments.of(
-                        "Missing personalisation details in letter details",
-                        TestUtil.createValidLetterRequest().letterDetails(new LetterDetails("template-456", new BigDecimal("1.0"), null))
-                )
-        );
     }
 
 
