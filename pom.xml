@@ -27,7 +27,7 @@
         <junit-jupiter-engine-version>5.11.4</junit-jupiter-engine-version>
         <junit.version>4.13.2</junit.version>
         <kafka-clients.version>3.9.0</kafka-clients.version>
-        <kafka-models.version>3.0.12</kafka-models.version>
+        <kafka-models.version>3.0.13</kafka-models.version>
         <log4j-version>2.24.2</log4j-version>
         <logback-classic.version>1.5.16</logback-classic.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
