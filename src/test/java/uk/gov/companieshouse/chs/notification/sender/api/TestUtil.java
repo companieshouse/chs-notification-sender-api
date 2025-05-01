@@ -23,6 +23,7 @@ public class TestUtil {
     public static final String DEFAULT_RECIPIENT_EMAIL = "recipient@example.com";
     public static final String DEFAULT_EMAIL_TEMPLATE_ID = "template-uuid-email-12345678";
     public static final String DEFAULT_LETTER_TEMPLATE_ID = "template-uuid-letter-87654321";
+    public static final double DEFAULT_TEMPLATE_VERSION_DOUBLE = 1.0;
     public static final BigDecimal DEFAULT_TEMPLATE_VERSION = new BigDecimal("1.0");
     public static final String DEFAULT_EMAIL_CONTENT = "{\"subject\":\"Test Subject\",\"content\":\"This is a test email\"}";
     public static final String DEFAULT_LETTER_CONTENT = "{\"subject\":\"Test Letter\",\"content\":\"This is a test letter\"}";
