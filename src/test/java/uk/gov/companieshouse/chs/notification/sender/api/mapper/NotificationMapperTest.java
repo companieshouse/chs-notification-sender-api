@@ -1,8 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mapper;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class NotificationMapperTest {
+class NotificationMapperTest {
 
     @Autowired
     private NotificationMapper notificationMapper;
 
     @Test
-    public void When_MapEmailRequest_Expect_CorrectChsEmailNotification() {
+    void When_MapEmailRequest_Expect_CorrectChsEmailNotification() {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
 
         ChsEmailNotification result = notificationMapper.mapToEmailDetailsRequest(request);
@@ -45,16 +43,16 @@ public class NotificationMapperTest {
         assertEquals(TestUtil.DEFAULT_RECIPIENT_EMAIL, result.getRecipientDetails().getEmailAddress());
         assertNotNull(result.getEmailDetails());
         assertEquals(TestUtil.DEFAULT_EMAIL_TEMPLATE_ID, result.getEmailDetails().getTemplateId());
-        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION.toString(), result.getEmailDetails().getTemplateVersion());
+        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION_DOUBLE, result.getEmailDetails().getTemplateVersion());
         assertEquals(TestUtil.DEFAULT_EMAIL_CONTENT, result.getEmailDetails().getPersonalisationDetails());
         assertEquals(
-                request.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MILLIS),
-                result.getCreatedAt().truncatedTo(ChronoUnit.MILLIS)
+                request.getCreatedAt().toString(),
+                result.getCreatedAt()
         );
     }
 
     @Test
-    public void When_MapLetterRequest_Expect_CorrectChsLetterNotification() {
+    void When_MapLetterRequest_Expect_CorrectChsLetterNotification() {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
 
         ChsLetterNotification result = notificationMapper.mapToLetterDetailsRequest(request);
@@ -77,25 +75,25 @@ public class NotificationMapperTest {
         assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_7, result.getRecipientDetails().getPhysicalAddress().getAddressLine7());
         assertNotNull(result.getLetterDetails());
         assertEquals(TestUtil.DEFAULT_LETTER_TEMPLATE_ID, result.getLetterDetails().getTemplateId());
-        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION.toString(), result.getLetterDetails().getTemplateVersion());
+        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION_DOUBLE, result.getLetterDetails().getTemplateVersion());
         assertEquals(TestUtil.DEFAULT_LETTER_CONTENT, result.getLetterDetails().getPersonalisationDetails());
         assertEquals(
-                request.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MILLIS),
-                result.getCreatedAt().truncatedTo(ChronoUnit.MILLIS)
+                request.getCreatedAt().toString(),
+                result.getCreatedAt()
         );
     }
 
     @Test
-    public void When_OffsetDateTimeToInstantMethodCalled_Expect_CorrectConversion() {
+    void When_OffsetDateTimeToInstantMethodCalled_Expect_CorrectConversion() {
         OffsetDateTime dateTime = OffsetDateTime.parse("2023-01-01T12:00:00Z");
 
-        Instant result = NotificationMapper.offsetDateTimeToInstant(dateTime);
+        String result = NotificationMapper.offsetDateTimeToString(dateTime);
 
-        assertEquals(Instant.parse("2023-01-01T12:00:00Z"), result);
+        assertEquals("2023-01-01T12:00Z", result);
     }
 
     @Test
-    public void When_OffsetDateTimeToInstantCalledWithNull_Expect_Null() {
-        assertNull(NotificationMapper.offsetDateTimeToInstant(null));
+    void When_OffsetDateTimeToInstantCalledWithNull_Expect_Null() {
+        assertNull(NotificationMapper.offsetDateTimeToString(null));
     }
 }

@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mapper;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 
 import org.mapstruct.Mapper;
@@ -16,15 +15,15 @@ import uk.gov.companieshouse.notification.ChsLetterNotification;
 @Mapper(componentModel = "spring")
 public interface NotificationMapper {
 
-    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToInstant")
+    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToString")
     ChsEmailNotification mapToEmailDetailsRequest(GovUkEmailDetailsRequest govUkEmailDetailsRequest);
 
-    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToInstant")
+    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToString")
     ChsLetterNotification mapToLetterDetailsRequest(GovUkLetterDetailsRequest govUkLetterDetailsRequest);
 
-    @Named("offsetDateTimeToInstant")
-    static Instant offsetDateTimeToInstant(OffsetDateTime dateTime) {
-        return dateTime != null ? dateTime.toInstant() : null;
+    @Named("offsetDateTimeToString")
+    static String offsetDateTimeToString(OffsetDateTime dateTime) {
+        return dateTime != null ? dateTime.toString() : null;
     }
 
 }
