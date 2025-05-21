@@ -7,6 +7,7 @@ meta {
 post {
   url: {{baseUrl}}/notification-sender/letter
   body: json
+  auth: none
 }
 
 headers {
@@ -22,7 +23,7 @@ headers {
 body:json {
   {
     "sender_details": {
-      "app_id": "chips.send_letter",
+      "app_id": "chips",
       "reference": "PSC-LTR-2023-04102",
       "name": "Companies House Admin",
       "user_id": "ch-admin-1234",
@@ -41,9 +42,9 @@ body:json {
       }
     },
     "letter_details": {
-      "template_id": "psc_verification|letter235",
+      "template_id": "direction_letter",
       "template_version": 1,
-      "personalisation_details": "{\"letter_reference\":\"PSC-LTR-2023-04102\",\"company_name\":\"ACME CORPORATION LTD\",\"company_id\":\"12345678\",\"psc_type\":\"25%\"}"
+      "personalisation_details": "{\"psc_full_name\": \"Joe Bloggs\", \"company_name\":\"ACME CORPORATION LTD\", \"deadline_date\": \"18 August 2025\", \"extension_date\": \"1 September 2025\"}"
     },
     "created_at": "2023-04-15T14:32:28Z"
   }
