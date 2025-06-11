@@ -12,14 +12,21 @@ locals {
   healthcheck_matcher        = "200"
   application_subnet_ids     = data.aws_subnets.application.ids
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
-  service_secrets            = jsondecode(data.vault_generic_secret.service_secrets.data_json)
-  stack_secrets              = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
   application_subnet_pattern = local.stack_secrets["application_subnet_pattern"]
   use_set_environment_files  = var.use_set_environment_files
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename   = "chs-notification-sender-api.env"
   vpc_name                   = local.stack_secrets["vpc_name"]
   eric_port                 = "10000"
+  # Set this to true if secrets are required and need to be retrieved from vault
+  secrets_required           = false
+
+  stack_secrets = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
+  service_secrets = (
+    local.secrets_required && length(data.vault_generic_secret.service_secrets) > 0
+    ? jsondecode(data.vault_generic_secret.service_secrets[0].data_json)
+    : {}
+  )
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
