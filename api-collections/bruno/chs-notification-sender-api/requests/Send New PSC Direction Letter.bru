@@ -1,7 +1,7 @@
 meta {
-  name: Send Letter
+  name: Send New PSC Direction Letter
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
@@ -42,9 +42,9 @@ body:json {
       }
     },
     "letter_details": {
-      "template_id": "direction_letter",
+      "template_id": "new_psc_direction_letter",
       "template_version": 1,
-      "personalisation_details": "{\"psc_full_name\": \"Joe Bloggs\", \"company_name\":\"ACME CORPORATION LTD\", \"deadline_date\": \"18 August 2025\", \"extension_date\": \"1 September 2025\"}"
+      "personalisation_details": "{\"psc_name\": \"John Smith\", \"company_name\":\"ACME CORPORATION LTD\", \"deadline_date\": \"18 August 2025\", \"extension_date\": \"1 September 2025\"}"
     },
     "created_at": "2023-04-15T14:32:28Z"
   }
