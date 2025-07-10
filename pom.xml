@@ -35,7 +35,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>4.0.290</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.323</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
         <spring-boot.version>3.4.5</spring-boot.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
