@@ -42,6 +42,7 @@
         <spring-web.version>6.2.8</spring-web.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.26</structured-logging.version>
+        <tomcat-embed-core.version>10.1.43</tomcat-embed-core.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -253,6 +254,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
             <version>6.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed-core.version}</version>
         </dependency>
     </dependencies>
     <build>
