@@ -38,6 +38,7 @@
         <private-api-sdk-java.version>4.0.323</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
         <spring-boot.version>3.4.5</spring-boot.version>
+        <spring-security-core.version>6.5.1</spring-security-core.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.26</structured-logging.version>
 
@@ -221,6 +222,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
