@@ -26,8 +26,8 @@
         <java.version>21</java.version>
         <junit-jupiter-engine-version>5.11.4</junit-jupiter-engine-version>
         <junit.version>4.13.2</junit.version>
-        <kafka-clients.version>3.9.0</kafka-clients.version>
-        <kafka-models.version>3.0.17</kafka-models.version>
+        <kafka-clients.version>4.0.0</kafka-clients.version>
+        <kafka-models.version>3.0.18</kafka-models.version>
         <log4j-version>2.24.2</log4j-version>
         <logback-classic.version>1.5.16</logback-classic.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -35,11 +35,14 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>4.0.290</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.323</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
         <spring-boot.version>3.4.5</spring-boot.version>
+        <spring-security-core.version>6.5.1</spring-security-core.version>
+        <spring-web.version>6.2.8</spring-web.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.26</structured-logging.version>
+        <tomcat-embed.version>10.1.43</tomcat-embed.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -223,9 +226,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security-core.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>6.2.1</version>
+            <version>${spring-web.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -246,6 +254,16 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
             <version>6.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat-embed.version}</version>
         </dependency>
     </dependencies>
     <build>
