@@ -1,7 +1,7 @@
 meta {
-  name: Send Extension Acceptance Letter
+  name: Send Welsh Transitional Non-director PSC Information Letter
   type: http
-  seq: 7
+  seq: 6
 }
 
 post {
@@ -42,10 +42,10 @@ body:json {
       }
     },
     "letter_details": {
-      "template_id": "extension_acceptance_letter",
+      "template_id": "transitional_non_director_psc_information_letter",
       "template_version": 1,
-      "personalisation_details": "{ \"extension_request_date\": \"13 July 2025\", \"idv_verification_due_date\": \"28 July 2025\", \"psc_name\": \"John Smith\", \"company_name\":\"ACME CORPORATION LTD\", \"company_number\": \"00006400\" }"
+      "personalisation_details": "{ \"idv_start_date\": \"30 June 2025\", \"idv_verification_due_date\": \"14 July 2025\", \"psc_name\": \"John Smith\", \"company_name\":\"ACME CORPORATION LTD\", \"company_number\": \"00006400\", \"is_welsh\": true }"
     },
-    "created_at": "2025-07-15T14:55:28Z"
+    "created_at": "2023-04-15T14:32:28Z"
   }
 }
