@@ -17,7 +17,7 @@
         <api-helper-java.version>3.0.1</api-helper-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
         <api-security-java-version>2.0.8</api-security-java-version>
-        <ch-kafka-version>3.0.4</ch-kafka-version>
+        <ch-kafka-version>3.0.3</ch-kafka-version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <email-producer-java.version>3.0.3</email-producer-java.version>
@@ -42,7 +42,7 @@
         <spring-security-core.version>6.5.1</spring-security-core.version>
         <spring-web.version>6.2.8</spring-web.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
-        <structured-logging.version>3.0.36</structured-logging.version>
+        <structured-logging.version>3.0.26</structured-logging.version>
         <tomcat-embed.version>10.1.43</tomcat-embed.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
