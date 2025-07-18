@@ -19,7 +19,6 @@
         <api-security-java-version>2.0.8</api-security-java-version>
         <ch-kafka-version>3.0.3</ch-kafka-version>
         <commons-compress.version>1.27.1</commons-compress.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
         <email-producer-java.version>3.0.3</email-producer-java.version>
         <flapdoodle.version>4.16.1</flapdoodle.version>
         <google-http-client.version>1.45.0</google-http-client.version>
@@ -265,11 +264,6 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-websocket</artifactId>
             <version>${tomcat-embed.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
     </dependencies>
     <build>
