@@ -43,6 +43,8 @@
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.37</structured-logging.version>
         <tomcat-embed.version>10.1.43</tomcat-embed.version>
+        <!-- CVE-2025-48924 -->
+        <commons-lang3.version>3.18.0</commons-lang3.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -264,6 +266,11 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-websocket</artifactId>
             <version>${tomcat-embed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
     </dependencies>
     <build>
