@@ -45,6 +45,8 @@
         <tomcat-embed.version>10.1.43</tomcat-embed.version>
         <!-- CVE-2025-48924 -->
         <commons-lang3.version>3.18.0</commons-lang3.version>
+        <!-- CVE-2024-11407, CVE-2024-7246 -->
+        <grpc-context.version>1.73.0</grpc-context.version>
 
         <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -271,6 +273,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-context</artifactId>
+            <version>${grpc-context.version}</version>
         </dependency>
     </dependencies>
     <build>
