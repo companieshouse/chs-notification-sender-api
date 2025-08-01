@@ -3,8 +3,6 @@ package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
 
 import consumer.serialization.AvroSerializer;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -18,6 +16,7 @@ import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationE
 import uk.gov.companieshouse.chs.notification.sender.api.mapper.NotificationMapper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.notification.ChsEmailNotification;
 import uk.gov.companieshouse.notification.ChsLetterNotification;
 
@@ -61,8 +60,11 @@ public class KafkaProducerService {
 
     private void sendMessage(final String topic, final byte[] message)
         throws NotificationException {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put("topic", topic);
+
+        var logMap = new DataMap.Builder()
+                .topic(topic)
+                .build()
+                .getLogMap();
 
         LOG.debug(String.format("Sending message to topic: %s", topic), logMap);
         ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(topic, message);
