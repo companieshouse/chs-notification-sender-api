@@ -79,8 +79,6 @@ class KafkaProducerServiceTest {
                     "Sending message to topic: chs-notification-email");
             assertJsonHasAndEquals(debugData, "topic", applicationConfig.getEmailTopic());
         }
-
-
     }
 
     @Test
