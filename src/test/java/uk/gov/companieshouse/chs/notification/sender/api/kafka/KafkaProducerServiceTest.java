@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
+import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
+import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,6 +10,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidEmailRequest;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidLetterRequest;
 
+import helpers.OutputCapture;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -26,6 +30,7 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest
 import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.config.ApplicationConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
+import uk.gov.companieshouse.logging.EventType;
 
 
 @ExtendWith(SpringExtension.class)
@@ -58,6 +63,22 @@ class KafkaProducerServiceTest {
         kafkaProducerService.sendEmail(createValidEmailRequest());
 
         verify(kafkaTemplate).send(any(ProducerRecord.class));
+    }
+
+    @Test
+    void When_SendEmailWithValidRequest_Expect_DebugLogMessage() throws IOException {
+        CompletableFuture<SendResult<String, byte[]>> future = CompletableFuture.completedFuture(
+                new SendResult<>(new ProducerRecord<>(applicationConfig.getEmailTopic(), new byte[0]),
+                        null)
+        );
+        when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
+
+        try(var outputCapture = new OutputCapture()) {
+            kafkaProducerService.sendEmail(createValidEmailRequest());
+            var debugData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+                    "Sending message to topic: chs-notification-email");
+            assertJsonHasAndEquals(debugData, "topic", applicationConfig.getEmailTopic());
+        }
     }
 
     @Test

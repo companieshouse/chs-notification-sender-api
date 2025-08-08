@@ -3,7 +3,6 @@ package uk.gov.companieshouse.chs.notification.sender.api.controller;
 import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,14 +20,14 @@ import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationE
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.logging.util.DataMap;
 
 @RestController
 public class NotificationSenderController implements NotificationSenderControllerInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
-    private static final String REQUEST_ID = "request_id";
-    private static final String STATUS = "status";
-    
+
+
     private final KafkaProducerService kafkaProducerService;
 
     public NotificationSenderController(KafkaProducerService kafkaService) {
@@ -37,11 +36,14 @@ public class NotificationSenderController implements NotificationSenderControlle
 
     @Override
     public ResponseEntity<Void> sendEmail(
-        @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
-        @RequestHeader(value = "X-Request-Id", required = false) final String requestId
+            @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
+            @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(REQUEST_ID, Objects.toString(requestId, ""));
+        var logMap = new DataMap.Builder()
+                .requestId(Objects.toString(requestId, ""))
+                .build()
+                .getLogMap();
+
         LOG.info("Processing email notification request", logMap);
 
         kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
@@ -52,11 +54,14 @@ public class NotificationSenderController implements NotificationSenderControlle
 
     @Override
     public ResponseEntity<Void> sendLetter(
-        @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
-        @RequestHeader(value = "X-Request-Id", required = false) final String requestId
+            @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
+            @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(REQUEST_ID, Objects.toString(requestId, ""));
+        var logMap = new DataMap.Builder()
+                .requestId(Objects.toString(requestId, ""))
+                .build()
+                .getLogMap();
+
         LOG.info("Processing letter notification request", logMap);
 
         kafkaProducerService.sendLetter(govUkLetterDetailsRequest);
@@ -67,32 +72,37 @@ public class NotificationSenderController implements NotificationSenderControlle
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-        final MethodArgumentNotValidException ex
+            final MethodArgumentNotValidException ex
     ) {
         List<String> errors = ex.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-            .toList();
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
 
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(STATUS, HttpStatus.BAD_REQUEST.value());
-        logMap.put("errors", errors);
+        var logMap = new DataMap.Builder()
+                .status(Objects.toString(HttpStatus.BAD_REQUEST.value()))
+                .errors(errors)
+                .build()
+                .getLogMap();
+
         LOG.error("Validation error", ex, logMap);
         return new ResponseEntity<>(logMap, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotificationException.class)
     public ResponseEntity<Map<String, Object>> handleNotificationException(
-        final NotificationException ex,
-        final HttpServletRequest request
+            final NotificationException ex,
+            final HttpServletRequest request
     ) {
+        var logMap = new DataMap.Builder()
+                .requestId(request.getHeader("X-Request-Id"))
+                .status(Objects.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .errors(List.of("Failed to process notification"))
+                .message(ex.getMessage())
+                .build()
+                .getLogMap();
 
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(REQUEST_ID, request.getHeader("X-Request-Id"));
-        logMap.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
-        logMap.put("error", "Failed to process notification");
-        logMap.put("message", ex.getMessage());
         LOG.error("Failed to send notification", ex, logMap);
         return new ResponseEntity<>(logMap, HttpStatus.INTERNAL_SERVER_ERROR);
     }
