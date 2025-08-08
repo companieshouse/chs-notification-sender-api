@@ -98,7 +98,8 @@ public class NotificationSenderController implements NotificationSenderControlle
         var logMap = new DataMap.Builder()
                 .requestId(request.getHeader("X-Request-Id"))
                 .status(Objects.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                .errorMessage("Failed to process notification")
+                .errors(List.of("Failed to process notification"))
+                .message(ex.getMessage())
                 .build()
                 .getLogMap();
 
