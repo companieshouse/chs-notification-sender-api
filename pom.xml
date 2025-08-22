@@ -42,7 +42,7 @@
         <spring-web.version>6.2.8</spring-web.version>
         <spring-webmvc.version>6.1.14</spring-webmvc.version>
         <structured-logging.version>3.0.37</structured-logging.version>
-        <tomcat-embed.version>10.1.43</tomcat-embed.version>
+        <tomcat-embed.version>10.1.44</tomcat-embed.version>
         <!-- CVE-2025-48924 -->
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- CVE-2024-11407, CVE-2024-7246 -->
