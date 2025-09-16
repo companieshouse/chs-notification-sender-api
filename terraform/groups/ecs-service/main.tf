@@ -96,3 +96,4 @@ module "ecs-service" {
   eric_cpus                 = var.eric_cpus
   eric_memory               = var.eric_memory
 }
+
