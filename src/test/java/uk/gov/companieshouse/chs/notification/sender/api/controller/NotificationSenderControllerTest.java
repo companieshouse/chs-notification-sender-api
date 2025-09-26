@@ -166,19 +166,13 @@ class NotificationSenderControllerTest {
             Arguments.of(
                 "Missing template ID in letter details",
                 TestUtil.createValidLetterRequest().letterDetails(
-                    new LetterDetails(null, new BigDecimal("1.0"), TestUtil.DEFAULT_LETTER_CONTENT)),
+                    new LetterDetails(null, TestUtil.DEFAULT_LETTER_CONTENT)),
                 new String[]{"letterDetails.templateId: must not be null"}
-            ),
-            Arguments.of(
-                "Missing template version in letter details",
-                TestUtil.createValidLetterRequest().letterDetails(
-                    new LetterDetails("template-456", null, TestUtil.DEFAULT_LETTER_CONTENT)),
-                new String[]{"letterDetails.templateVersion: must not be null"}
             ),
             Arguments.of(
                 "Missing personalisation details in letter details",
                 TestUtil.createValidLetterRequest()
-                    .letterDetails(new LetterDetails("template-456", new BigDecimal("1.0"), null)),
+                    .letterDetails(new LetterDetails("template-456", null)),
                 new String[]{"letterDetails.personalisationDetails: must not be null"}
             )
         );
