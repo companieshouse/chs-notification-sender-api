@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import helpers.OutputCapture;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
