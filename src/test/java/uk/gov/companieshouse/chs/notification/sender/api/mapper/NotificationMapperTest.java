@@ -43,7 +43,6 @@ class NotificationMapperTest {
         assertEquals(TestUtil.DEFAULT_RECIPIENT_EMAIL, result.getRecipientDetails().getEmailAddress());
         assertNotNull(result.getEmailDetails());
         assertEquals(TestUtil.DEFAULT_EMAIL_TEMPLATE_ID, result.getEmailDetails().getTemplateId());
-        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION_DOUBLE, result.getEmailDetails().getTemplateVersion());
         assertEquals(TestUtil.DEFAULT_EMAIL_CONTENT, result.getEmailDetails().getPersonalisationDetails());
         assertEquals(
                 request.getCreatedAt().toString(),
@@ -75,7 +74,6 @@ class NotificationMapperTest {
         assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_7, result.getRecipientDetails().getPhysicalAddress().getAddressLine7());
         assertNotNull(result.getLetterDetails());
         assertEquals(TestUtil.DEFAULT_LETTER_TEMPLATE_ID, result.getLetterDetails().getTemplateId());
-        assertEquals(TestUtil.DEFAULT_TEMPLATE_VERSION_DOUBLE, result.getLetterDetails().getTemplateVersion());
         assertEquals(TestUtil.DEFAULT_LETTER_CONTENT, result.getLetterDetails().getPersonalisationDetails());
         assertEquals(
                 request.getCreatedAt().toString(),

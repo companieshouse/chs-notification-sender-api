@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
-
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import uk.gov.companieshouse.api.chs.notification.model.Address;
@@ -23,8 +21,6 @@ public class TestUtil {
     public static final String DEFAULT_RECIPIENT_EMAIL = "recipient@example.com";
     public static final String DEFAULT_EMAIL_TEMPLATE_ID = "template-uuid-email-12345678";
     public static final String DEFAULT_LETTER_TEMPLATE_ID = "template-uuid-letter-87654321";
-    public static final double DEFAULT_TEMPLATE_VERSION_DOUBLE = 1.0;
-    public static final BigDecimal DEFAULT_TEMPLATE_VERSION = new BigDecimal("1.0");
     public static final String DEFAULT_EMAIL_CONTENT = "{\"subject\":\"Test Subject\",\"content\":\"This is a test email\"}";
     public static final String DEFAULT_LETTER_CONTENT = "{\"subject\":\"Test Letter\",\"content\":\"This is a test letter\"}";
 
@@ -64,7 +60,7 @@ public class TestUtil {
     }
 
     public static EmailDetails createDefaultEmailDetails() {
-        return new EmailDetails(DEFAULT_EMAIL_TEMPLATE_ID, DEFAULT_TEMPLATE_VERSION, DEFAULT_EMAIL_CONTENT);
+        return new EmailDetails(DEFAULT_EMAIL_TEMPLATE_ID, DEFAULT_EMAIL_CONTENT);
     }
 
     public static RecipientDetailsLetter createDefaultRecipientDetailsLetter() {
@@ -72,7 +68,7 @@ public class TestUtil {
     }
 
     public static LetterDetails createDefaultLetterDetails() {
-        return new LetterDetails(DEFAULT_LETTER_TEMPLATE_ID, DEFAULT_TEMPLATE_VERSION, DEFAULT_LETTER_CONTENT);
+        return new LetterDetails(DEFAULT_LETTER_TEMPLATE_ID, DEFAULT_LETTER_CONTENT);
     }
 
     public static Address createDefaultAddress() {
