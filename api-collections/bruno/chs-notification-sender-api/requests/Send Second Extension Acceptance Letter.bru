@@ -1,0 +1,49 @@
+meta {
+  name: Send Second Extension Acceptance Letter
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/notification-sender/letter
+  body: json
+  auth: none
+}
+
+headers {
+  X-Request-Id: letter-req-12345678
+  Content-Type: application/json
+  Authorization: {{authorization}}
+  ERIC-Identity: {{ericIdentity}}
+  ERIC-Identity-Type: {{ericIdentityType}}
+  ERIC-Authorised-Key-Privileges: {{ericAuthorisedKeyPrivileges}}
+  ERIC-Authorised-Key-Roles: {{ericAuthorisedKeyRoles}}
+}
+
+body:json {
+  {
+    "sender_details": {
+      "app_id": "chips",
+      "reference": "PSCEXT/00006400",
+      "name": "name",
+      "user_id": "user_id",
+      "email_address": "jbloggs@jbloggs.com"
+    },
+    "recipient_details": {
+      "name": "Joe Bloggs",
+      "physical_address": {
+        "address_line_1": "Joe Bloggs",
+        "address_line_2": "Tŷ'r Cwmnïau",
+        "address_line_3": "Ffordd y Goron",
+        "address_line_4": "Caerdydd",
+        "address_line_5": "CF14 3UZ",
+        "address_line_6": "United Kingdom"
+      }
+    },
+    "letter_details": {
+      "template_id": "second_extension_acceptance_letter_v1",
+      "personalisation_details": "{ \"extension_request_date\": \"2 October 2025\", \"idv_verification_due_date\": \"16 October 2025\", \"psc_name\": \"Joe Bloggs\", \"company_name\": \"Tŷ'r Cwmnïau\", \"company_number\": \"00006400\"}"
+    },
+    "created_at": "2025-10-02T10:47:24.905+00:00"
+  }
+}
