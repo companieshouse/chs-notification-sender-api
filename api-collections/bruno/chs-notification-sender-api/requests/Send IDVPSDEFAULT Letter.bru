@@ -1,0 +1,49 @@
+meta {
+  name: Send IDVPSCDEFAULT letter
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/notification-sender/letter
+  body: json
+  auth: none
+}
+
+headers {
+  X-Request-Id: letter-req-12345678
+  Content-Type: application/json
+  Authorization: {{authorization}}
+  ERIC-Identity: {{ericIdentity}}
+  ERIC-Identity-Type: {{ericIdentityType}}
+  ERIC-Authorised-Key-Privileges: {{ericAuthorisedKeyPrivileges}}
+  ERIC-Authorised-Key-Roles: {{ericAuthorisedKeyRoles}}
+}
+
+body:json {
+  {
+    "sender_details": {
+      "app_id": "chips",
+      "reference": "6652413",
+      "name": "Companies House Admin",
+      "user_id": "ch-admin-1234",
+      "email_address": "admin@example.com"
+    },
+    "recipient_details": {
+      "name": "JOE BLOGGS",
+      "physical_address": {
+        "address_line_1": "JOE BLOGGS",
+        "address_line_2": "123 Business Street",
+        "address_line_3": "Office Park",
+        "address_line_4": "Central District",
+        "address_line_5": "London",
+        "address_line_6": "EC1A 1BB"
+      }
+    },
+    "letter_details": {
+        "template_id": "IDVPSCDEFAULT_v1",
+        "personalisation_details": "{ \"psc_name\": \"JOE BLOGGS\", \"company_name\": \"TEST COMPANY LTD\", \"company_number\": \"00006400\"}"
+    },
+    "created_at": "2025-10-03T18:02:12Z"
+  }
+}
