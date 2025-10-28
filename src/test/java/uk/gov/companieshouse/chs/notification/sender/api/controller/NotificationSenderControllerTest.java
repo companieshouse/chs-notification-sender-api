@@ -6,6 +6,7 @@ import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -199,7 +200,8 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class),
+                anyString());
     }
 
     @Test
@@ -213,7 +215,8 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class),
+                anyString());
     }
 
     @Test
@@ -224,7 +227,7 @@ class NotificationSenderControllerTest {
         NotificationException exception = new NotificationException("Failed to send letter",
             new Throwable());
         doThrow(exception).when(kafkaProducerService)
-            .sendLetter(any(GovUkLetterDetailsRequest.class));
+            .sendLetter(any(GovUkLetterDetailsRequest.class), anyString());
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -250,7 +253,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.errors").isArray());
 
-        verify(kafkaProducerService, never()).sendEmail(any());
+        verify(kafkaProducerService, never()).sendEmail(any(), anyString());
     }
 
     @ParameterizedTest
@@ -267,7 +270,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.errors").isArray());
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 
 
@@ -281,7 +284,8 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class),
+                anyString());
     }
 
     @Test
@@ -294,7 +298,8 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class),
+                anyString());
     }
 
     @Test
@@ -305,7 +310,7 @@ class NotificationSenderControllerTest {
         NotificationException exception = new NotificationException("Failed to send letter",
                 new Throwable());
         doThrow(exception).when(kafkaProducerService)
-                .sendLetter(any(GovUkLetterDetailsRequest.class));
+                .sendLetter(any(GovUkLetterDetailsRequest.class), anyString());
 
         try(var outputCapture = new OutputCapture()) {
             mockMvc.perform(post("/notification-sender/letter")
@@ -382,7 +387,7 @@ class NotificationSenderControllerTest {
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 
     @ParameterizedTest
@@ -405,6 +410,6 @@ class NotificationSenderControllerTest {
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 }

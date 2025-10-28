@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
+import static com.google.common.net.HttpHeaders.X_REQUEST_ID;
 import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
 
 import consumer.serialization.AvroSerializer;
@@ -42,32 +43,44 @@ public class KafkaProducerService {
         this.letterTopic = applicationConfig.getLetterTopic();
     }
 
-    public void sendEmail(final GovUkEmailDetailsRequest govUkEmailDetailsRequest)
+    public void sendEmail(final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
+                          final String contextId)
         throws NotificationException {
         LOG.debug("Mapping email request to Avro format");
         ChsEmailNotification chsEmailNotification = notificationMapper.mapToEmailDetailsRequest(
             govUkEmailDetailsRequest);
-        sendMessage(emailTopic, avroSerializer.serialize(emailTopic, chsEmailNotification));
+        sendMessage(emailTopic,
+                    avroSerializer.serialize(emailTopic, chsEmailNotification),
+                    contextId);
     }
 
-    public void sendLetter(final GovUkLetterDetailsRequest govUkLetterDetailsRequest)
+    public void sendLetter(final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
+                           final String contextId)
         throws NotificationException {
         LOG.debug("Mapping letter request to Avro format");
         ChsLetterNotification chsLetterNotification = notificationMapper.mapToLetterDetailsRequest(
             govUkLetterDetailsRequest);
-        sendMessage(letterTopic, avroSerializer.serialize(letterTopic, chsLetterNotification));
+        sendMessage(letterTopic,
+                    avroSerializer.serialize(letterTopic, chsLetterNotification),
+                    contextId);
     }
 
-    private void sendMessage(final String topic, final byte[] message)
+    private void sendMessage(final String topic, final byte[] message, final String contextId)
         throws NotificationException {
 
         var logMap = new DataMap.Builder()
                 .topic(topic)
+                .contextId(contextId)
                 .build()
                 .getLogMap();
 
         LOG.debug(String.format("Sending message to topic: %s", topic), logMap);
+
         ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(topic, message);
+        if (contextId != null) {
+            LOG.info("Propagating contextId: " + contextId, logMap);
+            producerRecord.headers().add(X_REQUEST_ID, contextId.getBytes());
+        }
 
         try {
             kafkaTemplate.send(producerRecord).get(10, TimeUnit.SECONDS);

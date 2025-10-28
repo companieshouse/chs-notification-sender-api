@@ -60,7 +60,7 @@ class KafkaProducerServiceTest {
         );
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        kafkaProducerService.sendEmail(createValidEmailRequest());
+        kafkaProducerService.sendEmail(createValidEmailRequest(), "TODO DEEP-490");
 
         verify(kafkaTemplate).send(any(ProducerRecord.class));
     }
@@ -74,7 +74,7 @@ class KafkaProducerServiceTest {
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
         try(var outputCapture = new OutputCapture()) {
-            kafkaProducerService.sendEmail(createValidEmailRequest());
+            kafkaProducerService.sendEmail(createValidEmailRequest(), "TODO DEEP-490");
             var debugData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
                     "Sending message to topic: chs-notification-email");
             assertJsonHasAndEquals(debugData, "topic", applicationConfig.getEmailTopic());
@@ -89,7 +89,7 @@ class KafkaProducerServiceTest {
         );
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
 
-        kafkaProducerService.sendLetter(createValidLetterRequest());
+        kafkaProducerService.sendLetter(createValidLetterRequest(), "TODO DEEP-490");
 
         verify(kafkaTemplate).send(any(ProducerRecord.class));
     }
@@ -101,7 +101,7 @@ class KafkaProducerServiceTest {
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
         GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(emailRequest));
+            () -> kafkaProducerService.sendEmail(emailRequest, "TODO DEEP-490"));
     }
 
     @Test
@@ -113,7 +113,7 @@ class KafkaProducerServiceTest {
 
         GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(emailRequest));
+            () -> kafkaProducerService.sendEmail(emailRequest, "TODO DEEP-490"));
     }
 
     @Test
@@ -123,7 +123,7 @@ class KafkaProducerServiceTest {
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
         GovUkEmailDetailsRequest emailRequest = createValidEmailRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendEmail(emailRequest));
+            () -> kafkaProducerService.sendEmail(emailRequest, "TODO DEEP-490"));
     }
 
     @Test
@@ -133,7 +133,7 @@ class KafkaProducerServiceTest {
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
         GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest, "TODO DEEP-490"));
     }
 
     @Test
@@ -145,7 +145,7 @@ class KafkaProducerServiceTest {
 
         GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest, "TODO DEEP-490"));
     }
 
     @Test
@@ -156,7 +156,7 @@ class KafkaProducerServiceTest {
 
         GovUkLetterDetailsRequest letterDetailsRequest = createValidLetterRequest();
         assertThrows(NotificationException.class,
-            () -> kafkaProducerService.sendLetter(letterDetailsRequest));
+            () -> kafkaProducerService.sendLetter(letterDetailsRequest, "TODO DEEP-490"));
         assertTrue(Thread.currentThread().isInterrupted(), "Thread should be interrupted");
     }
 

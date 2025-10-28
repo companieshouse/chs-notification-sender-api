@@ -46,7 +46,7 @@ public class NotificationSenderController implements NotificationSenderControlle
 
         LOG.info("Processing email notification request", logMap);
 
-        kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
+        kafkaProducerService.sendEmail(govUkEmailDetailsRequest, requestId);
 
         LOG.info("Email notification sent successfully", logMap);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -64,7 +64,7 @@ public class NotificationSenderController implements NotificationSenderControlle
 
         LOG.info("Processing letter notification request", logMap);
 
-        kafkaProducerService.sendLetter(govUkLetterDetailsRequest);
+        kafkaProducerService.sendLetter(govUkLetterDetailsRequest, requestId);
 
         LOG.info("Letter notification sent successfully", logMap);
         return new ResponseEntity<>(HttpStatus.CREATED);
