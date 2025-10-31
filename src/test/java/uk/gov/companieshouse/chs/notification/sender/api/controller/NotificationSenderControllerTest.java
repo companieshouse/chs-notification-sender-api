@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -281,11 +282,12 @@ class NotificationSenderControllerTest {
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
                 .content(requestJson))
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class),
-                anyString());
+                eq("test-request-id"));
     }
 
     @Test
@@ -295,11 +297,12 @@ class NotificationSenderControllerTest {
 
         mockMvc.perform(post("/notification-sender/email")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Request-Id", "test-request-id")
                 .content(requestJson))
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class),
-                anyString());
+                eq("test-request-id"));
     }
 
     @Test
