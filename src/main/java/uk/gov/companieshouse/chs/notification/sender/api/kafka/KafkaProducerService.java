@@ -76,7 +76,7 @@ public class KafkaProducerService {
 
         LOG.debug(String.format("Sending message to topic: %s", topic), logMap);
 
-        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(topic, message);
+        ProducerRecord<String, byte[]> producerRecord = createProducerRecord(topic, message);
         if (contextId != null) {
             LOG.info("Propagating contextId: " + contextId, logMap);
             producerRecord.headers().add(X_REQUEST_ID, contextId.getBytes());
@@ -95,4 +95,10 @@ public class KafkaProducerService {
                 String.format("Failed to send notification message to topic: %s", topic), ex);
         }
     }
+
+    protected ProducerRecord<String, byte[]> createProducerRecord(final String topic,
+                                                                  final byte[] message) {
+        return new ProducerRecord<>(topic, message);
+    }
+
 }

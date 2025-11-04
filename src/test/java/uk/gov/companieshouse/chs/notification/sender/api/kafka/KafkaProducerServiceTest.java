@@ -1,10 +1,13 @@
 package uk.gov.companieshouse.chs.notification.sender.api.kafka;
 
+import static com.google.common.net.HttpHeaders.X_REQUEST_ID;
 import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidEmailRequest;
@@ -16,7 +19,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Headers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,6 +35,7 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest
 import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.config.ApplicationConfig;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
+import uk.gov.companieshouse.chs.notification.sender.api.mapper.NotificationMapper;
 import uk.gov.companieshouse.logging.EventType;
 
 
@@ -37,11 +43,38 @@ import uk.gov.companieshouse.logging.EventType;
 @SpringBootTest
 class KafkaProducerServiceTest {
 
+    private static class TestKafkaProducerService extends KafkaProducerService {
+        private final ProducerRecord<String, byte[]> producerRecord;
+
+        public TestKafkaProducerService(final KafkaTemplate<String, byte[]> kafkaTemplate,
+                                        final NotificationMapper notificationMapper,
+                                        final ApplicationConfig applicationConfig,
+                                        final ProducerRecord<String, byte[]> producerRecord) {
+            super(kafkaTemplate, notificationMapper, applicationConfig);
+            this.producerRecord = producerRecord;
+        }
+
+        @Override
+        protected ProducerRecord<String, byte[]> createProducerRecord(final String topic,
+                                                                      final byte[] message) {
+            return producerRecord;
+        }
+
+    }
+
     @Mock
     private KafkaTemplate<String, byte[]> kafkaTemplate;
 
+    @Mock
+    private ProducerRecord<String, byte[]> producerRecord;
+
+    @Mock
+    private Headers headers;
+
     @Autowired
     private KafkaProducerService kafkaProducerService;
+
+    @Autowired NotificationMapper notificationMapper;
 
     @Autowired
     private ApplicationConfig applicationConfig;
@@ -158,6 +191,48 @@ class KafkaProducerServiceTest {
         assertThrows(NotificationException.class,
             () -> kafkaProducerService.sendLetter(letterDetailsRequest, "test-request-id"));
         assertTrue(Thread.currentThread().isInterrupted(), "Thread should be interrupted");
+    }
+
+    @Test
+    @DisplayName("A non-null context ID is propagated through the 'X-Request-ID' Kafka header")
+    void nonNullContextIdIsPropagated() {
+        var producerService =
+                new TestKafkaProducerService(kafkaTemplate,
+                                             notificationMapper,
+                                             applicationConfig,
+                                             producerRecord);
+        CompletableFuture<SendResult<String, byte[]>> future = CompletableFuture.completedFuture(
+                new SendResult<>(new ProducerRecord<>(applicationConfig.getEmailTopic(), new byte[0]),
+                        null)
+        );
+        when(producerRecord.headers()).thenReturn(headers);
+        when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
+
+        producerService.sendEmail(createValidEmailRequest(), "test-request-id");
+
+        verify(kafkaTemplate).send(any(ProducerRecord.class));
+        verify(headers).add(X_REQUEST_ID, "test-request-id".getBytes());
+    }
+
+    @Test
+    @DisplayName("A null context ID is NOT propagated through the 'X-Request-ID' Kafka header")
+    void nullContextIdIsNotPropagated() {
+        var producerService =
+                new TestKafkaProducerService(kafkaTemplate,
+                        notificationMapper,
+                        applicationConfig,
+                        producerRecord);
+        CompletableFuture<SendResult<String, byte[]>> future = CompletableFuture.completedFuture(
+                new SendResult<>(new ProducerRecord<>(applicationConfig.getEmailTopic(), new byte[0]),
+                        null)
+        );
+        when(producerRecord.headers()).thenReturn(headers);
+        when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(future);
+
+        producerService.sendEmail(createValidEmailRequest(), null);
+
+        verify(kafkaTemplate).send(any(ProducerRecord.class));
+        verify(headers, never()).add(eq(X_REQUEST_ID), any(byte[].class));
     }
 
 }
