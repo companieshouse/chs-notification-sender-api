@@ -3,3 +3,10 @@ aws_profile = "live-eu-west-2"
 
 # service configs
 use_set_environment_files = true
+
+# Scheduled scaling of tasks
+service_autoscale_enabled  = true
+
+desired_task_count=5
+max_task_count=10
+min_task_count=5
