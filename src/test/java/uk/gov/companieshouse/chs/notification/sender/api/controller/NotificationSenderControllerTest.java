@@ -177,6 +177,18 @@ class NotificationSenderControllerTest {
         );
     }
 
+    private static Stream<Arguments> validLetterRequestProvider() {
+        GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
+        // Old letters did not include a letterId
+        GovUkLetterDetailsRequest requestWitoutLetterId = TestUtil.createValidLetterRequest();
+        requestWitoutLetterId.getLetterDetails().setLetterId(null);
+
+        return Stream.of(
+                Arguments.of(request),
+                Arguments.of(requestWitoutLetterId)
+        );
+    }
+
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -199,12 +211,12 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendEmail(request);
     }
 
-    @Test
-    void When_ValidLetterRequest_Expect_CreatedStatus() throws Exception {
-        GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
+    @ParameterizedTest
+    @MethodSource("validLetterRequestProvider")
+    void When_ValidLetterRequest_Expect_CreatedStatus(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/notification-sender/letter")
@@ -213,7 +225,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendLetter(request);
     }
 
     @Test
@@ -223,8 +235,7 @@ class NotificationSenderControllerTest {
 
         NotificationException exception = new NotificationException("Failed to send letter",
             new Throwable());
-        doThrow(exception).when(kafkaProducerService)
-            .sendLetter(any(GovUkLetterDetailsRequest.class));
+        doThrow(exception).when(kafkaProducerService).sendLetter(request);
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -281,7 +292,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(any(GovUkLetterDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendLetter(request);
     }
 
     @Test
@@ -294,7 +305,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(any(GovUkEmailDetailsRequest.class));
+        verify(kafkaProducerService, times(1)).sendEmail(request);
     }
 
     @Test
@@ -304,8 +315,7 @@ class NotificationSenderControllerTest {
 
         NotificationException exception = new NotificationException("Failed to send letter",
                 new Throwable());
-        doThrow(exception).when(kafkaProducerService)
-                .sendLetter(any(GovUkLetterDetailsRequest.class));
+        doThrow(exception).when(kafkaProducerService).sendLetter(request);
 
         try(var outputCapture = new OutputCapture()) {
             mockMvc.perform(post("/notification-sender/letter")
@@ -341,9 +351,9 @@ class NotificationSenderControllerTest {
         }
     }
 
-    @Test
-    void When_ValidLetterRequest_Expect_Info_Logs() throws Exception {
-        GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
+    @ParameterizedTest
+    @MethodSource("validLetterRequestProvider")
+    void When_ValidLetterRequest_Expect_Info_Logs(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         try (var outputCapture = new OutputCapture()) {

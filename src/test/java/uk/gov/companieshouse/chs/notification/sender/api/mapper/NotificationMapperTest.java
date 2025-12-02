@@ -74,6 +74,40 @@ class NotificationMapperTest {
         assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_7, result.getRecipientDetails().getPhysicalAddress().getAddressLine7());
         assertNotNull(result.getLetterDetails());
         assertEquals(TestUtil.DEFAULT_LETTER_TEMPLATE_ID, result.getLetterDetails().getTemplateId());
+        assertEquals(TestUtil.DEFAULT_LETTER_ID, result.getLetterDetails().getLetterId());
+        assertEquals(TestUtil.DEFAULT_LETTER_CONTENT, result.getLetterDetails().getPersonalisationDetails());
+        assertEquals(
+                request.getCreatedAt().toString(),
+                result.getCreatedAt()
+        );
+    }
+
+    @Test
+    void When_MapLetterRequestWithoutLetterId_Expect_CorrectChsLetterNotification() {
+        GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
+        request.getLetterDetails().setLetterId(null);
+
+        ChsLetterNotification result = notificationMapper.mapToLetterDetailsRequest(request);
+
+        assertNotNull(result);
+        assertNotNull(result.getSenderDetails());
+        assertEquals(TestUtil.DEFAULT_APP_ID, result.getSenderDetails().getAppId());
+        assertEquals(TestUtil.DEFAULT_REFERENCE, result.getSenderDetails().getReference());
+        assertEquals(TestUtil.DEFAULT_SENDER_NAME, result.getSenderDetails().getName());
+        assertEquals(TestUtil.DEFAULT_USER_ID, result.getSenderDetails().getUserId());
+        assertNotNull(result.getRecipientDetails());
+        assertEquals(TestUtil.DEFAULT_RECIPIENT_NAME, result.getRecipientDetails().getName());
+        assertNotNull(result.getRecipientDetails().getPhysicalAddress());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_1, result.getRecipientDetails().getPhysicalAddress().getAddressLine1());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_2, result.getRecipientDetails().getPhysicalAddress().getAddressLine2());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_3, result.getRecipientDetails().getPhysicalAddress().getAddressLine3());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_4, result.getRecipientDetails().getPhysicalAddress().getAddressLine4());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_5, result.getRecipientDetails().getPhysicalAddress().getAddressLine5());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_6, result.getRecipientDetails().getPhysicalAddress().getAddressLine6());
+        assertEquals(TestUtil.DEFAULT_ADDRESS_LINE_7, result.getRecipientDetails().getPhysicalAddress().getAddressLine7());
+        assertNotNull(result.getLetterDetails());
+        assertEquals(TestUtil.DEFAULT_LETTER_TEMPLATE_ID, result.getLetterDetails().getTemplateId());
+        assertNull(result.getLetterDetails().getLetterId());
         assertEquals(TestUtil.DEFAULT_LETTER_CONTENT, result.getLetterDetails().getPersonalisationDetails());
         assertEquals(
                 request.getCreatedAt().toString(),
