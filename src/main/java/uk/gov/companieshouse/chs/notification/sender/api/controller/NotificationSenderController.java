@@ -2,10 +2,13 @@ package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
 import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,18 +42,18 @@ public class NotificationSenderController implements NotificationSenderControlle
             @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
             @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
-        var logMap = new DataMap.Builder()
-                .requestId(Objects.toString(requestId, ""))
-                .build()
-                .getLogMap();
-        
+        var logMap = new DataMap.Builder().build().getLogMap();
         logMap.put("reference", govUkEmailDetailsRequest.getSenderDetails().getReference());
+        var context = StringUtils.isBlank(requestId) ? UUID.randomUUID().toString() : requestId;
+        if (StringUtils.isBlank(requestId)) {
+            LOG.infoContext(context, "No context ID supplied, generated one", logMap);
+        }
 
-        LOG.info("Processing email notification request", logMap);
+        LOG.infoContext(context, "Processing email notification request", logMap);
 
-        kafkaProducerService.sendEmail(govUkEmailDetailsRequest, requestId);
+        kafkaProducerService.sendEmail(govUkEmailDetailsRequest, context);
 
-        LOG.info("Email notification sent successfully", logMap);
+        LOG.infoContext(context, "Email notification sent successfully", logMap);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -59,18 +62,18 @@ public class NotificationSenderController implements NotificationSenderControlle
             @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
             @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
-        var logMap = new DataMap.Builder()
-                .requestId(Objects.toString(requestId, ""))
-                .build()
-                .getLogMap();
-        
+        var logMap = new DataMap.Builder().build().getLogMap();
         logMap.put("reference", govUkLetterDetailsRequest.getSenderDetails().getReference());
+        var context = StringUtils.isBlank(requestId) ? UUID.randomUUID().toString() : requestId;
+        if (StringUtils.isBlank(requestId)) {
+            LOG.infoContext(context, "No context ID supplied, generated one", logMap);
+        }
 
-        LOG.info("Processing letter notification request", logMap);
+        LOG.infoContext(context, "Processing letter notification request", logMap);
 
-        kafkaProducerService.sendLetter(govUkLetterDetailsRequest, requestId);
+        kafkaProducerService.sendLetter(govUkLetterDetailsRequest, context);
 
-        LOG.info("Letter notification sent successfully", logMap);
+        LOG.infoContext(context, "Letter notification sent successfully", logMap);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

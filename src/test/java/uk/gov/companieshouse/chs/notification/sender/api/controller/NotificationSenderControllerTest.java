@@ -3,6 +3,7 @@ package uk.gov.companieshouse.chs.notification.sender.api.controller;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
+import static helpers.utils.OutputAssertions.getLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -294,7 +295,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(request, null);
+        verify(kafkaProducerService, times(1)).sendLetter(eq(request), anyString());
     }
 
     @Test
@@ -307,7 +308,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(request, null);
+        verify(kafkaProducerService, times(1)).sendEmail(eq(request), anyString());
     }
 
     @Test
@@ -365,13 +366,13 @@ class NotificationSenderControllerTest {
                             .content(requestJson))
                     .andExpect(status().isCreated());
 
-            var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
+            var logMessage = getLogMessage(outputCapture, EventType.INFO,
                     "Processing letter notification request");
-            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logMessage, "context", "test-request-id");
 
-            logData = getDataFromLogMessage(outputCapture, EventType.INFO,
+            logMessage = getLogMessage(outputCapture, EventType.INFO,
                     "Letter notification sent successfully");
-            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logMessage, "context", "test-request-id");
         }
     }
 
