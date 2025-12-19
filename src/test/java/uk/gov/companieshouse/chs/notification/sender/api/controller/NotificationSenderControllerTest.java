@@ -291,11 +291,10 @@ class NotificationSenderControllerTest {
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Request-Id", "test-request-id")
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(eq(request), anyString());
+        verify(kafkaProducerService, times(1)).sendLetter(request, null);
     }
 
     @Test
@@ -305,11 +304,10 @@ class NotificationSenderControllerTest {
 
         mockMvc.perform(post("/notification-sender/email")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Request-Id", "test-request-id")
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(eq(request), anyString());
+        verify(kafkaProducerService, times(1)).sendEmail(request, null);
     }
 
     @Test
