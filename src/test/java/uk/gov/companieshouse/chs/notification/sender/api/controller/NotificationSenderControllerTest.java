@@ -3,9 +3,12 @@ package uk.gov.companieshouse.chs.notification.sender.api.controller;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
+import static helpers.utils.OutputAssertions.getLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -211,7 +214,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(kafkaProducerService, times(1)).sendEmail(eq(request), anyString());
     }
 
     @ParameterizedTest
@@ -225,7 +228,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(kafkaProducerService, times(1)).sendLetter(eq(request), anyString());
     }
 
     @Test
@@ -235,7 +238,7 @@ class NotificationSenderControllerTest {
 
         NotificationException exception = new NotificationException("Failed to send letter",
             new Throwable());
-        doThrow(exception).when(kafkaProducerService).sendLetter(request);
+        doThrow(exception).when(kafkaProducerService).sendLetter(eq(request), anyString());
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -261,7 +264,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.errors").isArray());
 
-        verify(kafkaProducerService, never()).sendEmail(any());
+        verify(kafkaProducerService, never()).sendEmail(any(), anyString());
     }
 
     @ParameterizedTest
@@ -278,7 +281,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.errors").isArray());
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 
 
@@ -292,7 +295,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(kafkaProducerService, times(1)).sendLetter(eq(request), anyString());
     }
 
     @Test
@@ -305,7 +308,7 @@ class NotificationSenderControllerTest {
                 .content(requestJson))
             .andExpect(status().isCreated());
 
-        verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(kafkaProducerService, times(1)).sendEmail(eq(request), anyString());
     }
 
     @Test
@@ -315,7 +318,7 @@ class NotificationSenderControllerTest {
 
         NotificationException exception = new NotificationException("Failed to send letter",
                 new Throwable());
-        doThrow(exception).when(kafkaProducerService).sendLetter(request);
+        doThrow(exception).when(kafkaProducerService).sendLetter(eq(request), anyString());
 
         try(var outputCapture = new OutputCapture()) {
             mockMvc.perform(post("/notification-sender/letter")
@@ -363,13 +366,13 @@ class NotificationSenderControllerTest {
                             .content(requestJson))
                     .andExpect(status().isCreated());
 
-            var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
+            var logMessage = getLogMessage(outputCapture, EventType.INFO,
                     "Processing letter notification request");
-            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logMessage, "context", "test-request-id");
 
-            logData = getDataFromLogMessage(outputCapture, EventType.INFO,
+            logMessage = getLogMessage(outputCapture, EventType.INFO,
                     "Letter notification sent successfully");
-            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logMessage, "context", "test-request-id");
         }
     }
 
@@ -392,7 +395,7 @@ class NotificationSenderControllerTest {
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 
     @ParameterizedTest
@@ -415,6 +418,6 @@ class NotificationSenderControllerTest {
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
-        verify(kafkaProducerService, never()).sendLetter(any());
+        verify(kafkaProducerService, never()).sendLetter(any(), anyString());
     }
 }
