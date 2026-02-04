@@ -38,7 +38,7 @@
         <spring-boot.version>3.5.10</spring-boot.version>
         <spring-security-core.version>6.5.4</spring-security-core.version>
         <spring-web.version>6.2.8</spring-web.version>
-        <spring-webmvc.version>6.1.14</spring-webmvc.version>
+        <spring-webmvc.version>6.2.13</spring-webmvc.version>
         <structured-logging.version>3.0.37</structured-logging.version>
         <tomcat-embed.version>11.0.12</tomcat-embed.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
