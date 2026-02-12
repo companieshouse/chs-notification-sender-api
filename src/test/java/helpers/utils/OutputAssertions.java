@@ -6,6 +6,7 @@ import static org.junit.Assert.assertArrayEquals;
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.OutputCapture;
 import java.util.Arrays;
+
 import org.junit.jupiter.api.Assertions;
 import uk.gov.companieshouse.logging.EventType;
 
@@ -50,6 +51,35 @@ public class OutputAssertions {
                             "No log entry found with message:\n  Expected: " + message
                                     + "\n  Found:    " + actualMessages);
                 });
+    }
+
+    /**
+     * Helper to get the log entry holding the message sought.
+     *
+     * @param capture the OutputCapture instance containing the logs
+     * @param event   the log level/event name (“debug”, “info”, “error”, etc.)
+     * @param message the log message sought
+     * @return the “data” JsonNode for that entry
+     * @throws AssertionError if no such entry can be found
+     */
+    public static JsonNode getLogMessage(OutputCapture capture,
+                                         EventType event,
+                                         String message) {
+        var eventName = event.getName();
+        var entries = capture.getJsonEntries();
+        if (entries.isEmpty()) {
+            throw new AssertionError("No log entries found for event: " + eventName);
+        }
+        var messageNodesSought =  entries.stream()
+                .filter(e -> e.has("event") && eventName.equals(e.get("event").asText()))
+                .filter(e -> e.has("data")
+                        && e.get("data").has("message")
+                        && e.get("data").get("message").asText().contains(message))
+                .findFirst();
+        if (messageNodesSought.isEmpty()) {
+            throw new AssertionError("No message '" + message + "' found.");
+        }
+        return messageNodesSought.get();
     }
 
     /**
