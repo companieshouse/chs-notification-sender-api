@@ -39,6 +39,9 @@ import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
 import uk.gov.companieshouse.logging.EventType;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +51,9 @@ class NotificationSenderControllerTest {
 
     @Mock
     private KafkaProducerService kafkaProducerService;
+
+    @Mock
+    private NotificationDatabaseService notificationDatabaseService;
 
     @InjectMocks
     private NotificationSenderController controller;
@@ -212,6 +218,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
     }
 
     @ParameterizedTest
@@ -226,6 +233,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
     }
 
     @Test
@@ -262,6 +270,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendEmail(any());
+        verify(notificationDatabaseService, never()).storeEmail(any());
     }
 
     @ParameterizedTest
@@ -279,6 +288,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendLetter(any());
+        verify(notificationDatabaseService, never()).storeLetter(any());
     }
 
 
@@ -293,6 +303,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
     }
 
     @Test
@@ -306,6 +317,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
     }
 
     @Test
