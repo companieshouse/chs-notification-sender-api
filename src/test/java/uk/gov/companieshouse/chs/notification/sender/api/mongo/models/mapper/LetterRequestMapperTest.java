@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,11 +11,8 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsReques
 import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.AddressMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterDetailsMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRecipientDetailsMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.SenderDetailsMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.AddressDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestDao;
 
 class LetterRequestMapperTest {
     @Test
@@ -93,56 +90,9 @@ class LetterRequestMapperTest {
     }
 
     @Test
-    void toDaoNullSenderDetails() {
-        SenderDetails sender = null;
-        assertNull(SenderDetailsMapper.toDao(sender));
-    }
-
-    @Test
-    void toDaoNullRecipientDetailsLetter() {
-        RecipientDetailsLetter recipient = null;
-        assertNull(LetterRecipientDetailsMapper.toDao(recipient));
-    }
-
-    @Test
-    void toDaoNullAddress() {
-        Address address = null;
-        assertNull(AddressMapper.toDao(address));
-    }
-
-    @Test
-    void toDaoNullLetterDetails() {
-        LetterDetails letterDetails = null;
-        assertNull(LetterDetailsMapper.toDao(letterDetails));
-    }
-
-    @Test
     void fromDaoNullLetterRequestDao() {
         LetterRequestDao dao = null;
         assertNull(LetterRequestMapper.fromDao(dao));
     }
 
-    @Test
-    void fromDaoNullSenderDetailsDao() {
-        SenderDetailsDao dao = null;
-        assertNull(SenderDetailsMapper.fromDao(dao));
-    }
-
-    @Test
-    void fromDaoNullLetterRecipientDetailsDao() {
-        LetterRecipientDetailsDao dao = null;
-        assertNull(LetterRecipientDetailsMapper.fromDao(dao));
-    }
-
-    @Test
-    void fromDaoNullAddressDao() {
-        AddressDao dao = null;
-        assertNull(AddressMapper.fromDao(dao));
-    }
-
-    @Test
-    void fromDaoNullLetterDetailsDao() {
-        LetterDetailsDao dao = null;
-        assertNull(LetterDetailsMapper.fromDao(dao));
-    }
 }

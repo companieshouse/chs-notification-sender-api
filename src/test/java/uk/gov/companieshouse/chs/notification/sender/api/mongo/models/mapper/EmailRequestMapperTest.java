@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,9 +10,7 @@ import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailDetailsMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRecipientDetailsMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
 
 class EmailRequestMapperTest {
     @Test
@@ -70,35 +68,9 @@ class EmailRequestMapperTest {
     }
 
     @Test
-    void toDaoNullRecipientDetailsEmail() {
-        RecipientDetailsEmail recipient = null;
-        assertNull(EmailRecipientDetailsMapper.toDao(recipient));
-    }
-
-    @Test
-    void toDaoNullEmailDetails() {
-        EmailDetails emailDetails = null;
-        assertNull(EmailDetailsMapper.toDao(emailDetails));
-    }
-
-    @Test
     void fromDaoNullEmailRequestDao() {
         EmailRequestDao dao = null;
         assertNull(EmailRequestMapper.fromDao(dao));
     }
-
-    @Test
-    void fromDaoNullEmailRecipientDetailsDao() {
-        EmailRecipientDetailsDao dao = null;
-        assertNull(EmailRecipientDetailsMapper.fromDao(dao));
-    }
-
-    @Test
-    void fromDaoNullEmailDetailsDao() {
-        EmailDetailsDao dao = null;
-        assertNull(EmailDetailsMapper.fromDao(dao));
-    }
-
-
 
 }
