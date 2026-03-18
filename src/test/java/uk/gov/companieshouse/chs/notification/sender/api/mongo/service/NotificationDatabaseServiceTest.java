@@ -1,15 +1,16 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mongo.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationLetterRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailDetailsDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRecipientDetailsDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.SenderDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestDao;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationLetterRequestRepository;
 
@@ -31,33 +32,29 @@ class NotificationDatabaseServiceTest {
 
     @Test
     void testStoreEmail() {
-        // Arrange
         EmailRequestDao emailRequestDao = new EmailRequestDao();
-        SenderDetailsDao sender = new SenderDetailsDao();
-        sender.setAppId("appId");
-        sender.setReference("ref");
-        sender.setName("name");
-        sender.setUserId("userId");
-        sender.setEmailAddress("sender@example.com");
-        emailRequestDao.setSenderDetails(sender);
+        when(notificationEmailRequestRepository.save(any(NotificationEmailRequest.class)))
+                .thenReturn(new NotificationEmailRequest(null, null, emailRequestDao, null));
+        ArgumentCaptor<NotificationEmailRequest> captor = ArgumentCaptor.forClass(NotificationEmailRequest.class);
 
-        EmailRecipientDetailsDao recipient = new EmailRecipientDetailsDao();
-        recipient.setName("recipient");
-        recipient.setEmailAddress("recipient@example.com");
-        emailRequestDao.setRecipientDetails(recipient);
-
-        EmailDetailsDao emailDetails = new EmailDetailsDao();
-        emailDetails.setTemplateId("templateId");
-        emailDetails.setPersonalisationDetails("details");
-        emailRequestDao.setEmailDetails(emailDetails);
-
-        NotificationEmailRequest expected = new NotificationEmailRequest(null, null, emailRequestDao, null);
-        when(notificationEmailRequestRepository.save(any(NotificationEmailRequest.class))).thenReturn(expected);
-
-        // Act
         notificationDatabaseService.storeEmail(emailRequestDao);
 
-        // Assert
-        verify(notificationEmailRequestRepository).save(expected);
+        verify(notificationEmailRequestRepository).save(captor.capture());
+        NotificationEmailRequest captured = captor.getValue();
+        Assertions.assertEquals(emailRequestDao, captured.getRequest());
+    }
+
+    @Test
+    void testStoreLetter() {
+        LetterRequestDao letterRequestDao = new LetterRequestDao();
+        when(notificationLetterRequestRepository.save(any(NotificationLetterRequest.class)))
+                .thenReturn(new NotificationLetterRequest(null, null, letterRequestDao, null));
+        ArgumentCaptor<NotificationLetterRequest> captor = ArgumentCaptor.forClass(NotificationLetterRequest.class);
+
+        notificationDatabaseService.storeLetter(letterRequestDao);
+
+        verify(notificationLetterRequestRepository).save(captor.capture());
+        NotificationLetterRequest captured = captor.getValue();
+        Assertions.assertEquals(letterRequestDao, captured.getRequest());
     }
 }
