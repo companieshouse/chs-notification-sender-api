@@ -345,7 +345,7 @@ class NotificationSenderControllerTest {
     }
 
     @Test
-    void When_ValidEmailRequest_Expect_Info_Logs() throws Exception {
+    void When_ValidEmailRequest_Expect_Logs() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
@@ -360,12 +360,17 @@ class NotificationSenderControllerTest {
                     "Processing email notification request");
             getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Email notification sent successfully");
+            var logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+                    "Storing email request in database");
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
         }
     }
 
     @ParameterizedTest
     @MethodSource("validLetterRequestProvider")
-    void When_ValidLetterRequest_Expect_Info_Logs(GovUkLetterDetailsRequest request) throws Exception {
+    void When_ValidLetterRequest_Expect_Logs(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         try (var outputCapture = new OutputCapture()) {
@@ -382,6 +387,11 @@ class NotificationSenderControllerTest {
             logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Letter notification sent successfully");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+                    "Storing letter request in database");
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
         }
     }
 

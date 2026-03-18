@@ -53,6 +53,7 @@ public class NotificationSenderController implements NotificationSenderControlle
                 .getLogMap();
         
         logMap.put("reference", govUkEmailDetailsRequest.getSenderDetails().getReference());
+        logMap.put("app_id", govUkEmailDetailsRequest.getSenderDetails().getAppId());
 
         LOG.info("Processing email notification request", logMap);
 
@@ -78,6 +79,7 @@ public class NotificationSenderController implements NotificationSenderControlle
                 .getLogMap();
         
         logMap.put("reference", govUkLetterDetailsRequest.getSenderDetails().getReference());
+        logMap.put("app_id", govUkLetterDetailsRequest.getSenderDetails().getAppId());
 
         LOG.info("Processing letter notification request", logMap);
 
