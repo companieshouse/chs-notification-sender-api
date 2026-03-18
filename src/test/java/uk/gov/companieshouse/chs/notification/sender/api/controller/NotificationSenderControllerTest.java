@@ -356,11 +356,17 @@ class NotificationSenderControllerTest {
                             .content(requestJson))
                     .andExpect(status().isCreated());
 
-            getDataFromLogMessage(outputCapture, EventType.INFO,
+            var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Processing email notification request");
-            getDataFromLogMessage(outputCapture, EventType.INFO,
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Email notification sent successfully");
-            var logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
                     "Storing email request in database");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
             assertJsonHasAndEquals(logData, "reference", "test-reference");
@@ -383,10 +389,13 @@ class NotificationSenderControllerTest {
             var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Processing letter notification request");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
-
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
             logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Letter notification sent successfully");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
             logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
                     "Storing letter request in database");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
