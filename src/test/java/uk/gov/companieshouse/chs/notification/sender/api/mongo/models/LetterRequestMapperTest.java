@@ -11,6 +11,11 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsReques
 import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.AddressMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterDetailsMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRecipientDetailsMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.SenderDetailsMapper;
 
 class LetterRequestMapperTest {
     @Test
@@ -90,25 +95,25 @@ class LetterRequestMapperTest {
     @Test
     void toDaoNullSenderDetails() {
         SenderDetails sender = null;
-        assertNull(LetterRequestMapper.toDao(sender));
+        assertNull(SenderDetailsMapper.toDao(sender));
     }
 
     @Test
     void toDaoNullRecipientDetailsLetter() {
         RecipientDetailsLetter recipient = null;
-        assertNull(LetterRequestMapper.toDao(recipient));
+        assertNull(LetterRecipientDetailsMapper.toDao(recipient));
     }
 
     @Test
     void toDaoNullAddress() {
         Address address = null;
-        assertNull(LetterRequestMapper.toDao(address));
+        assertNull(AddressMapper.toDao(address));
     }
 
     @Test
     void toDaoNullLetterDetails() {
         LetterDetails letterDetails = null;
-        assertNull(LetterRequestMapper.toDao(letterDetails));
+        assertNull(LetterDetailsMapper.toDao(letterDetails));
     }
 
     @Test
@@ -120,24 +125,24 @@ class LetterRequestMapperTest {
     @Test
     void fromDaoNullSenderDetailsDao() {
         SenderDetailsDao dao = null;
-        assertNull(LetterRequestMapper.fromDao(dao));
+        assertNull(SenderDetailsMapper.fromDao(dao));
     }
 
     @Test
     void fromDaoNullLetterRecipientDetailsDao() {
         LetterRecipientDetailsDao dao = null;
-        assertNull(LetterRequestMapper.fromDao(dao));
+        assertNull(LetterRecipientDetailsMapper.fromDao(dao));
     }
 
     @Test
     void fromDaoNullAddressDao() {
         AddressDao dao = null;
-        assertNull(LetterRequestMapper.fromDao(dao));
+        assertNull(AddressMapper.fromDao(dao));
     }
 
     @Test
     void fromDaoNullLetterDetailsDao() {
         LetterDetailsDao dao = null;
-        assertNull(LetterRequestMapper.fromDao(dao));
+        assertNull(LetterDetailsMapper.fromDao(dao));
     }
 }

@@ -10,6 +10,9 @@ import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailDetailsMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRecipientDetailsMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
 
 class EmailRequestMapperTest {
     @Test
@@ -67,21 +70,15 @@ class EmailRequestMapperTest {
     }
 
     @Test
-    void toDaoNullSenderDetails() {
-        SenderDetails sender = null;
-        assertNull(EmailRequestMapper.toDao(sender));
-    }
-
-    @Test
     void toDaoNullRecipientDetailsEmail() {
         RecipientDetailsEmail recipient = null;
-        assertNull(EmailRequestMapper.toDao(recipient));
+        assertNull(EmailRecipientDetailsMapper.toDao(recipient));
     }
 
     @Test
     void toDaoNullEmailDetails() {
         EmailDetails emailDetails = null;
-        assertNull(EmailRequestMapper.toDao(emailDetails));
+        assertNull(EmailDetailsMapper.toDao(emailDetails));
     }
 
     @Test
@@ -91,21 +88,17 @@ class EmailRequestMapperTest {
     }
 
     @Test
-    void fromDaoNullSenderDetailsDao() {
-        SenderDetailsDao dao = null;
-        assertNull(EmailRequestMapper.fromDao(dao));
-    }
-
-    @Test
     void fromDaoNullEmailRecipientDetailsDao() {
         EmailRecipientDetailsDao dao = null;
-        assertNull(EmailRequestMapper.fromDao(dao));
+        assertNull(EmailRecipientDetailsMapper.fromDao(dao));
     }
 
     @Test
     void fromDaoNullEmailDetailsDao() {
         EmailDetailsDao dao = null;
-        assertNull(EmailRequestMapper.fromDao(dao));
+        assertNull(EmailDetailsMapper.fromDao(dao));
     }
+
+
 
 }

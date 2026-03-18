@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.AbstractMongoDBTest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationLetterRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

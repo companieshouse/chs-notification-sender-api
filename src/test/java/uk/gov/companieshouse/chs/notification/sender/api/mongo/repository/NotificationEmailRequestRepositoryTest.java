@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.AbstractMongoDBTest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createEmailRequestWithCustomEmail;
