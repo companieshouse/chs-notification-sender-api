@@ -4,10 +4,14 @@ import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRecipientDetailsDao;
 
 public class EmailRecipientDetailsMapper {
-    private EmailRecipientDetailsMapper() {}
+    private EmailRecipientDetailsMapper() {
+        // prevent instantiation
+    }
 
     public static EmailRecipientDetailsDao toDao(RecipientDetailsEmail src) {
-        if (src == null) return null;
+        if (src == null) {
+            return null;
+        }
         EmailRecipientDetailsDao dest = new EmailRecipientDetailsDao();
         dest.setName(src.getName());
         dest.setEmailAddress(src.getEmailAddress());
@@ -15,7 +19,9 @@ public class EmailRecipientDetailsMapper {
     }
 
     public static RecipientDetailsEmail fromDao(EmailRecipientDetailsDao src) {
-        if (src == null) return null;
+        if (src == null) {
+            return null;
+        }
         RecipientDetailsEmail dest = new RecipientDetailsEmail();
         dest.setName(src.getName());
         dest.setEmailAddress(src.getEmailAddress());

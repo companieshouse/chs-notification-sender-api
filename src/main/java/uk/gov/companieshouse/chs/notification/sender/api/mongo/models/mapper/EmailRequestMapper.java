@@ -4,9 +4,13 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
 
 public class EmailRequestMapper {
-    private EmailRequestMapper() {}
+    private EmailRequestMapper() {
+        // prevent instantiation
+    }
     public static EmailRequestDao toDao(GovUkEmailDetailsRequest src) {
-        if (src == null) return null;
+        if (src == null) {
+            return null;
+        }
         EmailRequestDao dest = new EmailRequestDao();
         dest.setSenderDetails(SenderDetailsMapper.toDao(src.getSenderDetails()));
         dest.setRecipientDetails(EmailRecipientDetailsMapper.toDao(src.getRecipientDetails()));
@@ -15,7 +19,9 @@ public class EmailRequestMapper {
         return dest;
     }
     public static GovUkEmailDetailsRequest fromDao(EmailRequestDao src) {
-        if (src == null) return null;
+        if (src == null) {
+            return null;
+        }
         GovUkEmailDetailsRequest dest = new GovUkEmailDetailsRequest();
         dest.setSenderDetails(SenderDetailsMapper.fromDao(src.getSenderDetails()));
         dest.setRecipientDetails(EmailRecipientDetailsMapper.fromDao(src.getRecipientDetails()));
