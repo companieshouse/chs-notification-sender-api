@@ -31,3 +31,9 @@ target
 
 # These are Intellij and we are using Maven
 *.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
