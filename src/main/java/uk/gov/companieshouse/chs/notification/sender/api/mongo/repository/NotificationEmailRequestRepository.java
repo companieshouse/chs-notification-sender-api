@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
 
 @Repository
-public interface NotificationEmailRequestRepository extends MongoRepository<NotificationEmailRequest, String> {}
+public interface NotificationEmailRequestRepository extends MongoRepository<NotificationEmailRequest, String> {
+}

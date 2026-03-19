@@ -7,4 +7,5 @@ import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.Notifica
 
 @Repository
 public interface NotificationLetterRequestRepository extends
-        MongoRepository<NotificationLetterRequest, String> {}
+        MongoRepository<NotificationLetterRequest, String> {
+}

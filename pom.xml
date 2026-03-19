@@ -40,7 +40,6 @@
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <grpc-context.version>1.73.0</grpc-context.version>
         <gson.version>2.13.1</gson.version>
-        <gov-uk-notify.version>5.2.1-RELEASE</gov-uk-notify.version>
         <spring-boot-testcontainers-version>3.4.5</spring-boot-testcontainers-version>
 
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
@@ -100,11 +99,6 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>uk.gov.service.notify</groupId>
-            <artifactId>notifications-java-client</artifactId>
-            <version>${gov-uk-notify.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
