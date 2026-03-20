@@ -20,6 +20,8 @@ locals {
   app_environment_filename   = "chs-notification-sender-api.env"
   vpc_name                   = local.stack_secrets["vpc_name"]
   eric_port                 = "10000"
+  # Set this to true if secrets are required and need to be retrieved from vault
+  secrets_required           = true
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
