@@ -39,6 +39,9 @@ import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
 import uk.gov.companieshouse.logging.EventType;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +51,9 @@ class NotificationSenderControllerTest {
 
     @Mock
     private KafkaProducerService kafkaProducerService;
+
+    @Mock
+    private NotificationDatabaseService notificationDatabaseService;
 
     @InjectMocks
     private NotificationSenderController controller;
@@ -212,6 +218,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
     }
 
     @ParameterizedTest
@@ -226,6 +233,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
     }
 
     @Test
@@ -262,6 +270,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendEmail(any());
+        verify(notificationDatabaseService, never()).storeEmail(any());
     }
 
     @ParameterizedTest
@@ -279,6 +288,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendLetter(any());
+        verify(notificationDatabaseService, never()).storeLetter(any());
     }
 
 
@@ -293,6 +303,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
+        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
     }
 
     @Test
@@ -306,6 +317,7 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
+        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
     }
 
     @Test
@@ -333,7 +345,7 @@ class NotificationSenderControllerTest {
     }
 
     @Test
-    void When_ValidEmailRequest_Expect_Info_Logs() throws Exception {
+    void When_ValidEmailRequest_Expect_Logs() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
@@ -344,16 +356,27 @@ class NotificationSenderControllerTest {
                             .content(requestJson))
                     .andExpect(status().isCreated());
 
-            getDataFromLogMessage(outputCapture, EventType.INFO,
+            var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Processing email notification request");
-            getDataFromLogMessage(outputCapture, EventType.INFO,
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Email notification sent successfully");
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+                    "Storing email request in database");
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
         }
     }
 
     @ParameterizedTest
     @MethodSource("validLetterRequestProvider")
-    void When_ValidLetterRequest_Expect_Info_Logs(GovUkLetterDetailsRequest request) throws Exception {
+    void When_ValidLetterRequest_Expect_Logs(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
 
         try (var outputCapture = new OutputCapture()) {
@@ -366,10 +389,18 @@ class NotificationSenderControllerTest {
             var logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Processing letter notification request");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
-
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
             logData = getDataFromLogMessage(outputCapture, EventType.INFO,
                     "Letter notification sent successfully");
             assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
+            logData = getDataFromLogMessage(outputCapture, EventType.DEBUG,
+                    "Storing letter request in database");
+            assertJsonHasAndEquals(logData, "request_id", "test-request-id");
+            assertJsonHasAndEquals(logData, "reference", "test-reference");
+            assertJsonHasAndEquals(logData, "app_id", "test-app-id");
         }
     }
 

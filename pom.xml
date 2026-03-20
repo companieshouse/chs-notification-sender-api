@@ -40,6 +40,7 @@
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <grpc-context.version>1.73.0</grpc-context.version>
         <gson.version>2.13.1</gson.version>
+        <spring-boot-testcontainers-version>3.4.5</spring-boot-testcontainers-version>
 
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -229,6 +230,22 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <version>${spring-boot-testcontainers-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
