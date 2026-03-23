@@ -13,7 +13,7 @@ public class SenderDetailsDao {
     @Field("name")
     private String name;
 
-    @Field("userId")
+    @Field("user_id")
     private String userId;
 
     @Field("email_address")
