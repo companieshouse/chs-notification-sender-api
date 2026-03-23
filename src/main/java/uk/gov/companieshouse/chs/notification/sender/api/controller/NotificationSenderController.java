@@ -18,10 +18,11 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsReques
 import uk.gov.companieshouse.api.chs.notification.sender.api.NotificationSenderControllerInterface;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationLetterRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.RequestStatus;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -57,10 +58,12 @@ public class NotificationSenderController implements NotificationSenderControlle
 
         LOG.info("Processing email notification request", logMap);
 
-        EmailRequestDao emailRequestDao = EmailRequestMapper.toDao(govUkEmailDetailsRequest);
+        NotificationEmailRequest emailRequest = new NotificationEmailRequest(
+                EmailRequestMapper.toDao(govUkEmailDetailsRequest));
+        emailRequest.setStatus(RequestStatus.PENDING);
 
         LOG.debug( "Storing email request in database", logMap);
-        notificationDatabaseService.storeEmail(emailRequestDao);
+        notificationDatabaseService.save(emailRequest);
 
         kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
 
@@ -83,10 +86,12 @@ public class NotificationSenderController implements NotificationSenderControlle
 
         LOG.info("Processing letter notification request", logMap);
 
-        LetterRequestDao letterRequestDao = LetterRequestMapper.toDao(govUkLetterDetailsRequest);
+        NotificationLetterRequest letterRequest = new NotificationLetterRequest(
+                LetterRequestMapper.toDao(govUkLetterDetailsRequest));
+        letterRequest.setStatus(RequestStatus.PENDING);
 
         LOG.debug( "Storing letter request in database", logMap);
-        notificationDatabaseService.storeLetter(letterRequestDao);
+        notificationDatabaseService.save(letterRequest);
 
         kafkaProducerService.sendLetter(govUkLetterDetailsRequest);
 

@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.chs.notification.model.Address;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.AddressMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRecipientDetailsMapper;
 
 class LetterRecipientDetailsMapperTest {
     @Test

@@ -10,7 +10,8 @@ import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRequestMapper;
 
 class EmailRequestMapperTest {
     @Test

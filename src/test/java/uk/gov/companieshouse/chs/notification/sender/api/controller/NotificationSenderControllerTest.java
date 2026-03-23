@@ -5,6 +5,8 @@ import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -25,6 +27,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,8 +43,11 @@ import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationLetterRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.RequestStatus;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
 import uk.gov.companieshouse.logging.EventType;
 
@@ -57,6 +64,12 @@ class NotificationSenderControllerTest {
 
     @InjectMocks
     private NotificationSenderController controller;
+
+    @Captor
+    private ArgumentCaptor<NotificationEmailRequest> emailRequestCaptor;
+
+    @Captor
+    private ArgumentCaptor<NotificationLetterRequest> letterRequestCaptor;
 
     private ObjectMapper objectMapper;
 
@@ -218,7 +231,13 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
-        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
+        verify(notificationDatabaseService, times(1)).save(emailRequestCaptor.capture());
+
+        NotificationEmailRequest notificationRequest = emailRequestCaptor.getValue();
+        assertNull(notificationRequest.getCreatedAt());
+        assertNull(notificationRequest.getUpdatedAt());
+        assertEquals(RequestStatus.PENDING, notificationRequest.getStatus());
+        assertEquals(EmailRequestMapper.toDao(request), notificationRequest.getRequest());
     }
 
     @ParameterizedTest
@@ -233,7 +252,13 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
-        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
+        verify(notificationDatabaseService, times(1)).save(letterRequestCaptor.capture());
+
+        NotificationLetterRequest notificationRequest = letterRequestCaptor.getValue();
+        assertNull(notificationRequest.getCreatedAt());
+        assertNull(notificationRequest.getUpdatedAt());
+        assertEquals(RequestStatus.PENDING, notificationRequest.getStatus());
+        assertEquals(LetterRequestMapper.toDao(request), notificationRequest.getRequest());
     }
 
     @Test
@@ -270,7 +295,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendEmail(any());
-        verify(notificationDatabaseService, never()).storeEmail(any());
+        verify(notificationDatabaseService, never()).save(any(NotificationEmailRequest.class));
     }
 
     @ParameterizedTest
@@ -288,7 +313,7 @@ class NotificationSenderControllerTest {
             .andExpect(jsonPath("$.errors").isArray());
 
         verify(kafkaProducerService, never()).sendLetter(any());
-        verify(notificationDatabaseService, never()).storeLetter(any());
+        verify(notificationDatabaseService, never()).save(any(NotificationLetterRequest.class));
     }
 
 
@@ -303,7 +328,13 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendLetter(request);
-        verify(notificationDatabaseService, times(1)).storeLetter(LetterRequestMapper.toDao(request));
+        verify(notificationDatabaseService, times(1)).save(letterRequestCaptor.capture());
+
+        NotificationLetterRequest notificationRequest = letterRequestCaptor.getValue();
+        assertNull(notificationRequest.getCreatedAt());
+        assertNull(notificationRequest.getUpdatedAt());
+        assertEquals(RequestStatus.PENDING, notificationRequest.getStatus());
+        assertEquals(LetterRequestMapper.toDao(request), notificationRequest.getRequest());
     }
 
     @Test
@@ -317,7 +348,13 @@ class NotificationSenderControllerTest {
             .andExpect(status().isCreated());
 
         verify(kafkaProducerService, times(1)).sendEmail(request);
-        verify(notificationDatabaseService, times(1)).storeEmail(EmailRequestMapper.toDao(request));
+        verify(notificationDatabaseService, times(1)).save(emailRequestCaptor.capture());
+
+        NotificationEmailRequest notificationRequest = emailRequestCaptor.getValue();
+        assertNull(notificationRequest.getCreatedAt());
+        assertNull(notificationRequest.getUpdatedAt());
+        assertEquals(RequestStatus.PENDING, notificationRequest.getStatus());
+        assertEquals(EmailRequestMapper.toDao(request), notificationRequest.getRequest());
     }
 
     @Test

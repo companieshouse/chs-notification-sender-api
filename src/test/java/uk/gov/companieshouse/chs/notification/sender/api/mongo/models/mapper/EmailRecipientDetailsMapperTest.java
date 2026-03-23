@@ -4,7 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRecipientDetailsMapper;
 
 class EmailRecipientDetailsMapperTest {
     @Test

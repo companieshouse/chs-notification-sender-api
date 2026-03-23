@@ -11,8 +11,9 @@ import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsReques
 import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.AddressDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.AddressDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 
 class LetterRequestMapperTest {
     @Test

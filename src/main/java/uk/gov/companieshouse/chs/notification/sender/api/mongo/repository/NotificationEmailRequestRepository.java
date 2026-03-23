@@ -2,9 +2,9 @@ package uk.gov.companieshouse.chs.notification.sender.api.mongo.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
 
 @Repository
-public interface NotificationEmailRequestRepository extends MongoRepository<NotificationEmailRequest, String> {
+public interface NotificationEmailRequestRepository
+        extends MongoRepository<NotificationEmailRequest, String> {
 }
