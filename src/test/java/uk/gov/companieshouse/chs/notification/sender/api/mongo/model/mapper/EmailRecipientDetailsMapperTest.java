@@ -1,11 +1,12 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRecipientDetailsDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRecipientDetailsMapper;
 
 class EmailRecipientDetailsMapperTest {
     @Test
