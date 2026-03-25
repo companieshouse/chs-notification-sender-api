@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import helpers.OutputCapture;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -224,6 +226,10 @@ class NotificationSenderControllerTest {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getEmail(appId, reference)).thenReturn(Optional.empty());
+
         mockMvc.perform(post("/notification-sender/email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-Request-Id", "test-request-id")
@@ -244,6 +250,10 @@ class NotificationSenderControllerTest {
     @MethodSource("validLetterRequestProvider")
     void When_ValidLetterRequest_Expect_CreatedStatus(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
+
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getLetter(appId, reference)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/notification-sender/letter")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -316,7 +326,6 @@ class NotificationSenderControllerTest {
         verify(notificationDatabaseService, never()).save(any(NotificationLetterRequest.class));
     }
 
-
     @Test
     void When_LetterRequestWithoutRequestId_Expect_CreatedStatus() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
@@ -386,6 +395,10 @@ class NotificationSenderControllerTest {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
 
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getEmail(appId, reference)).thenReturn(Optional.empty());
+
         try (var outputCapture = new OutputCapture()) {
             mockMvc.perform(post("/notification-sender/email")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -415,6 +428,10 @@ class NotificationSenderControllerTest {
     @MethodSource("validLetterRequestProvider")
     void When_ValidLetterRequest_Expect_Logs(GovUkLetterDetailsRequest request) throws Exception {
         String requestJson = objectMapper.writeValueAsString(request);
+
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getLetter(appId, reference)).thenReturn(Optional.empty());
 
         try (var outputCapture = new OutputCapture()) {
             mockMvc.perform(post("/notification-sender/letter")
@@ -484,5 +501,43 @@ class NotificationSenderControllerTest {
         }
 
         verify(kafkaProducerService, never()).sendLetter(any());
+    }
+
+    @Test
+    void When_DuplicatedEmailRequest_Expect_ConflictStatus() throws Exception {
+        GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
+        String requestJson = objectMapper.writeValueAsString(request);
+        
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getEmail(appId, reference))
+                .thenReturn(Optional.of(new NotificationEmailRequest()));
+
+        mockMvc.perform(post("/notification-sender/email")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isConflict());
+
+        verify(kafkaProducerService, never()).sendEmail(request);
+        verify(notificationDatabaseService, never()).save(any(NotificationEmailRequest.class));
+    }
+
+    @Test
+    void When_DuplicatedLetterRequest_Expect_ConflictStatus() throws Exception {
+        GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
+        String requestJson = objectMapper.writeValueAsString(request);
+        
+        String appId = request.getSenderDetails().getAppId();
+        String reference = request.getSenderDetails().getReference();
+        when(notificationDatabaseService.getLetter(appId, reference))
+                .thenReturn(Optional.of(new NotificationLetterRequest()));
+
+        mockMvc.perform(post("/notification-sender/letter")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isConflict());
+
+        verify(kafkaProducerService, never()).sendLetter(request);
+        verify(notificationDatabaseService, never()).save(any(NotificationLetterRequest.class));
     }
 }
