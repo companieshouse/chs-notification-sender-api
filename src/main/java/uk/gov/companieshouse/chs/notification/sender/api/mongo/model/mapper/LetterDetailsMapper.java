@@ -1,7 +1,7 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper;
 
 import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterDetailsDao;
 
 public class LetterDetailsMapper {
     private LetterDetailsMapper() {

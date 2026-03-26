@@ -6,8 +6,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
-
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
 import java.time.LocalDateTime;
 
 @Document(collection = "email_details")

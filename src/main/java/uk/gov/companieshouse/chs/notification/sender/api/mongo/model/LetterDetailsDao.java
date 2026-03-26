@@ -1,14 +1,17 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.model;
 
 import java.util.Objects;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class EmailDetailsDao {
+public class LetterDetailsDao {
     @Field("template_id")
     private String templateId;
 
     @Field("personalisation_details")
     private String personalisationDetails;
+
+    @Field("letter_id")
+    private String letterId;
 
     public String getTemplateId() {
         return templateId;
@@ -26,9 +29,17 @@ public class EmailDetailsDao {
         this.personalisationDetails = personalisationDetails;
     }
 
+    public String getLetterId() {
+        return letterId;
+    }
+
+    public void setLetterId(String letterId) {
+        this.letterId = letterId;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(personalisationDetails, templateId);
+        return Objects.hash(letterId, personalisationDetails, templateId);
     }
 
     @Override
@@ -42,8 +53,9 @@ public class EmailDetailsDao {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        EmailDetailsDao other = (EmailDetailsDao) obj;
-        return Objects.equals(personalisationDetails, other.personalisationDetails)
+        LetterDetailsDao other = (LetterDetailsDao) obj;
+        return Objects.equals(letterId, other.letterId)
+                && Objects.equals(personalisationDetails, other.personalisationDetails)
                 && Objects.equals(templateId, other.templateId);
     }
 

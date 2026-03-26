@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.chs.notification.sender.api.mongo.models;
+package uk.gov.companieshouse.chs.notification.sender.api.mongo.model;
 
 import java.util.Objects;
 import org.springframework.data.mongodb.core.mapping.Field;

@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationLetterRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.EmailRequestDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.LetterRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationLetterRequestRepository;
 

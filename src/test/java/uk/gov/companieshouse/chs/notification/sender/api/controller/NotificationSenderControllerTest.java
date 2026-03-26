@@ -39,8 +39,8 @@ import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.EmailRequestMapper;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.models.mapper.LetterRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRequestMapper;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
 import uk.gov.companieshouse.logging.EventType;
 
