@@ -1,14 +1,14 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
 import java.time.OffsetDateTime;
-import uk.gov.companieshouse.api.chs.notification.model.Address;
-import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
-import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.Address;
+import uk.gov.companieshouse.api.chs.notification.sender.model.EmailDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.LetterDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsEmail;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsLetter;
+import uk.gov.companieshouse.api.chs.notification.sender.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.AddressDao;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailDetailsDao;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRecipientDetailsDao;
