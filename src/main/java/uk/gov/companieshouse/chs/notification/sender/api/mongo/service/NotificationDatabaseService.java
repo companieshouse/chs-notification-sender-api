@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mongo.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
@@ -19,6 +20,16 @@ public class NotificationDatabaseService {
     ) {
         this.notificationEmailRequestRepository = notificationEmailRequestRepository;
         this.notificationLetterRequestRepository = notificationLetterRequestRepository;
+    }
+    
+    @Transactional( readOnly = true )
+    public Optional<NotificationEmailRequest> getEmail(final String appId, final String reference) {
+        return notificationEmailRequestRepository.findByUniqueReference(appId, reference);
+    }
+
+    @Transactional( readOnly = true )
+    public Optional<NotificationLetterRequest> getLetter(final String appId, final String reference) {
+        return notificationLetterRequestRepository.findByUniqueReference(appId, reference);
     }
 
     @Transactional

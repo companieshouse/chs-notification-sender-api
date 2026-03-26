@@ -9,6 +9,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationLetterRequestRepository;
 
 @Testcontainers(disabledWithoutDocker = true)
@@ -25,7 +26,10 @@ public abstract class AbstractMongoDBTest {
     }
 
     @Autowired
-    private NotificationLetterRequestRepository notificationLetterRequestRepository;
+    protected NotificationLetterRequestRepository notificationLetterRequestRepository;
+
+    @Autowired
+    protected NotificationEmailRequestRepository notificationEmailRequestRepository;
 
     @DynamicPropertySource
     static void mongoDbProperties(DynamicPropertyRegistry registry) {
@@ -35,5 +39,6 @@ public abstract class AbstractMongoDBTest {
     @AfterEach
     void tearDown() {
         notificationLetterRequestRepository.deleteAll();
+        notificationEmailRequestRepository.deleteAll();
     }
 }

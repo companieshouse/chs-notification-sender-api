@@ -48,15 +48,23 @@ public class NotificationSenderController implements NotificationSenderControlle
             @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
             @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
+        String appId = govUkEmailDetailsRequest.getSenderDetails().getAppId();
+        String reference = govUkEmailDetailsRequest.getSenderDetails().getReference();
         var logMap = new DataMap.Builder()
                 .requestId(Objects.toString(requestId, ""))
                 .build()
                 .getLogMap();
-        
-        logMap.put("reference", govUkEmailDetailsRequest.getSenderDetails().getReference());
-        logMap.put("app_id", govUkEmailDetailsRequest.getSenderDetails().getAppId());
+
+        logMap.put("reference", reference);
+        logMap.put("app_id", appId);
 
         LOG.info("Processing email notification request", logMap);
+
+        if (notificationDatabaseService.getEmail(appId, reference).isPresent()) {
+            LOG.error("Duplicate email request found", new IllegalStateException(
+                    "Email request with same unique reference found in database"), logMap);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         NotificationEmailRequest emailRequest = new NotificationEmailRequest(
                 EmailRequestMapper.toDao(govUkEmailDetailsRequest));
@@ -76,15 +84,23 @@ public class NotificationSenderController implements NotificationSenderControlle
             @RequestBody final GovUkLetterDetailsRequest govUkLetterDetailsRequest,
             @RequestHeader(value = "X-Request-Id", required = false) final String requestId
     ) {
+        String appId = govUkLetterDetailsRequest.getSenderDetails().getAppId();
+        String reference = govUkLetterDetailsRequest.getSenderDetails().getReference();
         var logMap = new DataMap.Builder()
                 .requestId(Objects.toString(requestId, ""))
                 .build()
                 .getLogMap();
-        
-        logMap.put("reference", govUkLetterDetailsRequest.getSenderDetails().getReference());
-        logMap.put("app_id", govUkLetterDetailsRequest.getSenderDetails().getAppId());
+
+        logMap.put("reference", reference);
+        logMap.put("app_id", appId);
 
         LOG.info("Processing letter notification request", logMap);
+
+        if (notificationDatabaseService.getLetter(appId, reference).isPresent()) {
+            LOG.error("Duplicate letter request found", new IllegalStateException(
+                    "Letter request with same unique reference found in database"), logMap);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         NotificationLetterRequest letterRequest = new NotificationLetterRequest(
                 LetterRequestMapper.toDao(govUkLetterDetailsRequest));

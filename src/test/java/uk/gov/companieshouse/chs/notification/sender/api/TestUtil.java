@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
 import java.time.OffsetDateTime;
-
 import uk.gov.companieshouse.api.chs.notification.model.Address;
 import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
@@ -10,6 +9,14 @@ import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
 import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.AddressDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRecipientDetailsDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.SenderDetailsDao;
 
 public class TestUtil {
     public static final String DEFAULT_APP_ID = "test-app-id";
@@ -85,5 +92,52 @@ public class TestUtil {
 
     public static GovUkEmailDetailsRequest createEmailRequestWithCustomEmail(String email) {
         return createValidEmailRequest().recipientDetails(new RecipientDetailsEmail(DEFAULT_RECIPIENT_NAME, email));
+    }
+
+    public static LetterRequestDao createLetterRequestDao() {
+        SenderDetailsDao senderDetails = new SenderDetailsDao();
+        senderDetails.setAppId("chips");
+        senderDetails.setReference("test-reference");
+        AddressDao address = new AddressDao();
+        address.setAddressLine1("Address line 1");
+        address.setAddressLine2("Apt 101");
+        address.setAddressLine3("District");
+        address.setAddressLine4("City");
+        address.setAddressLine5("County");
+        address.setAddressLine6("Postcode");
+        address.setAddressLine7("Foreign country");
+        LetterRecipientDetailsDao recipientDetails = new LetterRecipientDetailsDao();
+        recipientDetails.setName("Test Recipient");
+        recipientDetails.setPhysicalAddress(address);
+        LetterDetailsDao letterDetails = new LetterDetailsDao();
+        letterDetails.setLetterId("IDVPSCDIRNEW");
+        letterDetails.setTemplateId("v1.0");
+        letterDetails.setPersonalisationDetails("{}");
+
+        LetterRequestDao letterRequest = new LetterRequestDao();
+        letterRequest.setSenderDetails(senderDetails);
+        letterRequest.setRecipientDetails(recipientDetails);
+        letterRequest.setLetterDetails(letterDetails);
+        letterRequest.setCreatedAt(OffsetDateTime.now());
+        return letterRequest;
+    }
+
+    public static EmailRequestDao createEmailRequestDao() {
+        SenderDetailsDao senderDetails = new SenderDetailsDao();
+        senderDetails.setAppId("chips");
+        senderDetails.setReference("test-reference");
+        EmailRecipientDetailsDao recipientDetails = new EmailRecipientDetailsDao();
+        recipientDetails.setName("Test User");
+        recipientDetails.setEmailAddress("test@example");
+        EmailDetailsDao emailDetails = new EmailDetailsDao();
+        emailDetails.setTemplateId("template-123");
+        emailDetails.setPersonalisationDetails("Hello {{name}}");
+
+        EmailRequestDao emailRequest = new EmailRequestDao();
+        emailRequest.setSenderDetails(senderDetails);
+        emailRequest.setRecipientDetails(recipientDetails);
+        emailRequest.setEmailDetails(emailDetails);
+        emailRequest.setCreatedAt(OffsetDateTime.now());
+        return emailRequest;
     }
 }
