@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.AbstractMongoDBTest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationLetterRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationLetterRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +24,6 @@ class NotificationLetterRequestRepositoryTest extends AbstractMongoDBTest {
         letterRequest.getRecipientDetails().getPhysicalAddress().setAddressLine1("123 Main St");
         NotificationLetterRequest notificationLetterRequest = new NotificationLetterRequest();
         notificationLetterRequest.setRequest(LetterRequestMapper.toDao(letterRequest));
-        notificationLetterRequest.setId(null);
-        notificationLetterRequest.setCreatedAt(null);
-        notificationLetterRequest.setUpdatedAt(null);
         NotificationLetterRequest savedRequest = requestRepository.save(notificationLetterRequest);
 
         assertNotNull(savedRequest.toString());
@@ -40,7 +37,9 @@ class NotificationLetterRequestRepositoryTest extends AbstractMongoDBTest {
         GovUkLetterDetailsRequest initialRequest = createValidLetterRequest();
         initialRequest.getRecipientDetails().getPhysicalAddress().setAddressLine1("Initial Address");
 
-        NotificationLetterRequest savedRequest = requestRepository.save(new NotificationLetterRequest(null, null, LetterRequestMapper.toDao(initialRequest), null));
+        NotificationLetterRequest request = new NotificationLetterRequest();
+        request.setRequest(LetterRequestMapper.toDao(initialRequest));
+        NotificationLetterRequest savedRequest = requestRepository.save(request);
 
         savedRequest.getRequest().getRecipientDetails().getPhysicalAddress().setAddressLine1( "Updated Address" );
 

@@ -2,13 +2,10 @@ package uk.gov.companieshouse.chs.notification.sender.api.mongo.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationEmailRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.document.NotificationLetterRequest;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
-import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationLetterRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationLetterRequestRepository;
-
 
 @Service
 public class NotificationDatabaseService {
@@ -25,13 +22,12 @@ public class NotificationDatabaseService {
     }
 
     @Transactional
-    public NotificationEmailRequest storeEmail(final EmailRequestDao emailRequestDao) {
-        return notificationEmailRequestRepository.save(new NotificationEmailRequest(null, null, emailRequestDao, null));
+    public NotificationEmailRequest save(final NotificationEmailRequest request) {
+        return notificationEmailRequestRepository.save(request);
     }
 
     @Transactional
-    public NotificationLetterRequest storeLetter(final LetterRequestDao letterRequestDao) {
-        return notificationLetterRequestRepository.save(new NotificationLetterRequest(null, null, letterRequestDao, null));
+    public NotificationLetterRequest save(final NotificationLetterRequest request) {
+        return notificationLetterRequestRepository.save(request);
     }
-
 }
