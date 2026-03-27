@@ -1,10 +1,7 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mapper;
 
-import java.time.OffsetDateTime;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
@@ -15,15 +12,11 @@ import uk.gov.companieshouse.notification.ChsLetterNotification;
 @Mapper(componentModel = "spring")
 public interface NotificationMapper {
 
-    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToString")
+    @Mapping(source = "senderDetails.appId", target = "appId")
+    @Mapping(source = "senderDetails.reference", target = "reference")
     ChsEmailNotification mapToEmailDetailsRequest(GovUkEmailDetailsRequest govUkEmailDetailsRequest);
 
-    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "offsetDateTimeToString")
+    @Mapping(source = "senderDetails.appId", target = "appId")
+    @Mapping(source = "senderDetails.reference", target = "reference")
     ChsLetterNotification mapToLetterDetailsRequest(GovUkLetterDetailsRequest govUkLetterDetailsRequest);
-
-    @Named("offsetDateTimeToString")
-    static String offsetDateTimeToString(OffsetDateTime dateTime) {
-        return dateTime != null ? dateTime.toString() : null;
-    }
-
 }

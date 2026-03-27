@@ -25,7 +25,7 @@
         <java.version>21</java.version>
         <junit.version>4.13.2</junit.version>
         <kafka-clients.version>4.0.0</kafka-clients.version>
-        <kafka-models.version>3.0.26</kafka-models.version>
+        <kafka-models.version>3.0.30</kafka-models.version>
         <log4j-version>2.24.2</log4j-version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>

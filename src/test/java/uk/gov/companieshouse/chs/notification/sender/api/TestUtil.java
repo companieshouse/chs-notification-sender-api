@@ -19,26 +19,26 @@ import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterReque
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.SenderDetailsDao;
 
 public class TestUtil {
-    public static final String DEFAULT_APP_ID = "test-app-id";
-    public static final String DEFAULT_REFERENCE = "test-reference";
-    public static final String DEFAULT_SENDER_NAME = "Sender Name";
-    public static final String DEFAULT_USER_ID = "test-user-123";
-    public static final String DEFAULT_SENDER_EMAIL = "sender@example.com";
-    public static final String DEFAULT_RECIPIENT_NAME = "Recipient Name";
-    public static final String DEFAULT_RECIPIENT_EMAIL = "recipient@example.com";
-    public static final String DEFAULT_EMAIL_TEMPLATE_ID = "template-uuid-email-12345678";
-    public static final String DEFAULT_LETTER_TEMPLATE_ID = "template-uuid-letter-87654321";
-    public static final String DEFAULT_LETTER_ID = "LETTER_TYPE_ID";
-    public static final String DEFAULT_EMAIL_CONTENT = "{\"subject\":\"Test Subject\",\"content\":\"This is a test email\"}";
-    public static final String DEFAULT_LETTER_CONTENT = "{\"subject\":\"Test Letter\",\"content\":\"This is a test letter\"}";
+    private static final String DEFAULT_APP_ID = "test-app-id";
+    private static final String DEFAULT_REFERENCE = "test-reference";
+    private static final String DEFAULT_SENDER_NAME = "Sender Name";
+    private static final String DEFAULT_USER_ID = "test-user-123";
+    private static final String DEFAULT_SENDER_EMAIL = "sender@example.com";
+    private static final String DEFAULT_RECIPIENT_NAME = "Recipient Name";
+    private static final String DEFAULT_RECIPIENT_EMAIL = "recipient@example.com";
+    private static final String DEFAULT_EMAIL_TEMPLATE_ID = "template-uuid-email-12345678";
+    private static final String DEFAULT_LETTER_TEMPLATE_ID = "template-uuid-letter-87654321";
+    private static final String DEFAULT_LETTER_ID = "LETTER_TYPE_ID";
+    private static final String DEFAULT_EMAIL_CONTENT = "{\"subject\":\"Test Subject\",\"content\":\"This is a test email\"}";
+    private static final String DEFAULT_LETTER_CONTENT = "{\"subject\":\"Test Letter\",\"content\":\"This is a test letter\"}";
 
-    public static final String DEFAULT_ADDRESS_LINE_1 = "123 Test Street";
-    public static final String DEFAULT_ADDRESS_LINE_2 = "Apartment 101";
-    public static final String DEFAULT_ADDRESS_LINE_3 = "Test District";
-    public static final String DEFAULT_ADDRESS_LINE_4 = "Test City";
-    public static final String DEFAULT_ADDRESS_LINE_5 = "Test County";
-    public static final String DEFAULT_ADDRESS_LINE_6 = "TE5 7ST";
-    public static final String DEFAULT_ADDRESS_LINE_7 = "United Kingdom";
+    private static final String DEFAULT_ADDRESS_LINE_1 = "123 Test Street";
+    private static final String DEFAULT_ADDRESS_LINE_2 = "Apartment 101";
+    private static final String DEFAULT_ADDRESS_LINE_3 = "Test District";
+    private static final String DEFAULT_ADDRESS_LINE_4 = "Test City";
+    private static final String DEFAULT_ADDRESS_LINE_5 = "Test County";
+    private static final String DEFAULT_ADDRESS_LINE_6 = "TE5 7ST";
+    private static final String DEFAULT_ADDRESS_LINE_7 = "United Kingdom";
 
     public static GovUkEmailDetailsRequest createValidEmailRequest() {
         return new GovUkEmailDetailsRequest()
@@ -96,23 +96,23 @@ public class TestUtil {
 
     public static LetterRequestDao createLetterRequestDao() {
         SenderDetailsDao senderDetails = new SenderDetailsDao();
-        senderDetails.setAppId("chips");
-        senderDetails.setReference("test-reference");
+        senderDetails.setAppId(DEFAULT_APP_ID);
+        senderDetails.setReference(DEFAULT_REFERENCE);
         AddressDao address = new AddressDao();
-        address.setAddressLine1("Address line 1");
-        address.setAddressLine2("Apt 101");
-        address.setAddressLine3("District");
-        address.setAddressLine4("City");
-        address.setAddressLine5("County");
-        address.setAddressLine6("Postcode");
-        address.setAddressLine7("Foreign country");
+        address.setAddressLine1(DEFAULT_ADDRESS_LINE_1);
+        address.setAddressLine2(DEFAULT_ADDRESS_LINE_2);
+        address.setAddressLine3(DEFAULT_ADDRESS_LINE_3);
+        address.setAddressLine4(DEFAULT_ADDRESS_LINE_4);
+        address.setAddressLine5(DEFAULT_ADDRESS_LINE_5);
+        address.setAddressLine6(DEFAULT_ADDRESS_LINE_6);
+        address.setAddressLine7(DEFAULT_ADDRESS_LINE_7);
         LetterRecipientDetailsDao recipientDetails = new LetterRecipientDetailsDao();
-        recipientDetails.setName("Test Recipient");
+        recipientDetails.setName(DEFAULT_RECIPIENT_NAME);
         recipientDetails.setPhysicalAddress(address);
         LetterDetailsDao letterDetails = new LetterDetailsDao();
-        letterDetails.setLetterId("IDVPSCDIRNEW");
-        letterDetails.setTemplateId("v1.0");
-        letterDetails.setPersonalisationDetails("{}");
+        letterDetails.setLetterId(DEFAULT_LETTER_ID);
+        letterDetails.setTemplateId(DEFAULT_LETTER_TEMPLATE_ID);
+        letterDetails.setPersonalisationDetails(DEFAULT_LETTER_CONTENT);
 
         LetterRequestDao letterRequest = new LetterRequestDao();
         letterRequest.setSenderDetails(senderDetails);
@@ -124,14 +124,14 @@ public class TestUtil {
 
     public static EmailRequestDao createEmailRequestDao() {
         SenderDetailsDao senderDetails = new SenderDetailsDao();
-        senderDetails.setAppId("chips");
-        senderDetails.setReference("test-reference");
+        senderDetails.setAppId(DEFAULT_APP_ID);
+        senderDetails.setReference(DEFAULT_REFERENCE);
         EmailRecipientDetailsDao recipientDetails = new EmailRecipientDetailsDao();
-        recipientDetails.setName("Test User");
-        recipientDetails.setEmailAddress("test@example");
+        recipientDetails.setName(DEFAULT_RECIPIENT_NAME);
+        recipientDetails.setEmailAddress(DEFAULT_RECIPIENT_EMAIL);
         EmailDetailsDao emailDetails = new EmailDetailsDao();
-        emailDetails.setTemplateId("template-123");
-        emailDetails.setPersonalisationDetails("Hello {{name}}");
+        emailDetails.setTemplateId(DEFAULT_EMAIL_TEMPLATE_ID);
+        emailDetails.setPersonalisationDetails(DEFAULT_EMAIL_CONTENT);
 
         EmailRequestDao emailRequest = new EmailRequestDao();
         emailRequest.setSenderDetails(senderDetails);

@@ -186,7 +186,7 @@ class NotificationSenderControllerTest {
             Arguments.of(
                 "Missing template ID in letter details",
                 TestUtil.createValidLetterRequest().letterDetails(
-                    new LetterDetails(null, TestUtil.DEFAULT_LETTER_CONTENT)),
+                    new LetterDetails(null, "{}")),
                 new String[]{"letterDetails.templateId: must not be null"}
             ),
             Arguments.of(
