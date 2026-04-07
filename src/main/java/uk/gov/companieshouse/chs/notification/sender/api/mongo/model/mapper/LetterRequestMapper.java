@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper;
 
-import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
 
 public class LetterRequestMapper {

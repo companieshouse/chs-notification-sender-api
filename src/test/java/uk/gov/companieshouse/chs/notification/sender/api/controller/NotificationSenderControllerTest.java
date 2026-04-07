@@ -37,11 +37,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
-import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.LetterDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsLetter;
+import uk.gov.companieshouse.api.chs.notification.sender.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
@@ -186,7 +186,7 @@ class NotificationSenderControllerTest {
             Arguments.of(
                 "Missing template ID in letter details",
                 TestUtil.createValidLetterRequest().letterDetails(
-                    new LetterDetails(null, TestUtil.DEFAULT_LETTER_CONTENT)),
+                    new LetterDetails(null, "{}")),
                 new String[]{"letterDetails.templateId: must not be null"}
             ),
             Arguments.of(

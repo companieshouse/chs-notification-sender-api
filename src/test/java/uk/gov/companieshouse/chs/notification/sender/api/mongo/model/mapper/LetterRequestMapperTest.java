@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
-import uk.gov.companieshouse.api.chs.notification.model.Address;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.LetterDetails;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsLetter;
-import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.Address;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.LetterDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsLetter;
+import uk.gov.companieshouse.api.chs.notification.sender.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.AddressDao;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.LetterRequestDao;
 

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsEmail;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRecipientDetailsDao;
 
 class EmailRecipientDetailsMapperTest {

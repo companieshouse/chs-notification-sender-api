@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
-import uk.gov.companieshouse.api.chs.notification.model.EmailDetails;
-import uk.gov.companieshouse.api.chs.notification.model.GovUkEmailDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.model.RecipientDetailsEmail;
-import uk.gov.companieshouse.api.chs.notification.model.SenderDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.EmailDetails;
+import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.api.chs.notification.sender.model.RecipientDetailsEmail;
+import uk.gov.companieshouse.api.chs.notification.sender.model.SenderDetails;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.EmailRequestDao;
 
 class EmailRequestMapperTest {
