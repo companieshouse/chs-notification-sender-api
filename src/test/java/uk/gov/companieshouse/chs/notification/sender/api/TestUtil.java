@@ -1,6 +1,8 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 import uk.gov.companieshouse.api.chs.notification.sender.model.Address;
 import uk.gov.companieshouse.api.chs.notification.sender.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
@@ -45,7 +47,7 @@ public class TestUtil {
                 .senderDetails(createDefaultSenderDetails())
                 .recipientDetails(createDefaultRecipientDetailsEmail())
                 .emailDetails(createDefaultEmailDetails())
-                .createdAt(OffsetDateTime.now());
+                .createdAt(OffsetDateTime.now(ZoneId.of("UTC")));
     }
 
     public static GovUkLetterDetailsRequest createValidLetterRequest() {
@@ -53,7 +55,7 @@ public class TestUtil {
                 .senderDetails(createDefaultSenderDetails())
                 .recipientDetails(createDefaultRecipientDetailsLetter())
                 .letterDetails(createDefaultLetterDetails())
-                .createdAt(OffsetDateTime.now());
+                .createdAt(OffsetDateTime.now(ZoneId.of("UTC")));
     }
 
     public static SenderDetails createDefaultSenderDetails() {
