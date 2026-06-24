@@ -24,7 +24,7 @@
         <hamcrest-all-version>1.3</hamcrest-all-version>
         <java.version>21</java.version>
         <junit.version>4.13.2</junit.version>
-        <kafka-clients.version>4.0.0</kafka-clients.version>
+        <kafka-clients.version>4.0.2</kafka-clients.version>
         <kafka-models.version>3.0.30</kafka-models.version>
         <log4j-version>2.24.2</log4j-version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -35,12 +35,17 @@
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
         <private-api-sdk-java.version>4.0.490</private-api-sdk-java.version>
         <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
-        <spring-boot.version>3.5.11</spring-boot.version>
-        <structured-logging.version>3.0.37</structured-logging.version>
+        <spring-boot.version>3.5.15</spring-boot.version>
+        <structured-logging.version>3.0.57</structured-logging.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <grpc-context.version>1.73.0</grpc-context.version>
         <gson.version>2.13.1</gson.version>
         <spring-boot-testcontainers-version>3.4.5</spring-boot-testcontainers-version>
+
+        <!-- Remove this if spring-boot > 3.5.15 updated this dependency to >= 2.25.4 -->
+        <log4j-api.version>2.25.4</log4j-api.version>
+        <!-- Remove this if structured-logging version > 3.0.57 updated this dependency to >= 1.42.0 -->
+        <open-telemetry.version>1.42.0</open-telemetry.version>
 
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -84,21 +89,26 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Temporarily overridden dependencies -->
-            <!--
-                Override dependency to fix CVE-2025-68161
-                Review to see if spring-boot-starter-logging > 3.5.10
-                supplies an updated version of this,
-                allowing removal of this dependency.
-            -->
+            <!-- Remove this if spring-boot > 3.5.15 updated this dependency to >= 2.25.4 -->
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>2.25.3</version>
+                <version>${log4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>${log4j-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- Remove this if structured-logging version > 3.0.57 updated this dependency to >= 1.42.0 -->
+        <dependency>
+            <groupId>io.opentelemetry.semconv</groupId>
+            <artifactId>opentelemetry-semconv</artifactId>
+            <version>${open-telemetry.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -124,7 +134,6 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
@@ -174,11 +183,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
