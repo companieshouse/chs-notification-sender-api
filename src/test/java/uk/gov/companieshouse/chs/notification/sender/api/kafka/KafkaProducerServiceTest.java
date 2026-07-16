@@ -10,11 +10,12 @@ import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidEmailRequest;
 import static uk.gov.companieshouse.chs.notification.sender.api.TestUtil.createValidLetterRequest;
 
-import helpers.OutputCapture;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+
+import helpers.OutputCapture;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,6 @@ class KafkaProducerServiceTest {
 
     @Autowired
     private ApplicationConfig applicationConfig;
-
 
     @BeforeEach
     void setup() {
