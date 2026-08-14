@@ -8,7 +8,7 @@ data "aws_kms_key" "kms_key" {
 
 data "vault_generic_secret" "service_secrets" {
   count = local.secrets_required ? 1 : 0
-  path = "applications/${var.aws_profile}/${var.environment}/${local.stack_name}-stack/${local.service_name}"
+  path  = "applications/${var.aws_profile}/${var.environment}/${local.stack_name}-stack/${local.service_name}"
 }
 
 data "aws_vpc" "vpc" {
@@ -39,7 +39,7 @@ data "aws_lb" "service_lb" {
 
 data "aws_lb_listener" "service_lb_listener" {
   load_balancer_arn = data.aws_lb.service_lb.arn
-  port = 443
+  port              = 443
 }
 
 # retrieve all secrets for this stack using the stack path
@@ -50,7 +50,7 @@ data "aws_ssm_parameters_by_path" "secrets" {
 # create a list of secrets names to retrieve them in a nicer format and lookup each secret by name
 data "aws_ssm_parameter" "secret" {
   for_each = toset(data.aws_ssm_parameters_by_path.secrets.names)
-  name = each.key
+  name     = each.key
 }
 
 # retrieve all global secrets for this env using global path
@@ -67,4 +67,25 @@ data "aws_ssm_parameter" "global_secret" {
 // --- s3 bucket for shared services config ---
 data "vault_generic_secret" "shared_s3" {
   path = "aws-accounts/shared-services/s3"
+}
+
+# policy on the role allowing ecs to upload to s3 bucket
+data "aws_iam_policy_document" "uploader_trust" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "upload_to_s3" {
+  statement {
+    sid       = "WriteToBucket"
+    effect    = "Allow"
+    actions   = ["s3:PutObject", "s3:AbortMultipartUpload"]
+    resources = ["arn:aws:s3:::notification-attachments-${var.environment}/*"]
+  }
 }

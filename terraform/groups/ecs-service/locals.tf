@@ -17,9 +17,9 @@ locals {
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
   app_environment_filename   = "chs-notification-sender-api.env"
   vpc_name                   = local.stack_secrets["vpc_name"]
-  eric_port                 = "10000"
+  eric_port                  = "10000"
   # Set this to true if secrets are required and need to be retrieved from vault
-  secrets_required           = true
+  secrets_required = true
 
   stack_secrets = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
   service_secrets = (
@@ -31,13 +31,13 @@ locals {
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name
   secrets_arn_map = {
-    for sec in data.aws_ssm_parameter.secret:
-      trimprefix(sec.name, "/${local.name_prefix}/") => sec.arn
+    for sec in data.aws_ssm_parameter.secret :
+    trimprefix(sec.name, "/${local.name_prefix}/") => sec.arn
   }
 
   service_secrets_arn_map = {
-    for sec in module.secrets.secrets:
-      trimprefix(sec.name, "/${local.service_name}-${var.environment}/") => sec.arn
+    for sec in module.secrets.secrets :
+    trimprefix(sec.name, "/${local.service_name}-${var.environment}/") => sec.arn
   }
 
   global_secret_list = flatten([for key, value in local.global_secrets_arn_map :
@@ -70,14 +70,14 @@ locals {
   # TODO: task_secrets don't seem to correspond with 'parameter_store_secrets'. What is the difference?
   task_secrets = concat(local.global_secret_list, local.service_secret_list)
 
-  task_environment = concat(local.ssm_global_version_map,local.ssm_service_version_map,[
+  task_environment = concat(local.ssm_global_version_map, local.ssm_service_version_map, [
     { name : "PORT", value : local.container_port }
   ])
 
   # get eric secrets from global secrets map
   eric_secrets = [
-    { "name": "API_KEY", "valueFrom": local.global_secrets_arn_map.eric_api_key },
-    { "name": "AES256_KEY", "valueFrom": local.global_secrets_arn_map.eric_aes256_key }
+    { "name" : "API_KEY", "valueFrom" : local.global_secrets_arn_map.eric_api_key },
+    { "name" : "AES256_KEY", "valueFrom" : local.global_secrets_arn_map.eric_aes256_key }
   ]
 
   eric_environment_filename = "eric.env"
