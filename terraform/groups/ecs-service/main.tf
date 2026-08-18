@@ -1,28 +1,27 @@
+terraform {
+  required_version = ">= 1.3.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.0.0, < 7.0.0"
+    }
+    vault = {
+      source  = "hashicorp/vault"
+      version = ">= 5.0.0, < 6.0.0"
+    }
+  }
+  backend "s3" {}
+}
+
 provider "aws" {
   region = var.aws_region
 }
 
-terraform {
-  backend "s3" {
-  }
-  required_version = "~> 1.3"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.54.0"
-    }
-    vault = {
-      source  = "hashicorp/vault"
-      version = "~> 3.18.0"
-    }
-  }
-}
-
 module "secrets" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/ecs/secrets?ref=1.0.300"
+  source = "git@github.com:companieshouse/terraform-modules//aws/parameter-store?ref=1.0.408"
 
   name_prefix = "${local.service_name}-${var.environment}"
-  environment = var.environment
   kms_key_id  = data.aws_kms_key.kms_key.id
   secrets = (
     local.secrets_required
@@ -32,7 +31,7 @@ module "secrets" {
 }
 
 module "ecs-service" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/ecs/ecs-service?ref=1.0.300"
+  source = "git@github.com:companieshouse/terraform-modules//aws/ecs/ecs-service?ref=1.0.408"
 
   # Environmental configuration
   environment               = var.environment
@@ -97,4 +96,3 @@ module "ecs-service" {
   eric_cpus                 = var.eric_cpus
   eric_memory               = var.eric_memory
 }
-
