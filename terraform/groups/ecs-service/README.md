@@ -20,6 +20,7 @@
 |------|--------|---------|
 | <a name="module_ecs-service"></a> [ecs-service](#module\_ecs-service) | git@github.com:companieshouse/terraform-modules//aws/ecs/ecs-service | 1.0.408 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | git@github.com:companieshouse/terraform-modules//aws/parameter-store | 1.0.408 |
+| <a name="module_service_tags"></a> [service\_tags](#module\_service\_tags) | git@github.com:companieshouse/terraform-modules//aws/tagging/service | 1.0.407 |
 
 ## Resources
 

@@ -1,6 +1,8 @@
 resource "aws_iam_role" "notifications_upload" {
   name               = "${local.name_prefix}-upload"
   assume_role_policy = data.aws_iam_policy_document.uploader_trust.json
+
+  tags = module.service_tags.tags
 }
 
 resource "aws_iam_role_policy" "upload_to_s3" {

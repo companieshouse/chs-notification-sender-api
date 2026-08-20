@@ -86,6 +86,7 @@ module "ecs-service" {
   task_secrets              = local.task_secrets
   app_environment_filename  = local.app_environment_filename
   use_set_environment_files = local.use_set_environment_files
+  default_tags              = module.service_tags.tags
 
   # Eric variables
   use_eric_reverse_proxy    = true
@@ -95,4 +96,11 @@ module "ecs-service" {
   eric_version              = var.eric_version
   eric_cpus                 = var.eric_cpus
   eric_memory               = var.eric_memory
+}
+
+module "service_tags" {
+  source = "git@github.com:companieshouse/terraform-modules//aws/tagging/service?ref=1.0.407"
+
+  environment = var.environment
+  name        = local.service_name
 }
