@@ -20,7 +20,6 @@
 |------|--------|---------|
 | <a name="module_ecs-service"></a> [ecs-service](#module\_ecs-service) | git@github.com:companieshouse/terraform-modules//aws/ecs/ecs-service | 1.0.408 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | git@github.com:companieshouse/terraform-modules//aws/parameter-store | 1.0.408 |
-| <a name="module_service_tags"></a> [service\_tags](#module\_service\_tags) | git@github.com:companieshouse/terraform-modules//aws/tagging/service | 1.0.407 |
 
 ## Resources
 
@@ -38,7 +37,6 @@
 | [aws_s3_bucket.notification_attachments](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_ssm_parameter.global_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameters_by_path.global_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameters_by_path) | data source |
-| [aws_ssm_parameters_by_path.secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameters_by_path) | data source |
 | [aws_subnets.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 | [vault_generic_secret.service_secrets](https://registry.terraform.io/providers/hashicorp/vault/latest/docs/data-sources/generic_secret) | data source |
