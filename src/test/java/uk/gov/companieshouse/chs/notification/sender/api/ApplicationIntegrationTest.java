@@ -1,18 +1,24 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -28,7 +34,6 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.MongoDBContainer;
@@ -44,8 +49,8 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 
+@ExtendWith(OutputCaptureExtension.class)
 @Testcontainers(disabledWithoutDocker = true)
-@SpringJUnitConfig
 @EmbeddedKafka(topics = {"chs-notification-email", "chs-notification-letter"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApplicationIntegrationTest {
@@ -73,6 +78,13 @@ class ApplicationIntegrationTest {
     }
 
     private Consumer<Integer, String> notificationEmailConsumer;
+
+    @BeforeAll
+    static void setUp(@Autowired S3Client s3Client) {
+        s3Client.createBucket(CreateBucketRequest.builder()
+                .bucket(NOTIFICATION_ATTACHMENTS)
+                .build());
+    }
 
     @AfterEach
     void tearDown() {
@@ -110,31 +122,13 @@ class ApplicationIntegrationTest {
                                                    @Autowired S3Client s3Client,
                                                    @Autowired NotificationEmailRequestRepository notificationEmailRequestRepository) throws Exception {
         // Given
-        s3Client.createBucket(CreateBucketRequest.builder()
-                .bucket(NOTIFICATION_ATTACHMENTS)
-                .build());
-
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
-        
-        HttpHeaders jsonHeaders = new HttpHeaders();
-        jsonHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> emailPayload = new HttpEntity<>(objectMapper.writeValueAsString(emailRequest), jsonHeaders);
 
-        MultiValueMap<String, Object> multiPartFormData = new LinkedMultiValueMap<>();
-        multiPartFormData.add("request", emailPayload);
-        multiPartFormData.add("file", new ByteArrayResource("Hello World".getBytes()) {
-            @Override
-            public String getFilename() {
-                return "file.text";
-            }
-        });
+        MultiValueMap<String, Object> multiPartFormData = buildMultiPartFormWithAttachment(objectMapper, emailRequest);
 
         // When
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
-                emailNotification()
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .body(multiPartFormData), Void.class);
+        ResponseEntity<Void> responseEntity = whenPostEmailNotification(testRestTemplate, multiPartFormData);
 
         // Then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -158,6 +152,52 @@ class ApplicationIntegrationTest {
                 .key(emailRequest.getSenderDetails().getReference())
                 .build());
         assertThat(new String(object.readAllBytes())).contains("Hello World");
+    }
+
+    @Test
+    void shouldRespondWithConflictGivenEmailHasAlreadyBeenProcessed(@Autowired TestRestTemplate testRestTemplate,
+                                                                    @Autowired ObjectMapper objectMapper,
+                                                                    CapturedOutput capturedOutput) throws Exception {
+        // Given
+        GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
+        emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
+
+        MultiValueMap<String, Object> multiPartFormData = buildMultiPartFormWithAttachment(objectMapper, emailRequest);
+        ResponseEntity<Void> firstResponse = whenPostEmailNotification(testRestTemplate, multiPartFormData);
+
+        // When
+        ResponseEntity<Void> secondResponse = whenPostEmailNotification(testRestTemplate, multiPartFormData);
+
+        // Then
+        assertThat(firstResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(capturedOutput).contains(format("Duplicate email request found for %s%s",
+                emailRequest.getSenderDetails().getAppId(),
+                emailRequest.getSenderDetails().getReference()));
+    }
+
+    private MultiValueMap<String, Object> buildMultiPartFormWithAttachment(ObjectMapper objectMapper,
+                                                                           GovUkEmailDetailsRequest emailRequest) throws JsonProcessingException {
+        HttpHeaders jsonHeaders = new HttpHeaders();
+        jsonHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> emailPayload = new HttpEntity<>(objectMapper.writeValueAsString(emailRequest), jsonHeaders);
+
+        MultiValueMap<String, Object> multiPartFormData = new LinkedMultiValueMap<>();
+        multiPartFormData.add("request", emailPayload);
+        multiPartFormData.add("file", new ByteArrayResource("Hello World".getBytes()) {
+            @Override
+            public String getFilename() {
+                return "file.text";
+            }
+        });
+        return multiPartFormData;
+    }
+
+    private ResponseEntity<Void> whenPostEmailNotification(TestRestTemplate testRestTemplate, MultiValueMap<String, Object> multiPartFormData) {
+        return testRestTemplate.exchange(
+                emailNotification()
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .body(multiPartFormData), Void.class);
     }
 
     private RequestEntity.BodyBuilder emailNotification() {
