@@ -9,6 +9,7 @@ public record AwsProperties(URI s3Endpoint,
                             String region,
                             String bucketName,
                             String accessKeyId,
-                            String secretAccessKey) {
+                            String secretAccessKey,
+                            Boolean pathStyleAccessEnabled) {
 
 }

@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,17 +18,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.multipart.MultipartFile;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
+import uk.gov.companieshouse.chs.notification.sender.api.S3MockContainer;
 import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 
 @Testcontainers(disabledWithoutDocker = true)
@@ -45,23 +42,16 @@ class AttachmentStorageServiceTest {
     private S3Client s3Client;
 
     @Container
-    static LocalStackContainer localstack = new LocalStackContainer(DockerImageName.parse("localstack/localstack:0.11.2"))
-            .withServices(LocalStackContainer.Service.S3);
+    static S3MockContainer s3Mock = new S3MockContainer();
 
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("chs.notification.aws.s3-endpoint", localstack::getEndpoint);
-        registry.add("chs.notification.aws.access-key-id", localstack::getAccessKey);
-        registry.add("chs.notification.aws.secret-access-key", localstack::getSecretKey);
-        registry.add("chs.notification.aws.region", () -> localstack.getRegion());
-        registry.add("chs.notification.aws.bucket-name", () -> NOTIFICATION_ATTACHMENTS);
-    }
-
-    @BeforeEach
-    void setUp() {
-        s3Client.createBucket(CreateBucketRequest.builder()
-                .bucket(NOTIFICATION_ATTACHMENTS)
-                .build());
+        registry.add("chs.notification.aws.s3-endpoint", s3Mock::getS3MockEndpoint);
+        registry.add("chs.notification.aws.access-key-id", s3Mock::getAccessKeyId);
+        registry.add("chs.notification.aws.secret-access-key", s3Mock::getSecretAccessKey);
+        registry.add("chs.notification.aws.region", s3Mock::getRegion);
+        registry.add("chs.notification.aws.bucket-name", s3Mock::getBucket);
+        registry.add("chs.notification.aws.path-style-access-enabled", () -> true);
     }
 
     @ParameterizedTest
@@ -80,14 +70,14 @@ class AttachmentStorageServiceTest {
         // Then
         HeadObjectResponse headObjectResponse = getHeadeObjectForRequest(emailRequest);
         ResponseInputStream<GetObjectResponse> storedObject = s3Client.getObject(GetObjectRequest.builder()
-                .bucket(NOTIFICATION_ATTACHMENTS)
+                .bucket(s3Mock.getBucket())
                 .key(emailRequest.getSenderDetails().getReference())
                 .build());
         assertThat(headObjectResponse.metadata())
                 .contains(
                         entry("content-type", multipartFile.getContentType()),
                         entry("filename", multipartFile.getOriginalFilename()));
-        assertThat(storedObject.readAllBytes()).contains(Files.readAllBytes(attachmentResource.getFile().toPath()));
+        assertThat(storedObject.readAllBytes()).isEqualTo(Files.readAllBytes(attachmentResource.getFile().toPath()));
     }
 
     @Test
@@ -115,7 +105,7 @@ class AttachmentStorageServiceTest {
 
     private HeadObjectResponse getHeadeObjectForRequest(GovUkEmailDetailsRequest emailRequest) {
         return s3Client.headObject(builder -> builder
-                .bucket(NOTIFICATION_ATTACHMENTS)
+                .bucket(s3Mock.getBucket())
                 .key(emailRequest.getSenderDetails().getReference())
                 .build());
     }

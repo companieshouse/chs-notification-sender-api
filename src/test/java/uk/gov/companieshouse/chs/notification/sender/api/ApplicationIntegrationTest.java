@@ -12,7 +12,6 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +36,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
@@ -64,27 +61,20 @@ class ApplicationIntegrationTest {
     static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:6.0.19"));
 
     @Container
-    static LocalStackContainer localstack = new LocalStackContainer(DockerImageName.parse("localstack/localstack:0.11.2"))
-            .withServices(LocalStackContainer.Service.S3);
+    static S3MockContainer s3Mock = new S3MockContainer();
 
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
-        registry.add("chs.notification.aws.s3-endpoint", localstack::getEndpoint);
-        registry.add("chs.notification.aws.access-key-id", localstack::getAccessKey);
-        registry.add("chs.notification.aws.secret-access-key", localstack::getSecretKey);
-        registry.add("chs.notification.aws.region", () -> localstack.getRegion());
-        registry.add("chs.notification.aws.bucket-name", () -> NOTIFICATION_ATTACHMENTS);
+        registry.add("chs.notification.aws.s3-endpoint", s3Mock::getS3MockEndpoint);
+        registry.add("chs.notification.aws.access-key-id", s3Mock::getAccessKeyId);
+        registry.add("chs.notification.aws.secret-access-key", s3Mock::getSecretAccessKey);
+        registry.add("chs.notification.aws.region", s3Mock::getRegion);
+        registry.add("chs.notification.aws.bucket-name", s3Mock::getBucket);
+        registry.add("chs.notification.aws.path-style-access-enabled", () -> true);
     }
 
     private Consumer<Integer, String> notificationEmailConsumer;
-
-    @BeforeAll
-    static void setUp(@Autowired S3Client s3Client) {
-        s3Client.createBucket(CreateBucketRequest.builder()
-                .bucket(NOTIFICATION_ATTACHMENTS)
-                .build());
-    }
 
     @AfterEach
     void tearDown() {
@@ -148,10 +138,10 @@ class ApplicationIntegrationTest {
                                 .isEqualTo("\u0016test-app-idH" + emailRequest.getSenderDetails().getReference()));
 
         ResponseInputStream<GetObjectResponse> object = s3Client.getObject(GetObjectRequest.builder()
-                .bucket(NOTIFICATION_ATTACHMENTS)
+                .bucket(s3Mock.getBucket())
                 .key(emailRequest.getSenderDetails().getReference())
                 .build());
-        assertThat(new String(object.readAllBytes())).contains("Hello World");
+        assertThat(new String(object.readAllBytes())).isEqualTo("Hello World");
     }
 
     @Test
