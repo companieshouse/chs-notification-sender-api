@@ -14,6 +14,7 @@ public class EmailDetailsMapper {
         }
         EmailDetailsDao dest = new EmailDetailsDao();
         dest.setTemplateId(src.getTemplateId());
+        dest.setAttachmentId(src.getAttachmentId());
         dest.setPersonalisationDetails(src.getPersonalisationDetails());
         return dest;
     }
@@ -24,6 +25,7 @@ public class EmailDetailsMapper {
         }
         EmailDetails dest = new EmailDetails();
         dest.setTemplateId(src.getTemplateId());
+        dest.setAttachmentId(src.getAttachmentId());
         dest.setPersonalisationDetails(src.getPersonalisationDetails());
         return dest;
     }
