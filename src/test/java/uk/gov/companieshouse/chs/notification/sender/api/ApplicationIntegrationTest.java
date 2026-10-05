@@ -114,6 +114,7 @@ class ApplicationIntegrationTest {
         // Given
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
+        String attachmentId = emailRequest.getSenderDetails().getAppId() + "-" +emailRequest.getSenderDetails().getReference();
 
         MultiValueMap<String, Object> multiPartFormData = buildMultiPartFormWithAttachment(objectMapper, emailRequest);
 
@@ -128,7 +129,7 @@ class ApplicationIntegrationTest {
                 emailRequest.getSenderDetails().getReference()))
                 .isPresent()
                 .hasValueSatisfying(notificationEmailRequest -> assertThat(
-                        notificationEmailRequest.getRequest().getEmailDetails().getAttachmentId()).isEqualTo(emailRequest.getSenderDetails().getReference()));
+                        notificationEmailRequest.getRequest().getEmailDetails().getAttachmentId()).isEqualTo(attachmentId));
 
         notificationEmailConsumer = createNotificationEmailConsumer(embeddedKafkaBroker);
         ConsumerRecords<Integer, String> replies = KafkaTestUtils.getRecords(notificationEmailConsumer);
@@ -139,7 +140,7 @@ class ApplicationIntegrationTest {
 
         ResponseInputStream<GetObjectResponse> object = s3Client.getObject(GetObjectRequest.builder()
                 .bucket(s3Mock.getBucket())
-                .key(emailRequest.getSenderDetails().getReference())
+                .key(attachmentId)
                 .build());
         assertThat(new String(object.readAllBytes())).isEqualTo("Hello World");
     }

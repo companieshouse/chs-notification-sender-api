@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -18,6 +19,7 @@ public class AttachmentStorageService {
 
     public static final String CONTENT_TYPE = "content-type";
     public static final String FILENAME = "filename";
+    public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
     private final S3Client s3Client;
     private final AwsProperties awsProperties;
 
@@ -29,19 +31,22 @@ public class AttachmentStorageService {
 
     public String storeAttachment(GovUkEmailDetailsRequest emailDetailsRequest,
                                   MultipartFile attachment) {
+        String attachmentId = emailDetailsRequest.getSenderDetails().getAppId() + "-" + emailDetailsRequest.getSenderDetails().getReference();
         try {
             s3Client.putObject(PutObjectRequest.builder()
                             .bucket(awsProperties.bucketName())
-                            .key(emailDetailsRequest.getSenderDetails().getReference())
-                            .contentEncoding(attachment.getContentType())
+                            .key(attachmentId)
+                            .contentType(StringUtils.defaultIfBlank(attachment.getContentType(),
+                                    APPLICATION_OCTET_STREAM))
                             .metadata(Map.of(
-                                    CONTENT_TYPE, StringUtils.defaultIfBlank(attachment.getContentType(), "application/octet-stream"),
+                                    CONTENT_TYPE, StringUtils.defaultIfBlank(attachment.getContentType(),
+                                            APPLICATION_OCTET_STREAM),
                                     FILENAME, StringUtils.defaultIfBlank(attachment.getOriginalFilename(), attachment.getName())))
                             .build(),
                     RequestBody.fromBytes(attachment.getBytes()));
-        } catch (IOException e) {
+        } catch (IOException | SdkException e) {
             throw new NotificationException("Failed to store attachment", e);
         }
-        return emailDetailsRequest.getSenderDetails().getReference();
+        return attachmentId;
     }
 }

@@ -60,6 +60,7 @@ class AttachmentStorageServiceTest {
         // Given
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
+        String attachmentId = emailRequest.getSenderDetails().getAppId() + "-" + emailRequest.getSenderDetails().getReference();
 
         ClassPathResource attachmentResource = getAttachmentResource(fileName);
         MultipartFile multipartFile = givenMultipartFileForAttachment(attachmentResource);
@@ -71,7 +72,7 @@ class AttachmentStorageServiceTest {
         HeadObjectResponse headObjectResponse = getHeadeObjectForRequest(emailRequest);
         ResponseInputStream<GetObjectResponse> storedObject = s3Client.getObject(GetObjectRequest.builder()
                 .bucket(s3Mock.getBucket())
-                .key(emailRequest.getSenderDetails().getReference())
+                .key(attachmentId)
                 .build());
         assertThat(headObjectResponse.metadata())
                 .contains(
@@ -106,7 +107,7 @@ class AttachmentStorageServiceTest {
     private HeadObjectResponse getHeadeObjectForRequest(GovUkEmailDetailsRequest emailRequest) {
         return s3Client.headObject(builder -> builder
                 .bucket(s3Mock.getBucket())
-                .key(emailRequest.getSenderDetails().getReference())
+                .key(emailRequest.getSenderDetails().getAppId() +"-" + emailRequest.getSenderDetails().getReference())
                 .build());
     }
 
