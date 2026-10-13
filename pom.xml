@@ -6,7 +6,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.12</version>
+        <version>3.0.0</version>
     </parent>
     <artifactId>chs-notification-sender-api</artifactId>
     <version>unversioned</version>
@@ -50,8 +50,6 @@
 
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.login></sonar.login>
-        <sonar.password></sonar.password>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.projectName>chs-notification-sender-api</sonar.projectName>
         <sonar.projectKey>uk.gov.companieshouse:chs-notification-sender-api</sonar.projectKey>
