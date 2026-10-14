@@ -13,11 +13,13 @@ class EmailDetailsMapperTest {
     void toDaoFromDao() {
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setTemplateId("template");
+        emailDetails.setAttachmentId("attachment");
         emailDetails.setPersonalisationDetails("{\"key\":\"value\"}");
 
         EmailDetailsDao dao = EmailDetailsMapper.toDao(emailDetails);
         assertNotNull(dao);
         assertEquals(emailDetails.getTemplateId(), dao.getTemplateId());
+        assertEquals(emailDetails.getAttachmentId(), dao.getAttachmentId());
         assertEquals(emailDetails.getPersonalisationDetails(), dao.getPersonalisationDetails());
 
         EmailDetails mappedBack = EmailDetailsMapper.fromDao(dao);

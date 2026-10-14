@@ -1,22 +1,25 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
+import static java.lang.String.format;
 import static uk.gov.companieshouse.chs.notification.sender.api.ChsNotificationSenderApiApplication.APPLICATION_NAMESPACE;
 
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import uk.gov.companieshouse.api.chs.notification.sender.api.NotificationSenderControllerInterface;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
-import uk.gov.companieshouse.api.chs.notification.sender.api.NotificationSenderControllerInterface;
-import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationException;
+import uk.gov.companieshouse.chs.notification.sender.api.exception.AlreadyProcessedException;
 import uk.gov.companieshouse.chs.notification.sender.api.kafka.KafkaProducerService;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationEmailRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.NotificationLetterRequest;
@@ -24,6 +27,7 @@ import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.RequestStat
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.EmailRequestMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.model.mapper.LetterRequestMapper;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.service.NotificationDatabaseService;
+import uk.gov.companieshouse.chs.notification.sender.api.storage.AttachmentStorageService;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -33,45 +37,60 @@ public class NotificationSenderController implements NotificationSenderControlle
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAMESPACE);
 
-
     private final KafkaProducerService kafkaProducerService;
+    private final AttachmentStorageService attachmentStorageService;
 
     private final NotificationDatabaseService notificationDatabaseService;
 
-    public NotificationSenderController(KafkaProducerService kafkaService, NotificationDatabaseService notificationDatabaseService) {
+    public NotificationSenderController(KafkaProducerService kafkaService,
+                                        NotificationDatabaseService notificationDatabaseService,
+                                        AttachmentStorageService attachmentStorageService) {
         this.notificationDatabaseService = notificationDatabaseService;
         this.kafkaProducerService = kafkaService;
+        this.attachmentStorageService = attachmentStorageService;
     }
 
     @Override
     public ResponseEntity<Void> sendEmail(
             @RequestBody final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
-            @RequestHeader(value = "X-Request-Id", required = false) final String requestId
-    ) {
-        String appId = govUkEmailDetailsRequest.getSenderDetails().getAppId();
-        String reference = govUkEmailDetailsRequest.getSenderDetails().getReference();
-        var logMap = new DataMap.Builder()
-                .requestId(Objects.toString(requestId, ""))
-                .build()
-                .getLogMap();
+            @RequestHeader(value = "X-Request-Id", required = false) final String requestId) {
 
-        logMap.put("reference", reference);
-        logMap.put("app_id", appId);
+        var logMap = buildLogMap(
+                requestId,
+                govUkEmailDetailsRequest.getSenderDetails().getReference(),
+                govUkEmailDetailsRequest.getSenderDetails().getAppId());
 
         LOG.info("Processing email notification request", logMap);
 
-        if (notificationDatabaseService.getEmail(appId, reference).isPresent()) {
-            LOG.error("Duplicate email request found", new IllegalStateException(
-                    "Email request with same unique reference found in database"), logMap);
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        checkIfAlreadyProcessed(govUkEmailDetailsRequest);
 
-        NotificationEmailRequest emailRequest = new NotificationEmailRequest(
-                EmailRequestMapper.toDao(govUkEmailDetailsRequest));
-        emailRequest.setStatus(RequestStatus.PENDING);
+        saveEmailRequest(govUkEmailDetailsRequest, logMap);
+        kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
 
-        LOG.debug( "Storing email request in database", logMap);
-        notificationDatabaseService.save(emailRequest);
+        LOG.info("Email notification sent successfully", logMap);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping(
+            value = "/notification-sender/email",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Override
+    public ResponseEntity<Void> sendEmailWithAttachment(
+            @RequestPart(value = "request") final GovUkEmailDetailsRequest govUkEmailDetailsRequest,
+            @RequestPart(value = "file") final MultipartFile attachment,
+            @RequestHeader(value = "X-Request-Id", required = false) final String requestId) {
+
+        var logMap = buildLogMap(
+                requestId,
+                govUkEmailDetailsRequest.getSenderDetails().getReference(),
+                govUkEmailDetailsRequest.getSenderDetails().getAppId());
+
+        LOG.info("Processing email with attachment notification request", logMap);
+
+        checkIfAlreadyProcessed(govUkEmailDetailsRequest);
+
+        saveAttachment(govUkEmailDetailsRequest, attachment);
+        saveEmailRequest(govUkEmailDetailsRequest, logMap);
 
         kafkaProducerService.sendEmail(govUkEmailDetailsRequest);
 
@@ -86,21 +105,10 @@ public class NotificationSenderController implements NotificationSenderControlle
     ) {
         String appId = govUkLetterDetailsRequest.getSenderDetails().getAppId();
         String reference = govUkLetterDetailsRequest.getSenderDetails().getReference();
-        var logMap = new DataMap.Builder()
-                .requestId(Objects.toString(requestId, ""))
-                .build()
-                .getLogMap();
-
-        logMap.put("reference", reference);
-        logMap.put("app_id", appId);
+        var logMap = buildLogMap(requestId, reference, appId);
 
         LOG.info("Processing letter notification request", logMap);
-
-        if (notificationDatabaseService.getLetter(appId, reference).isPresent()) {
-            LOG.error("Duplicate letter request found", new IllegalStateException(
-                    "Letter request with same unique reference found in database"), logMap);
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        checkIfAlreadyProcessed(govUkLetterDetailsRequest);
 
         NotificationLetterRequest letterRequest = new NotificationLetterRequest(
                 LetterRequestMapper.toDao(govUkLetterDetailsRequest));
@@ -115,40 +123,50 @@ public class NotificationSenderController implements NotificationSenderControlle
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            final MethodArgumentNotValidException ex
-    ) {
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .toList();
-
-        var logMap = new DataMap.Builder()
-                .status(Objects.toString(HttpStatus.BAD_REQUEST.value()))
-                .errors(errors)
-                .build()
-                .getLogMap();
-
-        LOG.error("Validation error", ex, logMap);
-        return new ResponseEntity<>(logMap, HttpStatus.BAD_REQUEST);
+    private void saveAttachment(GovUkEmailDetailsRequest govUkEmailDetailsRequest,
+                                MultipartFile attachment) {
+        String attachmentId = attachmentStorageService.storeAttachment(govUkEmailDetailsRequest, attachment);
+        govUkEmailDetailsRequest.getEmailDetails().setAttachmentId(attachmentId);
+        LOG.debug(format("Stored attachment with id %s", attachmentId));
     }
 
-    @ExceptionHandler(NotificationException.class)
-    public ResponseEntity<Map<String, Object>> handleNotificationException(
-            final NotificationException ex,
-            final HttpServletRequest request
-    ) {
+    private void checkIfAlreadyProcessed(GovUkEmailDetailsRequest govUkEmailDetailsRequest) {
+        Optional<NotificationEmailRequest> email = notificationDatabaseService
+                .getEmail(
+                        govUkEmailDetailsRequest.getSenderDetails().getAppId(),
+                        govUkEmailDetailsRequest.getSenderDetails().getReference());
+        if (email.isPresent()) {
+            throw new AlreadyProcessedException(govUkEmailDetailsRequest);
+        }
+    }
+
+    private void checkIfAlreadyProcessed(GovUkLetterDetailsRequest govUkLetterDetailsRequest) {
+        Optional<NotificationLetterRequest> letter = notificationDatabaseService
+                .getLetter(
+                        govUkLetterDetailsRequest.getSenderDetails().getAppId(),
+                        govUkLetterDetailsRequest.getSenderDetails().getReference());
+        if (letter.isPresent()) {
+            throw new AlreadyProcessedException(govUkLetterDetailsRequest);
+        }
+    }
+
+    private void saveEmailRequest(GovUkEmailDetailsRequest govUkEmailDetailsRequest, Map<String, Object> logMap) {
+        NotificationEmailRequest emailRequest = new NotificationEmailRequest(
+                EmailRequestMapper.toDao(govUkEmailDetailsRequest));
+        emailRequest.setStatus(RequestStatus.PENDING);
+
+        LOG.debug( "Storing email request in database", logMap);
+        notificationDatabaseService.save(emailRequest);
+    }
+
+    private static Map<String, Object> buildLogMap(String requestId, String reference, String appId) {
         var logMap = new DataMap.Builder()
-                .requestId(request.getHeader("X-Request-Id"))
-                .status(Objects.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                .errors(List.of("Failed to process notification"))
-                .message(ex.getMessage())
+                .requestId(Objects.toString(requestId, ""))
                 .build()
                 .getLogMap();
 
-        LOG.error("Failed to send notification", ex, logMap);
-        return new ResponseEntity<>(logMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        logMap.put("reference", reference);
+        logMap.put("app_id", appId);
+        return logMap;
     }
 }

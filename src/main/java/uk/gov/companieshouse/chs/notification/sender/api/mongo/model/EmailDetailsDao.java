@@ -7,6 +7,9 @@ public class EmailDetailsDao {
     @Field("template_id")
     private String templateId;
 
+    @Field("attachment_id")
+    private String attachmentId;
+
     @Field("personalisation_details")
     private String personalisationDetails;
 
@@ -16,6 +19,14 @@ public class EmailDetailsDao {
 
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
+    }
+
+    public String getAttachmentId() {
+        return attachmentId;
+    }
+
+    public void setAttachmentId(String attachmentId) {
+        this.attachmentId = attachmentId;
     }
 
     public String getPersonalisationDetails() {
@@ -28,7 +39,7 @@ public class EmailDetailsDao {
 
     @Override
     public int hashCode() {
-        return Objects.hash(personalisationDetails, templateId);
+        return Objects.hash(personalisationDetails, templateId, attachmentId);
     }
 
     @Override
@@ -44,7 +55,8 @@ public class EmailDetailsDao {
         }
         EmailDetailsDao other = (EmailDetailsDao) obj;
         return Objects.equals(personalisationDetails, other.personalisationDetails)
-                && Objects.equals(templateId, other.templateId);
+                && Objects.equals(templateId, other.templateId)
+                && Objects.equals(attachmentId, other.attachmentId);
     }
 
 }
