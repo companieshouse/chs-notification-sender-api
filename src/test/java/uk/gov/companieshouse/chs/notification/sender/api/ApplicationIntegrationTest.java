@@ -16,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +37,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -49,10 +52,22 @@ import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.Notifi
 @ExtendWith(OutputCaptureExtension.class)
 @Testcontainers(disabledWithoutDocker = true)
 @EmbeddedKafka(topics = {"chs-notification-email", "chs-notification-letter"})
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApplicationIntegrationTest {
 
     public static final String NOTIFICATION_ATTACHMENTS = "notification-attachments";
+
+    // Spring Boot 4 no longer auto-configures a plain `com.fasterxml.jackson.databind.ObjectMapper`
+    // bean by default (see spring-boot-4-migration skill, jackson-3-default-stack.md); this test
+    // only needs it to (de)serialise request/response bodies for assertions.
+    @TestConfiguration
+    static class TestJacksonConfig {
+        @Bean
+        ObjectMapper objectMapper() {
+            return new ObjectMapper().registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        }
+    }
 
     @Autowired
     EmbeddedKafkaBroker embeddedKafkaBroker;
@@ -65,7 +80,7 @@ class ApplicationIntegrationTest {
 
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
         registry.add("chs.notification.aws.s3-endpoint", s3Mock::getS3MockEndpoint);
         registry.add("chs.notification.aws.access-key-id", s3Mock::getAccessKeyId);
         registry.add("chs.notification.aws.secret-access-key", s3Mock::getSecretAccessKey);
