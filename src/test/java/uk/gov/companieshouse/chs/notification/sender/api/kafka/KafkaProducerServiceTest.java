@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
@@ -35,7 +34,7 @@ import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationE
 import uk.gov.companieshouse.logging.EventType;
 
 
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith({MockitoExtension.class})
 @SpringBootTest
 class KafkaProducerServiceTest {
 
