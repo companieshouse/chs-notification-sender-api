@@ -14,39 +14,26 @@
     <description>CHS Notification Service for sending letters and emails</description>
     <url/>
     <properties>
-        <api-helper-java.version>3.0.1</api-helper-java.version>
-        <api-sdk-manager-java-library.version>3.0.9</api-sdk-manager-java-library.version>
-        <api-security-java-version>2.0.10</api-security-java-version>
-        <ch-kafka-version>3.0.6</ch-kafka-version>
+        <ch-dependency-bom.version>0.1.31</ch-dependency-bom.version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <flapdoodle.version>4.16.1</flapdoodle.version>
         <google-http-client.version>1.45.0</google-http-client.version>
         <hamcrest-all-version>1.3</hamcrest-all-version>
         <java.version>21</java.version>
-        <junit.version>4.13.2</junit.version>
-        <kafka-clients.version>3.9.2</kafka-clients.version>
-        <kafka-models.version>3.0.30</kafka-models.version>
         <log4j-version>2.24.2</log4j-version>
+        <netty.version>4.2.18.Final</netty.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>7.2.22</private-api-sdk-java.version>
-        <rest-service-common-library-version>2.0.2</rest-service-common-library-version>
-        <spring-boot.version>3.5.15</spring-boot.version>
+        <private-api-sdk-java.version>7.2.38</private-api-sdk-java.version>
+        <spring-boot.version>4.1.1</spring-boot.version>
         <software.amazon.awssdk-bom.version>2.48.0</software.amazon.awssdk-bom.version>
-        <structured-logging.version>3.0.57</structured-logging.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <grpc-context.version>1.73.0</grpc-context.version>
         <gson.version>2.13.1</gson.version>
-        <spring-boot-testcontainers-version>3.4.5</spring-boot-testcontainers-version>
-
-        <!-- Remove this if spring-boot > 3.5.15 updated this dependency to >= 2.25.4 -->
-        <log4j-api.version>2.25.4</log4j-api.version>
-        <!-- Remove this if structured-logging version > 3.0.57 updated this dependency to >= 1.42.0 -->
-        <open-telemetry.version>1.42.0</open-telemetry.version>
 
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
@@ -77,9 +64,25 @@
     </profiles>
     <dependencyManagement>
         <dependencies>
+            <!-- CVE-2026-89044: must appear before spring-boot-dependencies so this
+                 patched Netty version takes precedence over the 4.2.17.Final pinned
+                 there and transitively pulled in via the AWS SDK's netty-nio-client
+                 (HTTP request smuggling via malformed Transfer-Encoding headers). -->
             <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Must appear before spring-boot-dependencies so CH-approved
+                 versions (including CVE overrides) take precedence. -->
+            <dependency>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-dependency-bom</artifactId>
+                <version>${ch-dependency-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -88,17 +91,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Remove this if spring-boot > 3.5.15 updated this dependency to >= 2.25.4 -->
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-to-slf4j</artifactId>
-                <version>${log4j-api.version}</version>
-            </dependency>
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
@@ -106,20 +98,9 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>${kafka-clients.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!-- Remove this if structured-logging version > 3.0.57 updated this dependency to >= 1.42.0 -->
-        <dependency>
-            <groupId>io.opentelemetry.semconv</groupId>
-            <artifactId>opentelemetry-semconv</artifactId>
-            <version>${open-telemetry.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -132,6 +113,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <!-- Explicit dependency so the jackson2 HTTP message converter can serialise/deserialise
+             java.time types (e.g. OffsetDateTime); previously only pulled in transitively. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
@@ -140,7 +127,6 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
-            <version>${structured-logging.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -158,24 +144,20 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>kafka-models</artifactId>
-            <version>${kafka-models.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
-            <version>${ch-kafka-version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>api-security-java</artifactId>
-            <version>${api-security-java-version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>rest-service-common-library</artifactId>
-            <version>${rest-service-common-library-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -201,6 +183,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
@@ -214,7 +211,6 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka-clients.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
@@ -249,22 +245,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
-            <version>${spring-boot-testcontainers-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mongodb</artifactId>
+            <artifactId>testcontainers-mongodb</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>kafka</artifactId>
+            <artifactId>testcontainers-kafka</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -1,7 +1,7 @@
 package helpers.utils;
 
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import helpers.OutputCapture;
