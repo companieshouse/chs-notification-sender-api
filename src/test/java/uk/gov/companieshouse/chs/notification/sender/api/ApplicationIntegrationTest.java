@@ -82,8 +82,8 @@ class ApplicationIntegrationTest {
     static void dynamicProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
         registry.add("chs.notification.aws.s3-endpoint", s3Mock::getS3MockEndpoint);
-        registry.add("chs.notification.aws.access-key-id", s3Mock::getAccessKeyId);
-        registry.add("chs.notification.aws.secret-access-key", s3Mock::getSecretAccessKey);
+        System.setProperty("aws.accessKeyId", s3Mock.getAccessKeyId());
+        System.setProperty("aws.secretAccessKey", s3Mock.getSecretAccessKey());
         registry.add("chs.notification.aws.region", s3Mock::getRegion);
         registry.add("chs.notification.aws.bucket-name", s3Mock::getBucket);
         registry.add("chs.notification.aws.path-style-access-enabled", () -> true);

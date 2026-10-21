@@ -2,7 +2,6 @@ package uk.gov.companieshouse.chs.notification.sender.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
@@ -18,7 +17,6 @@ public class StorageConfiguration {
                         .pathStyleAccessEnabled(awsProperties.pathStyleAccessEnabled())
                         .build())
                 .region(Region.of(awsProperties.region()))
-                .credentialsProvider(() -> AwsBasicCredentials.create(awsProperties.accessKeyId(), awsProperties.secretAccessKey()))
                 .build();
     }
 

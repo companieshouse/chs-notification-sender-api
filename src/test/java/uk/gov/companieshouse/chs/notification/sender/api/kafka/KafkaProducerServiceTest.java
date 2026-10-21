@@ -34,7 +34,7 @@ import uk.gov.companieshouse.chs.notification.sender.api.exception.NotificationE
 import uk.gov.companieshouse.logging.EventType;
 
 
-@ExtendWith({MockitoExtension.class})
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class KafkaProducerServiceTest {
 
