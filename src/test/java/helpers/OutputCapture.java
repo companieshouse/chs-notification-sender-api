@@ -1,7 +1,5 @@
 package helpers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -10,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.io.output.TeeOutputStream;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.logging.EventType;
 
 public class OutputCapture implements AutoCloseable {
@@ -17,7 +17,7 @@ public class OutputCapture implements AutoCloseable {
     private final PrintStream originalOut;
     private final ByteArrayOutputStream outBuffer;
     private final TeeOutputStream teeOut;
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final JsonMapper MAPPER = JsonMapper.builder().build();
     private final PrintStream capturedStream;
 
     public OutputCapture() {
@@ -50,13 +50,7 @@ public class OutputCapture implements AutoCloseable {
         return getOutput().lines()
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    try {
-                        return MAPPER.readTree(s);
-                    } catch (IOException e) {
-                        return null;
-                    }
-                })
+                .map(MAPPER::readTree)
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -72,7 +66,7 @@ public class OutputCapture implements AutoCloseable {
         return getJsonEntries().stream()
                 .filter(
                         node -> node.has("event")
-                                && eventName.getName().equals(node.get("event").asText())
+                                && eventName.getName().equals(node.get("event").asString())
                 )
                 .skip(index)
                 .findFirst();
@@ -93,7 +87,7 @@ public class OutputCapture implements AutoCloseable {
         return getJsonEntries().stream()
                 .filter(
                         node -> node.has("event")
-                                && eventName.getName().equals(node.get("event").asText())
+                                && eventName.getName().equals(node.get("event").asString())
                 )
                 .count();
     }

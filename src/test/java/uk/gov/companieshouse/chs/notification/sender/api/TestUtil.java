@@ -2,7 +2,15 @@ package uk.gov.companieshouse.chs.notification.sender.api;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.EnumSet;
+import java.util.Set;
 
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.spi.json.Jackson3JsonProvider;
+import com.jayway.jsonpath.spi.json.JsonProvider;
+import com.jayway.jsonpath.spi.mapper.Jackson3MappingProvider;
+import com.jayway.jsonpath.spi.mapper.MappingProvider;
 import uk.gov.companieshouse.api.chs.notification.sender.model.Address;
 import uk.gov.companieshouse.api.chs.notification.sender.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
@@ -41,6 +49,10 @@ public class TestUtil {
     private static final String DEFAULT_ADDRESS_LINE_5 = "Test County";
     private static final String DEFAULT_ADDRESS_LINE_6 = "TE5 7ST";
     private static final String DEFAULT_ADDRESS_LINE_7 = "United Kingdom";
+
+    static {
+        configureJsonPathDefaults();
+    }
 
     public static GovUkEmailDetailsRequest createValidEmailRequest() {
         return new GovUkEmailDetailsRequest()
@@ -141,5 +153,31 @@ public class TestUtil {
         emailRequest.setEmailDetails(emailDetails);
         emailRequest.setCreatedAt(OffsetDateTime.now());
         return emailRequest;
+    }
+
+    public static void configureJsonPathDefaults() {
+        // Set default JSON and mapping providers for JSONPath to use Jackson 3.
+        // We do this to ensure that JSONPath uses Jackson for JSON processing and mapping, which is consistent
+        // with the rest of the application. It also avoids using json-smart, which has known vulnerabilities (CVE-2026-113602).
+        Configuration.setDefaults(new Configuration.Defaults() {
+
+            private final JsonProvider jsonProvider = new Jackson3JsonProvider();
+            private final MappingProvider mappingProvider = new Jackson3MappingProvider();
+
+            @Override
+            public JsonProvider jsonProvider() {
+                return jsonProvider;
+            }
+
+            @Override
+            public MappingProvider mappingProvider() {
+                return mappingProvider;
+            }
+
+            @Override
+            public Set<Option> options() {
+                return EnumSet.noneOf(Option.class);
+            }
+        });
     }
 }

@@ -10,12 +10,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class HealthCheckControllerTest {
 
+    static {
+        TestUtil.configureJsonPathDefaults();
+    }
+
     private final String healthcheckUrl;
+
     @Autowired
     private MockMvc mockMvc;
 
