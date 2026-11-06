@@ -35,7 +35,7 @@ public class AttachmentStorageService {
         try {
             s3Client.putObject(PutObjectRequest.builder()
                             .bucket(awsProperties.bucketName())
-                            .key(attachmentId)
+                            .key(getObjectKey(attachmentId))
                             .contentType(StringUtils.defaultIfBlank(attachment.getContentType(),
                                     APPLICATION_OCTET_STREAM))
                             .metadata(Map.of(
@@ -48,5 +48,11 @@ public class AttachmentStorageService {
             throw new NotificationException("Failed to store attachment", e);
         }
         return attachmentId;
+    }
+
+    // S3 has no real folders: a folder is a key prefix
+    private String getObjectKey(String attachmentId) {
+        String folder = StringUtils.strip(awsProperties.attachmentFolder(), "/");
+        return StringUtils.isBlank(folder) ? attachmentId : folder + "/" + attachmentId;
     }
 }

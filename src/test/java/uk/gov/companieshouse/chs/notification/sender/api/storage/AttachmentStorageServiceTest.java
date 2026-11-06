@@ -73,7 +73,7 @@ class AttachmentStorageServiceTest {
         HeadObjectResponse headObjectResponse = getHeadeObjectForRequest(emailRequest);
         ResponseInputStream<GetObjectResponse> storedObject = s3Client.getObject(GetObjectRequest.builder()
                 .bucket(s3Mock.getBucket())
-                .key(attachmentId)
+                .key("local/" + attachmentId)
                 .build());
         assertThat(headObjectResponse.metadata())
                 .contains(
@@ -108,7 +108,7 @@ class AttachmentStorageServiceTest {
     private HeadObjectResponse getHeadeObjectForRequest(GovUkEmailDetailsRequest emailRequest) {
         return s3Client.headObject(builder -> builder
                 .bucket(s3Mock.getBucket())
-                .key(emailRequest.getSenderDetails().getAppId() +"-" + emailRequest.getSenderDetails().getReference())
+                .key("local/" + emailRequest.getSenderDetails().getAppId() +"-" + emailRequest.getSenderDetails().getReference())
                 .build());
     }
 
