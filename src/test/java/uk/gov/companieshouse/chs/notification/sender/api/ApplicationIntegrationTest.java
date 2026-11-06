@@ -155,7 +155,7 @@ class ApplicationIntegrationTest {
 
         ResponseInputStream<GetObjectResponse> object = s3Client.getObject(GetObjectRequest.builder()
                 .bucket(s3Mock.getBucket())
-                .key(attachmentId)
+                .key("local/" + attachmentId)
                 .build());
         assertThat(new String(object.readAllBytes())).isEqualTo("Hello World");
     }
