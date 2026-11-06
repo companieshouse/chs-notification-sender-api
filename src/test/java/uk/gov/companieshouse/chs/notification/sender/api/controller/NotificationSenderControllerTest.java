@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,9 +15,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static tools.jackson.databind.cfg.DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import helpers.OutputCapture;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -37,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.LetterDetails;
@@ -73,7 +72,7 @@ class NotificationSenderControllerTest {
     @Captor
     private ArgumentCaptor<NotificationLetterRequest> letterRequestCaptor;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper objectMapper;
 
     private static Stream<Arguments> invalidEmailRequestProvider() {
         return Stream.of(
@@ -216,9 +215,9 @@ class NotificationSenderControllerTest {
             .setControllerAdvice(new GlobalExceptionHandler())
             .build();
 
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper = JsonMapper.builder()
+                .disable(WRITE_DATES_AS_TIMESTAMPS)
+                .build();
     }
 
     @Test
@@ -507,7 +506,7 @@ class NotificationSenderControllerTest {
     void When_DuplicatedEmailRequest_Expect_ConflictStatus() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
-        
+
         String appId = request.getSenderDetails().getAppId();
         String reference = request.getSenderDetails().getReference();
         when(notificationDatabaseService.getEmail(appId, reference))
@@ -526,7 +525,7 @@ class NotificationSenderControllerTest {
     void When_DuplicatedLetterRequest_Expect_ConflictStatus() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
         String requestJson = objectMapper.writeValueAsString(request);
-        
+
         String appId = request.getSenderDetails().getAppId();
         String reference = request.getSenderDetails().getReference();
         when(notificationDatabaseService.getLetter(appId, reference))

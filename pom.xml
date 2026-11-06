@@ -8,50 +8,59 @@
         <artifactId>companies-house-parent</artifactId>
         <version>3.0.0</version>
     </parent>
+
     <artifactId>chs-notification-sender-api</artifactId>
     <version>unversioned</version>
     <name>chs-notification-sender-api</name>
     <description>CHS Notification Service for sending letters and emails</description>
     <url/>
-    <properties>
-        <ch-dependency-bom.version>0.1.31</ch-dependency-bom.version>
-        <commons-compress.version>1.27.1</commons-compress.version>
-        <flapdoodle.version>4.16.1</flapdoodle.version>
-        <google-http-client.version>1.45.0</google-http-client.version>
-        <hamcrest-all-version>1.3</hamcrest-all-version>
-        <java.version>21</java.version>
-        <log4j-version>2.24.2</log4j-version>
-        <netty.version>4.2.18.Final</netty.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-        <mockito-junit-jupiter-version>5.15.2</mockito-junit-jupiter-version>
-        <org.mapstruct.version>1.6.2</org.mapstruct.version>
-        <private-api-sdk-java.version>7.2.38</private-api-sdk-java.version>
-        <spring-boot.version>4.1.1</spring-boot.version>
-        <software.amazon.awssdk-bom.version>2.48.0</software.amazon.awssdk-bom.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
-        <grpc-context.version>1.73.0</grpc-context.version>
-        <gson.version>2.13.1</gson.version>
 
-        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
-        <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.projectName>chs-notification-sender-api</sonar.projectName>
-        <sonar.projectKey>uk.gov.companieshouse:chs-notification-sender-api</sonar.projectKey>
-        <sonar.sources>src/main</sonar.sources>
-        <sonar.tests>src/test</sonar.tests>
-        <sonar.verbose>true</sonar.verbose>
-        <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/target/site/jacoco/jacoco.xml,
-            ${project.basedir}/target/site/jacoco-it/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
-        <sonar.dependencyCheck.htmlReportPath>
-            ${project.basedir}/target/dependency-check-report.html
-        </sonar.dependencyCheck.htmlReportPath>
-        <sonar.java.binaries>${project.basedir}/target</sonar.java.binaries>
+    <properties>
+        <java.version>21</java.version>
+
+        <!-- Internal Dependencies -->
+        <!-- Source: https://github.com/companieshouse/ch-boms/releases -->
+        <ch-dependency-bom.version>0.1.37</ch-dependency-bom.version>
+        <!-- Source: https://github.com/companieshouse/private-api-sdk-java/releases -->
+        <private-api-sdk-java.version>7.2.47</private-api-sdk-java.version>
+
+        <!-- External Dependencies -->
+        <!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies -->
+        <spring-boot.version>4.1.2</spring-boot.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <commons-compress.version>1.28.0</commons-compress.version>
+        <!-- Source: https://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo -->
+        <flapdoodle.version>5.0.0</flapdoodle.version>
+        <!-- Source: https://mvnrepository.com/artifact/com.google.http-client/google-http-client -->
+        <google-http-client.version>2.2.0</google-http-client.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all -->
+        <hamcrest-all.version>1.3</hamcrest-all.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <log4j.version>2.26.1</log4j.version>
+        <!-- Source: https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <netty.version>4.2.20.Final</netty.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+        <mockito-junit-jupiter.version>5.24.0</mockito-junit-jupiter.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <commons-lang3.version>3.21.0</commons-lang3.version>
+        <!-- Source: https://mvnrepository.com/artifact/io.grpc/grpc-api -->
+        <grpc.version>1.85.1</grpc.version>
+        <!-- Source: https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <gson.version>2.15.0</gson.version>
+        <!-- Source: https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-instrumentation-bom -->
+        <opentelemetry.version>2.33.1</opentelemetry.version>
+
+        <!-- Maven Plugins -->
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+        <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
+        <!-- Source: https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+
     </properties>
 
     <profiles>
@@ -64,6 +73,15 @@
     </profiles>
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>io.opentelemetry.instrumentation</groupId>
+                <artifactId>opentelemetry-instrumentation-bom</artifactId>
+                <version>${opentelemetry.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- CVE-2026-89044: must appear before spring-boot-dependencies so this
                  patched Netty version takes precedence over the 4.2.17.Final pinned
                  there and transitively pulled in via the AWS SDK's netty-nio-client
@@ -75,6 +93,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <!-- Must appear before spring-boot-dependencies so CH-approved
                  versions (including CVE overrides) take precedence. -->
             <dependency>
@@ -84,6 +103,45 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/software.amazon.awssdk/bom -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.57.8</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- CVE-2026-106451-->
+            <!-- Source: https://mvnrepository.com/artifact/at.yawk.lz4/lz4-java -->
+            <dependency>
+                <groupId>at.yawk.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>1.12.1</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- CVE-2026-90559-->
+            <!-- Source: https://mvnrepository.com/artifact/org.xerial.snappy/snappy-java -->
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>1.1.10.12</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- CVE-2026-87795, CVE-2026-87823, CVE-2026-89046, CVE-2026-90560,
+            CVE-2026-87825, CVE-2026-87877, CVE-2026-87824, CVE-2026-90852 -->
+            <!-- Source: https://mvnrepository.com/artifact/com.github.luben/zstd-jni -->
+            <dependency>
+                <groupId>com.github.luben</groupId>
+                <artifactId>zstd-jni</artifactId>
+                <version>1.5.7-24</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Keep Kafka clients and embedded broker dependencies aligned with Spring Kafka. -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -91,34 +149,38 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>bom</artifactId>
-                <version>${software.amazon.awssdk-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-        <!-- Explicit dependency so the jackson2 HTTP message converter can serialise/deserialise
-             java.time types (e.g. OffsetDateTime); previously only pulled in transitively. -->
+
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-opentelemetry</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-logback-appender-1.0</artifactId>
+            <version>${opentelemetry.version}-alpha</version>
+        </dependency>
+
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
@@ -135,16 +197,24 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.12.0</version>
+            <version>1.12.2</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>kafka-models</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin.external.google</groupId>
+                    <artifactId>android-json</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
@@ -153,16 +223,24 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>api-security-java</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.minidev</groupId>
+                    <artifactId>json-smart</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>rest-service-common-library</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -172,6 +250,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-reactive-httpclient</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
@@ -181,82 +260,122 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin.external.google</groupId>
+                    <artifactId>android-json</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.minidev</groupId>
+                    <artifactId>json-smart</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.minidev</groupId>
+                    <artifactId>json-smart</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-resttestclient</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-restclient</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
-            <version>${hamcrest-all-version}</version>
+            <version>${hamcrest-all.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
         </dependency>
+
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>private-api-sdk-java</artifactId>
             <version>${private-api-sdk-java.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
-            <version>1.6.2</version>
+            <version>${org.mapstruct.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-context</artifactId>
-            <version>${grpc-context.version}</version>
+            <version>${grpc.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-mongodb</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-kafka</artifactId>
@@ -264,8 +383,10 @@
         </dependency>
 
     </dependencies>
+
     <build>
         <plugins>
+
             <plugin>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -296,6 +417,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <version>${spring-boot.version}</version>
             </plugin>
+
             <plugin>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
@@ -312,13 +434,15 @@
                     </to>
                 </configuration>
                 <groupId>com.google.cloud.tools</groupId>
-                <version>3.4.0</version>
+                <version>3.5.2</version>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -348,10 +472,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -368,6 +489,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>
