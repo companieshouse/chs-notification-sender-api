@@ -1,28 +1,29 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
-import java.time.Duration;
-
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.mongodb.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationLetterRequestRepository;
 
-@Testcontainers(disabledWithoutDocker = true)
+import java.time.Duration;
+
 public abstract class AbstractMongoDBTest {
 
-    private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:6.0.19");
+    private static final DockerImageName MONGO_IMAGE = DockerImageName.parse("mongo:8.0.34");
 
-    private static final MongoDBContainer mongoDBContainer;
+    @ServiceConnection
+    protected static final MongoDBContainer mongoDBContainer =
+            new MongoDBContainer(MONGO_IMAGE)
+                    .withStartupTimeout(Duration.ofMinutes(2));
 
     static {
-        mongoDBContainer = new MongoDBContainer(MONGO_IMAGE)
-                .withStartupTimeout(Duration.ofMinutes(2));
         mongoDBContainer.start();
+        TestUtil.configureJsonPathDefaults();
     }
 
     @Autowired
