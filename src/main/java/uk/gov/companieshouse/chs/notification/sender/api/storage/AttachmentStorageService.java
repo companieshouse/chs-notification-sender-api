@@ -35,7 +35,7 @@ public class AttachmentStorageService {
         try {
             s3Client.putObject(PutObjectRequest.builder()
                             .bucket(awsProperties.bucketName())
-                            .key(attachmentId)
+                            .key(getObjectKey(attachmentId))
                             .contentType(StringUtils.defaultIfBlank(attachment.getContentType(),
                                     APPLICATION_OCTET_STREAM))
                             .metadata(Map.of(
@@ -48,5 +48,10 @@ public class AttachmentStorageService {
             throw new NotificationException("Failed to store attachment", e);
         }
         return attachmentId;
+    }
+
+    private String getObjectKey(String attachmentId) {
+        String prefix = StringUtils.strip(awsProperties.environmentPrefix(), "/");
+        return StringUtils.isBlank(prefix) ? attachmentId : prefix + "/" + attachmentId;
     }
 }
