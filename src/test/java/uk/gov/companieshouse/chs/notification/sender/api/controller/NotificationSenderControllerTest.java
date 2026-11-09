@@ -472,7 +472,7 @@ class NotificationSenderControllerTest {
             var logData = getDataFromLogMessage(outputCapture, EventType.ERROR, "Validation error");
             assertJsonHasAndEquals(logData, "status", "400");
             assertJsonHasAndEquals(logData, "errors", expectedErrors);
-            String stackTrace = logData.get("stack_trace").asText();
+            String stackTrace = logData.get("stack_trace").asString();
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
@@ -495,7 +495,7 @@ class NotificationSenderControllerTest {
             assertJsonHasAndEquals(logData, "status", "400");
             assertJsonHasAndEquals(logData, "errors", expectedErrors);
 
-            String stackTrace = logData.get("stack_trace").asText();
+            String stackTrace = logData.get("stack_trace").asString();
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 

@@ -63,14 +63,12 @@ class EmailRequestMapperTest {
 
     @Test
     void toDaoNullGovUkEmailDetailsRequest() {
-        GovUkEmailDetailsRequest request = null;
-        assertNull(EmailRequestMapper.toDao(request));
+        assertNull(EmailRequestMapper.toDao(null));
     }
 
     @Test
     void fromDaoNullEmailRequestDao() {
-        EmailRequestDao dao = null;
-        assertNull(EmailRequestMapper.fromDao(dao));
+        assertNull(EmailRequestMapper.fromDao(null));
     }
 
 }

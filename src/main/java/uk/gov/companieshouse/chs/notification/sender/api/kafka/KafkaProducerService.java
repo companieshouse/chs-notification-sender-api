@@ -66,10 +66,10 @@ public class KafkaProducerService {
                 .build()
                 .getLogMap();
 
-        LOG.debug(String.format("Sending message to topic: %s", topic), logMap);
         ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(topic, message);
 
         try {
+            LOG.debug(String.format("Sending message to topic: %s", topic), logMap);
             kafkaTemplate.send(producerRecord).get(10, TimeUnit.SECONDS);
             LOG.info(String.format("Successfully sent message to topic: %s", topic), logMap);
         } catch (ExecutionException | TimeoutException | InterruptedException ex) {

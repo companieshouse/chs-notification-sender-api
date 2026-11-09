@@ -14,7 +14,6 @@ import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 import uk.gov.companieshouse.notification.ChsEmailNotification;
 import uk.gov.companieshouse.notification.ChsLetterNotification;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class NotificationMapperTest {
 

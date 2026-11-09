@@ -50,9 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EmbeddedKafka(topics = {"chs-notification-email", "chs-notification-letter"})
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ApplicationIntegrationTest extends AbstractMongoDBTest {
-
-    public static final String NOTIFICATION_ATTACHMENTS = "notification-attachments";
+public class ApplicationIntegrationTest extends AbstractMongoDBTest {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -147,7 +145,7 @@ class ApplicationIntegrationTest extends AbstractMongoDBTest {
     @Test
     void shouldRespondWithConflictGivenEmailHasAlreadyBeenProcessed(@Autowired TestRestTemplate testRestTemplate,
                                                                     @Autowired JsonMapper objectMapper,
-                                                                    CapturedOutput capturedOutput) throws Exception {
+                                                                    CapturedOutput capturedOutput) {
         // Given
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());

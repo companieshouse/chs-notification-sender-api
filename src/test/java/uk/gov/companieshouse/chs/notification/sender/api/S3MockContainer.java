@@ -13,7 +13,7 @@ public class S3MockContainer extends GenericContainer<S3MockContainer> {
     private static final String NOTIFICATION_ATTACHMENTS_LOCAL = "notification-attachments-local";
 
     public S3MockContainer() {
-        super(DockerImageName.parse("adobe/s3mock:5.2.0"));
+        super(DockerImageName.parse("adobe/s3mock:5.2.3"));
         withExposedPorts(HTTP_PORT);
         withEnv("COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS", NOTIFICATION_ATTACHMENTS_LOCAL);
         waitingFor(Wait.forHttp("/favicon.ico").forPort(HTTP_PORT).withMethod("GET").forStatusCode(200));
