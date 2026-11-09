@@ -33,8 +33,6 @@ import uk.gov.companieshouse.chs.notification.sender.api.TestUtil;
 @SpringBootTest(webEnvironment =  SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AttachmentStorageServiceTest {
 
-    public static final String NOTIFICATION_ATTACHMENTS = "notification-attachments";
-
     @Autowired
     private AttachmentStorageService attachmentStorageService;
 
