@@ -61,7 +61,7 @@ data "vault_generic_secret" "shared_s3" {
 }
 
 data "aws_s3_bucket" "notification_attachments" {
-  bucket = "notification-attachments-${var.environment}"
+  bucket = "${var.aws_profile}.notification-attachments.ch.gov.uk"
 }
 
 # policy on the role allowing ecs to upload to s3 bucket
@@ -81,6 +81,6 @@ data "aws_iam_policy_document" "upload_to_s3" {
     sid       = "WriteToBucket"
     effect    = "Allow"
     actions   = ["s3:PutObject", "s3:AbortMultipartUpload"]
-    resources = ["${data.aws_s3_bucket.notification_attachments.arn}/*"]
+    resources = ["${data.aws_s3_bucket.notification_attachments.arn}/${var.environment}/*"]
   }
 }
