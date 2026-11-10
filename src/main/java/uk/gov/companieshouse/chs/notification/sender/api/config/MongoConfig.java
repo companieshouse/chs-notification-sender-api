@@ -1,8 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.config;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
@@ -12,14 +9,19 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.converter.DateToOffsetDateTimeConverter;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.converter.OffsetDateTimeToDateConverter;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Optional;
+
 @Configuration
 @EnableMongoRepositories("uk.gov.companieshouse.chs.notification.sender.api.mongo.repository")
 @EnableMongoAuditing(dateTimeProviderRef = "mongodbDatetimeProvider")
 public class MongoConfig {
 
-    @Bean( name = "mongodbDatetimeProvider" )
+    @Bean(name = "mongodbDatetimeProvider")
     public DateTimeProvider dateTimeProvider() {
-        return () -> Optional.of( LocalDateTime.now() );
+        return () -> Optional.of(LocalDateTime.now(ZoneId.systemDefault()));
     }
 
     @Bean

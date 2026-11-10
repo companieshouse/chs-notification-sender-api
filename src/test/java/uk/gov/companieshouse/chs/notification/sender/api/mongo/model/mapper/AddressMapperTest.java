@@ -37,14 +37,12 @@ class AddressMapperTest {
 
     @Test
     void toDaoNull() {
-        Address address = null;
-        assertNull(AddressMapper.toDao(address));
+        assertNull(AddressMapper.toDao(null));
     }
 
     @Test
     void fromDaoNull() {
-        AddressDao dao = null;
-        assertNull(AddressMapper.fromDao(dao));
+        assertNull(AddressMapper.fromDao(null));
     }
 }
 

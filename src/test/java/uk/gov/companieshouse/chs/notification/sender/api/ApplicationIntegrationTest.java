@@ -1,13 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api;
 
-import static java.lang.String.format;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Map;
-import java.util.UUID;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -15,12 +7,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,43 +28,33 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.context.annotation.Bean;
-import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
+
+import java.util.Map;
+import java.util.UUID;
+
+import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(OutputCaptureExtension.class)
 @Testcontainers(disabledWithoutDocker = true)
 @EmbeddedKafka(topics = {"chs-notification-email", "chs-notification-letter"})
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ApplicationIntegrationTest {
+public class ApplicationIntegrationTest extends AbstractMongoDBTest {
 
-    public static final String NOTIFICATION_ATTACHMENTS = "notification-attachments";
-
-    // Spring Boot 4 no longer auto-configures a plain `com.fasterxml.jackson.databind.ObjectMapper`
-    // bean by default (see spring-boot-4-migration skill, jackson-3-default-stack.md); this test
-    // only needs it to (de)serialise request/response bodies for assertions.
-    @TestConfiguration
-    static class TestJacksonConfig {
-        @Bean
-        ObjectMapper objectMapper() {
-            return new ObjectMapper().registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        }
-    }
-
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     EmbeddedKafkaBroker embeddedKafkaBroker;
-
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:6.0.19"));
 
     @Container
     static S3MockContainer s3Mock = new S3MockContainer();
@@ -91,6 +72,7 @@ class ApplicationIntegrationTest {
 
     private Consumer<Integer, String> notificationEmailConsumer;
 
+    @Override
     @AfterEach
     void tearDown() {
         if (notificationEmailConsumer != null) {
@@ -123,13 +105,13 @@ class ApplicationIntegrationTest {
 
     @Test
     void shouldSendEmailNotificationWithAttachment(@Autowired TestRestTemplate testRestTemplate,
-                                                   @Autowired ObjectMapper objectMapper,
+                                                   @Autowired JsonMapper objectMapper,
                                                    @Autowired S3Client s3Client,
                                                    @Autowired NotificationEmailRequestRepository notificationEmailRequestRepository) throws Exception {
         // Given
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
-        String attachmentId = emailRequest.getSenderDetails().getAppId() + "-" +emailRequest.getSenderDetails().getReference();
+        String attachmentId = emailRequest.getSenderDetails().getAppId() + "-" + emailRequest.getSenderDetails().getReference();
 
         MultiValueMap<String, Object> multiPartFormData = buildMultiPartFormWithAttachment(objectMapper, emailRequest);
 
@@ -162,8 +144,8 @@ class ApplicationIntegrationTest {
 
     @Test
     void shouldRespondWithConflictGivenEmailHasAlreadyBeenProcessed(@Autowired TestRestTemplate testRestTemplate,
-                                                                    @Autowired ObjectMapper objectMapper,
-                                                                    CapturedOutput capturedOutput) throws Exception {
+                                                                    @Autowired JsonMapper objectMapper,
+                                                                    CapturedOutput capturedOutput) {
         // Given
         GovUkEmailDetailsRequest emailRequest = TestUtil.createValidEmailRequest();
         emailRequest.getSenderDetails().setReference(UUID.randomUUID().toString());
@@ -182,8 +164,8 @@ class ApplicationIntegrationTest {
                 emailRequest.getSenderDetails().getReference()));
     }
 
-    private MultiValueMap<String, Object> buildMultiPartFormWithAttachment(ObjectMapper objectMapper,
-                                                                           GovUkEmailDetailsRequest emailRequest) throws JsonProcessingException {
+    private MultiValueMap<String, Object> buildMultiPartFormWithAttachment(JsonMapper objectMapper,
+                                                                           GovUkEmailDetailsRequest emailRequest) throws JacksonException {
         HttpHeaders jsonHeaders = new HttpHeaders();
         jsonHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> emailPayload = new HttpEntity<>(objectMapper.writeValueAsString(emailRequest), jsonHeaders);
@@ -215,7 +197,7 @@ class ApplicationIntegrationTest {
     }
 
     private Consumer<Integer, String> createNotificationEmailConsumer(EmbeddedKafkaBroker embeddedKafkaBroker) {
-        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("chs-notification-email-consumer" + UUID.randomUUID(), "false", embeddedKafkaBroker);
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(embeddedKafkaBroker, "chs-notification-email-consumer" + UUID.randomUUID(), false);
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         ConsumerFactory<Integer, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
         Consumer<Integer, String> consumer = cf.createConsumer();
