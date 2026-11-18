@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EmbeddedKafka(topics = {"chs-notification-email", "chs-notification-letter"})
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ApplicationIntegrationTest extends AbstractMongoDBTest {
+public class ApplicationIntegrationTest extends AbstractMongoDBTest {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
