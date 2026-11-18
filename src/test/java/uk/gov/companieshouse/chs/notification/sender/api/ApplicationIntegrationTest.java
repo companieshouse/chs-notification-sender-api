@@ -39,6 +39,7 @@ import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.chs.notification.sender.api.mongo.repository.NotificationEmailRequestRepository;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
@@ -139,7 +140,7 @@ public class ApplicationIntegrationTest extends AbstractMongoDBTest {
                 .bucket(s3Mock.getBucket())
                 .key(attachmentId)
                 .build());
-        assertThat(new String(object.readAllBytes())).isEqualTo("Hello World");
+        assertThat(new String(object.readAllBytes(), StandardCharsets.UTF_8)).isEqualTo("Hello World");
     }
 
     @Test
@@ -172,7 +173,7 @@ public class ApplicationIntegrationTest extends AbstractMongoDBTest {
 
         MultiValueMap<String, Object> multiPartFormData = new LinkedMultiValueMap<>();
         multiPartFormData.add("request", emailPayload);
-        multiPartFormData.add("file", new ByteArrayResource("Hello World".getBytes()) {
+        multiPartFormData.add("file", new ByteArrayResource("Hello World".getBytes(StandardCharsets.UTF_8)) {
             @Override
             public String getFilename() {
                 return "file.text";
