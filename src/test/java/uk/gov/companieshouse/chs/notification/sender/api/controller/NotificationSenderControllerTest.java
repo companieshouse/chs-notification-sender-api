@@ -19,6 +19,7 @@ import static tools.jackson.databind.cfg.DateTimeFeature.WRITE_DATES_AS_TIMESTAM
 
 import helpers.OutputCapture;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,7 +82,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
                     .emailDetails(TestUtil.createDefaultEmailDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"senderDetails: must not be null"}
             ),
             Arguments.of(
@@ -89,7 +90,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .emailDetails(TestUtil.createDefaultEmailDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"recipientDetails: must not be null"}
 
             ),
@@ -98,7 +99,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"emailDetails: must not be null"}
             ),
             Arguments.of(
@@ -149,7 +150,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
                     .letterDetails(TestUtil.createDefaultLetterDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"senderDetails: must not be null"}
             ),
             Arguments.of(
@@ -157,7 +158,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .letterDetails(TestUtil.createDefaultLetterDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"recipientDetails: must not be null"}
             ),
             Arguments.of(
@@ -165,7 +166,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"letterDetails: must not be null"}
             ),
             Arguments.of(

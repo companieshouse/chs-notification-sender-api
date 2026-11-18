@@ -132,7 +132,7 @@ public class TestUtil {
         letterRequest.setSenderDetails(senderDetails);
         letterRequest.setRecipientDetails(recipientDetails);
         letterRequest.setLetterDetails(letterDetails);
-        letterRequest.setCreatedAt(OffsetDateTime.now());
+        letterRequest.setCreatedAt(OffsetDateTime.now(ZoneId.systemDefault()));
         return letterRequest;
     }
 
@@ -151,7 +151,7 @@ public class TestUtil {
         emailRequest.setSenderDetails(senderDetails);
         emailRequest.setRecipientDetails(recipientDetails);
         emailRequest.setEmailDetails(emailDetails);
-        emailRequest.setCreatedAt(OffsetDateTime.now());
+        emailRequest.setCreatedAt(OffsetDateTime.now(ZoneId.systemDefault()));
         return emailRequest;
     }
 

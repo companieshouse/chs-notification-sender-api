@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.chs.notification.sender.model.Address;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
@@ -47,7 +49,7 @@ class LetterRequestMapperTest {
         request.setSenderDetails(sender);
         request.setRecipientDetails(recipient);
         request.setLetterDetails(letterDetails);
-        request.setCreatedAt(OffsetDateTime.now());
+        request.setCreatedAt(OffsetDateTime.now(ZoneId.systemDefault()));
 
         // toDao
         LetterRequestDao dao = LetterRequestMapper.toDao(request);
