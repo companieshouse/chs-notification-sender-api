@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.chs.notification.sender.model.EmailDetails;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
@@ -35,7 +37,7 @@ class EmailRequestMapperTest {
         request.setSenderDetails(sender);
         request.setRecipientDetails(recipient);
         request.setEmailDetails(emailDetails);
-        request.setCreatedAt(OffsetDateTime.now());
+        request.setCreatedAt(OffsetDateTime.now(ZoneId.systemDefault()));
 
         // toDao
         EmailRequestDao dao = EmailRequestMapper.toDao(request);
@@ -63,14 +65,12 @@ class EmailRequestMapperTest {
 
     @Test
     void toDaoNullGovUkEmailDetailsRequest() {
-        GovUkEmailDetailsRequest request = null;
-        assertNull(EmailRequestMapper.toDao(request));
+        assertNull(EmailRequestMapper.toDao(null));
     }
 
     @Test
     void fromDaoNullEmailRequestDao() {
-        EmailRequestDao dao = null;
-        assertNull(EmailRequestMapper.fromDao(dao));
+        assertNull(EmailRequestMapper.fromDao(null));
     }
 
 }

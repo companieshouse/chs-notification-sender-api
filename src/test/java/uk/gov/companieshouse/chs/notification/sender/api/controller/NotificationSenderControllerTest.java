@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.chs.notification.sender.api.controller;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static helpers.utils.OutputAssertions.assertJsonHasAndEquals;
 import static helpers.utils.OutputAssertions.getDataFromLogMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,11 +15,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static tools.jackson.databind.cfg.DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import helpers.OutputCapture;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkEmailDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.GovUkLetterDetailsRequest;
 import uk.gov.companieshouse.api.chs.notification.sender.model.LetterDetails;
@@ -73,7 +73,7 @@ class NotificationSenderControllerTest {
     @Captor
     private ArgumentCaptor<NotificationLetterRequest> letterRequestCaptor;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper objectMapper;
 
     private static Stream<Arguments> invalidEmailRequestProvider() {
         return Stream.of(
@@ -82,7 +82,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
                     .emailDetails(TestUtil.createDefaultEmailDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"senderDetails: must not be null"}
             ),
             Arguments.of(
@@ -90,7 +90,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .emailDetails(TestUtil.createDefaultEmailDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"recipientDetails: must not be null"}
 
             ),
@@ -99,7 +99,7 @@ class NotificationSenderControllerTest {
                 new GovUkEmailDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsEmail())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"emailDetails: must not be null"}
             ),
             Arguments.of(
@@ -150,7 +150,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
                     .letterDetails(TestUtil.createDefaultLetterDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"senderDetails: must not be null"}
             ),
             Arguments.of(
@@ -158,7 +158,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .letterDetails(TestUtil.createDefaultLetterDetails())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                     new String[]{"recipientDetails: must not be null"}
             ),
             Arguments.of(
@@ -166,7 +166,7 @@ class NotificationSenderControllerTest {
                 new GovUkLetterDetailsRequest()
                     .senderDetails(TestUtil.createDefaultSenderDetails())
                     .recipientDetails(TestUtil.createDefaultRecipientDetailsLetter())
-                    .createdAt(OffsetDateTime.now()),
+                    .createdAt(OffsetDateTime.now(ZoneId.systemDefault())),
                 new String[]{"letterDetails: must not be null"}
             ),
             Arguments.of(
@@ -216,9 +216,9 @@ class NotificationSenderControllerTest {
             .setControllerAdvice(new GlobalExceptionHandler())
             .build();
 
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper = JsonMapper.builder()
+                .disable(WRITE_DATES_AS_TIMESTAMPS)
+                .build();
     }
 
     @Test
@@ -473,7 +473,7 @@ class NotificationSenderControllerTest {
             var logData = getDataFromLogMessage(outputCapture, EventType.ERROR, "Validation error");
             assertJsonHasAndEquals(logData, "status", "400");
             assertJsonHasAndEquals(logData, "errors", expectedErrors);
-            String stackTrace = logData.get("stack_trace").asText();
+            String stackTrace = logData.get("stack_trace").asString();
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
@@ -496,7 +496,7 @@ class NotificationSenderControllerTest {
             assertJsonHasAndEquals(logData, "status", "400");
             assertJsonHasAndEquals(logData, "errors", expectedErrors);
 
-            String stackTrace = logData.get("stack_trace").asText();
+            String stackTrace = logData.get("stack_trace").asString();
             assertThat(stackTrace, startsWith("org.springframework.web.bind.MethodArgumentNotValidException"));
         }
 
@@ -507,7 +507,7 @@ class NotificationSenderControllerTest {
     void When_DuplicatedEmailRequest_Expect_ConflictStatus() throws Exception {
         GovUkEmailDetailsRequest request = TestUtil.createValidEmailRequest();
         String requestJson = objectMapper.writeValueAsString(request);
-        
+
         String appId = request.getSenderDetails().getAppId();
         String reference = request.getSenderDetails().getReference();
         when(notificationDatabaseService.getEmail(appId, reference))
@@ -526,7 +526,7 @@ class NotificationSenderControllerTest {
     void When_DuplicatedLetterRequest_Expect_ConflictStatus() throws Exception {
         GovUkLetterDetailsRequest request = TestUtil.createValidLetterRequest();
         String requestJson = objectMapper.writeValueAsString(request);
-        
+
         String appId = request.getSenderDetails().getAppId();
         String reference = request.getSenderDetails().getReference();
         when(notificationDatabaseService.getLetter(appId, reference))

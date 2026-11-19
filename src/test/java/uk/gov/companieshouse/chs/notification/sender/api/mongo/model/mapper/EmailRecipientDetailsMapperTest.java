@@ -27,14 +27,12 @@ class EmailRecipientDetailsMapperTest {
 
     @Test
     void toDaoNull() {
-        RecipientDetailsEmail recipient = null;
-        assertNull(EmailRecipientDetailsMapper.toDao(recipient));
+        assertNull(EmailRecipientDetailsMapper.toDao(null));
     }
 
     @Test
     void fromDaoNull() {
-        EmailRecipientDetailsDao dao = null;
-        assertNull(EmailRecipientDetailsMapper.fromDao(dao));
+        assertNull(EmailRecipientDetailsMapper.fromDao(null));
     }
 }
 
