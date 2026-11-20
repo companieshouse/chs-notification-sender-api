@@ -22,13 +22,13 @@
 
         <!-- Internal Dependencies -->
         <!-- Source: https://github.com/companieshouse/ch-boms/releases -->
-        <ch-dependency-bom.version>0.1.41</ch-dependency-bom.version>
+        <ch-dependency-bom.version>0.1.42</ch-dependency-bom.version>
         <!-- Source: https://github.com/companieshouse/private-api-sdk-java/releases -->
-        <private-api-sdk-java.version>7.2.50</private-api-sdk-java.version>
+        <private-api-sdk-java.version>7.2.52</private-api-sdk-java.version>
 
         <!-- External Dependencies -->
         <!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies -->
-        <spring-boot.version>4.1.2</spring-boot.version>
+        <spring-boot.version>4.2.0</spring-boot.version>
         <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
         <commons-compress.version>1.28.0</commons-compress.version>
         <!-- Source: https://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo -->
@@ -40,7 +40,7 @@
         <!-- Source: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <log4j.version>2.26.1</log4j.version>
         <!-- Source: https://mvnrepository.com/artifact/io.netty/netty-all -->
-        <netty.version>4.2.20.Final</netty.version>
+        <netty.version>4.2.21.Final</netty.version>
         <!-- Source: https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
         <mockito-junit-jupiter.version>5.24.0</mockito-junit-jupiter.version>
         <!-- Source: https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
@@ -162,6 +162,20 @@
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat-embed.version}</version>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.87</version>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.87</version>
             </dependency>
 
             <!-- Keep Kafka clients and embedded broker dependencies aligned with Spring Kafka. -->
